@@ -1,0 +1,42 @@
+name: Feature request
+description: Suggest something the customizer should be able to do
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: Thai or English is fine / เขียนภาษาไทยหรืออังกฤษก็ได้
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve
+      description: Who needs it — a visitor, the community, the designer — and why.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What it should do
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Product picker
+        - Editor / canvas
+        - Patterns and colours
+        - Export / order request
+        - Landing and story
+        - Catalog data
+        - Other
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Scope check
+      options:
+        - label: I checked `docs/ROADMAP.md` and this is not already planned

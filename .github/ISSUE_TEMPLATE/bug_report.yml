@@ -1,0 +1,46 @@
+name: Bug report
+description: Something in the customizer behaves wrong or breaks
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thai or English is fine / เขียนภาษาไทยหรืออังกฤษก็ได้
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the product picker
+        2. Choose the cotton shawl
+        3. …
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      description: URL or page, e.g. the Vercel preview link.
+  - type: input
+    id: environment
+    attributes:
+      label: Device and browser
+      placeholder: iPhone 13, Safari 17 / Windows 11, Chrome 131
+  - type: dropdown
+    id: language
+    attributes:
+      label: Site language
+      options:
+        - ไทย (Thai)
+        - English
+        - Both / not language-specific
+  - type: textarea
+    id: extra
+    attributes:
+      label: Screenshots or console errors
