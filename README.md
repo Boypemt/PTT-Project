@@ -40,6 +40,7 @@ npm install      # install dependencies
 npm run dev      # dev server with HMR at http://localhost:5173
 npm run build    # typecheck, then build to dist/
 npm run preview  # serve the production build locally
+npm test         # Vitest in watch mode; `npm test -- --run` for one pass
 npm run lint     # ESLint (type-aware); lint:fix to autofix
 npm run format   # Prettier --write; format:check to verify only
 npm run typecheck # TypeScript project references, no emit
