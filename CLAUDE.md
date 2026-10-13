@@ -8,17 +8,17 @@ Real patterns from the designer are NOT ready yet. Everything must work with pla
 real data later **without code changes**.
 
 ## Stack (agreed — do not add libraries outside this list without asking)
-- React 18 + Vite + TypeScript (strict)
+- React 19 + Vite + TypeScript (strict)
 - Tailwind CSS
 - Zustand (+ `zundo` for undo/redo) for editor state
-- react-konva / konva for the 2D canvas
+- react-konva / konva for the 2D canvas — **react-konva must be v19+** (v18 targets React 18)
 - react-router-dom for routing
 - react-i18next (Thai default, English toggle)
 - zod for validating catalog JSON
 - Vitest + Testing Library (unit), Playwright (e2e)
 - ESLint + Prettier, Husky + lint-staged + commitlint
 - GitHub Actions CI, Vercel hosting
-- Phase 2 only: @react-three/fiber + drei for 3D preview
+- Phase 2 only: @react-three/fiber + drei for 3D preview — **@react-three/fiber must be v9+** (v8 targets React 18)
 
 ## Golden rule: the catalog is data
 - Products, patterns and leaf dyes live in `public/catalog/*.json` + asset files under `public/catalog/`.
