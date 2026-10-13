@@ -46,6 +46,13 @@ npm run format   # Prettier --write; format:check to verify only
 npm run typecheck # TypeScript project references, no emit
 ```
 
+## Deployment
+
+Vercel, configured by [`vercel.json`](vercel.json): framework `vite`, build
+`npm run build`, output `dist`, and a rewrite that sends every unmatched path
+to `index.html` so client-side routes survive a page reload. Each PR gets a
+preview deployment.
+
 ## Layout
 
 ```
