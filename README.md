@@ -19,10 +19,10 @@ contributors (and for Claude Code): [`CLAUDE.md`](CLAUDE.md).
 
 | Area | Choice |
 | --- | --- |
-| Framework | React 18 + Vite + TypeScript (strict) |
+| Framework | React 19 + Vite + TypeScript (strict) |
 | Styling | Tailwind CSS v4, eco-print theme tokens in `src/index.css` |
 | State | Zustand + `zundo` (undo/redo) |
-| Canvas | react-konva / konva (2D); `@react-three/fiber` in phase 2 |
+| Canvas | react-konva v19+ / konva (2D); `@react-three/fiber` v9+ in phase 2 |
 | Routing | react-router-dom |
 | i18n | react-i18next — Thai default, English toggle |
 | Data | `public/catalog/*.json` validated with zod |
