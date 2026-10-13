@@ -17,17 +17,17 @@ contributors (and for Claude Code): [`CLAUDE.md`](CLAUDE.md).
 
 ## Stack
 
-| Area | Choice |
-| --- | --- |
-| Framework | React 19 + Vite + TypeScript (strict) |
-| Styling | Tailwind CSS v4, eco-print theme tokens in `src/index.css` |
-| State | Zustand + `zundo` (undo/redo) |
-| Canvas | react-konva v19+ / konva (2D); `@react-three/fiber` v9+ in phase 2 |
-| Routing | react-router-dom |
-| i18n | react-i18next — Thai default, English toggle |
-| Data | `public/catalog/*.json` validated with zod |
-| Tests | Vitest + Testing Library, Playwright (e2e) |
-| Tooling | ESLint + Prettier, Husky, GitHub Actions, Vercel |
+| Area      | Choice                                                             |
+| --------- | ------------------------------------------------------------------ |
+| Framework | React 19 + Vite + TypeScript (strict)                              |
+| Styling   | Tailwind CSS v4, eco-print theme tokens in `src/index.css`         |
+| State     | Zustand + `zundo` (undo/redo)                                      |
+| Canvas    | react-konva v19+ / konva (2D); `@react-three/fiber` v9+ in phase 2 |
+| Routing   | react-router-dom                                                   |
+| i18n      | react-i18next — Thai default, English toggle                       |
+| Data      | `public/catalog/*.json` validated with zod                         |
+| Tests     | Vitest + Testing Library, Playwright (e2e)                         |
+| Tooling   | ESLint + Prettier, Husky, GitHub Actions, Vercel                   |
 
 Items beyond the scaffold arrive in later tasks — see the roadmap.
 
@@ -36,13 +36,14 @@ Items beyond the scaffold arrive in later tasks — see the roadmap.
 Node **24+** (see `.nvmrc`; `nvm use` picks it up).
 
 ```bash
-npm install     # install dependencies
-npm run dev     # dev server with HMR at http://localhost:5173
-npm run build   # typecheck, then build to dist/
-npm run preview # serve the production build locally
+npm install      # install dependencies
+npm run dev      # dev server with HMR at http://localhost:5173
+npm run build    # typecheck, then build to dist/
+npm run preview  # serve the production build locally
+npm run lint     # ESLint (type-aware); lint:fix to autofix
+npm run format   # Prettier --write; format:check to verify only
+npm run typecheck # TypeScript project references, no emit
 ```
-
-`npm run typecheck` runs the TypeScript project references on their own.
 
 ## Layout
 

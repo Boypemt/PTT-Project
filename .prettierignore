@@ -1,0 +1,11 @@
+dist
+coverage
+playwright-report
+test-results
+package-lock.json
+
+# Hand-authored reference prose: the rulebook, the task prompts, the brief and
+# the roadmap are read as written and their tables/code blocks must not be
+# rewritten.
+CLAUDE.md
+docs
