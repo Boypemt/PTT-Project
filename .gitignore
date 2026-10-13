@@ -22,3 +22,13 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Test output
+coverage
+playwright-report
+test-results
+
+# Local env
+.env
+.env.*
+!.env.example
