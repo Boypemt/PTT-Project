@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+
+/*
+ * Theme tokens for the Pa Ton Phueng customizer.
+ *
+ * The palette follows the community's eco-print colour vocabulary (see
+ * docs/PROJECT_BRIEF.md): leaf greens, teak purple/pink, marigold gold and
+ * pheka brown on warm off-white paper. The anchor values marked "brief" are
+ * the placeholder hexes from the brief and will be colour-matched against
+ * real fabric samples later — change them here, not in components.
+ */
+@theme {
+  /* Warm off-white paper — page background and surfaces */
+  --color-paper-50: #fdfbf6;
+  --color-paper-100: #faf6ec;
+  --color-paper-200: #f3ecdd;
+  --color-paper-300: #e6dbc6;
+  --color-paper-400: #d2c3a8;
+
+  /* Ink — body text on paper */
+  --color-ink-500: #6b6253;
+  --color-ink-700: #40382d;
+  --color-ink-900: #241f18;
+
+  /* Forest green — community forest, mango leaf dye (brief: 500 #6b8e3d) */
+  --color-forest-50: #f1f5e9;
+  --color-forest-100: #dde8c9;
+  --color-forest-300: #a7bf7e;
+  --color-forest-500: #6b8e3d;
+  --color-forest-600: #567331;
+  --color-forest-700: #405526;
+  --color-forest-900: #24301a;
+
+  /* Teak purple — strongest leaf dye (brief: 700 #4b2a4f, pink #a23b62) */
+  --color-teak-100: #e7dde9;
+  --color-teak-300: #a98fae;
+  --color-teak-500: #6a5a72;
+  --color-teak-700: #4b2a4f;
+  --color-teak-900: #2e1931;
+  --color-teak-pink: #a23b62;
+
+  /* Marigold gold — golden shower yellow through yellow-brown (brief) */
+  --color-marigold-100: #fbf0cf;
+  --color-marigold-300: #f2d479;
+  --color-marigold-500: #e8b923;
+  --color-marigold-600: #c9962b;
+  --color-marigold-700: #a67c2e;
+
+  /* Bark — pheka and jamaica cherry browns (brief) */
+  --color-bark-300: #b99a62;
+  --color-bark-500: #9c7a3c;
+  --color-bark-700: #4a3222;
+
+  /* Semantic aliases used by layout and UI primitives */
+  --color-canvas: var(--color-paper-50);
+  --color-surface: #ffffff;
+  --color-border-soft: var(--color-paper-300);
+  --color-brand: var(--color-forest-600);
+  --color-accent: var(--color-marigold-500);
+
+  /* Thai-capable type */
+  --font-sans:
+    'IBM Plex Sans Thai', 'IBM Plex Sans', ui-sans-serif, system-ui,
+    -apple-system, 'Segoe UI', sans-serif;
+  --font-display: var(--font-sans);
+
+  /* Touch targets — CLAUDE.md requires a 44px minimum */
+  --spacing-touch: 2.75rem;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply min-h-dvh bg-canvas font-sans text-ink-700 antialiased;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-forest-600;
+  }
+}
