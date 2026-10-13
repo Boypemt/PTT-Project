@@ -35,7 +35,8 @@ commitlint on `commit-msg`:
 feat(editor): add pattern scale slider
 ```
 
-Scopes: `app`, `catalog`, `editor`, `ui`, `i18n`, `export`, `ci`, `deps`, `docs`.
+Scopes: `app`, `catalog`, `editor`, `lib`, `ui`, `i18n`, `export`, `ci`, `deps`,
+`docs`.
 
 Keep commits **atomic** — one logical change each, and the project builds and
 passes tests at every commit. Don't mix reformatting with a feature, and don't

@@ -34,7 +34,7 @@ real data later **without code changes**.
   Follow the "Commit plan" in the task prompt as a guide; adjust it if the logical boundaries turn out different.
 - Keep each PR reviewable: aim for ≤ ~400 lines of hand-written code (lockfiles, generated assets and scaffolding don't count).
   If a task grows beyond that, stop and propose splitting it into two PRs.
-- Conventional Commits: `feat(editor): add pattern scale slider`. Scopes: `app, catalog, editor, ui, i18n, export, ci, deps, docs`.
+- Conventional Commits: `feat(editor): add pattern scale slider`. Scopes: `app, catalog, editor, lib, ui, i18n, export, ci, deps, docs`.
 - Before every commit (once the scripts exist): `npm run lint && npm run typecheck && npm test -- --run`.
 - Before pushing, check the branch's PR state with `gh pr view`; never push to a branch whose PR is merged or closed —
   create a new branch from main instead. One branch = one PR.

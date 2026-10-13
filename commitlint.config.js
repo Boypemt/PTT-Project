@@ -12,6 +12,7 @@ export default {
         'app',
         'catalog',
         'editor',
+        'lib',
         'ui',
         'i18n',
         'export',
