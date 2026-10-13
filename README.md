@@ -68,4 +68,6 @@ Each folder has its own README explaining what belongs there.
 One branch per task (`feat/…`, `fix/…`, `chore/…`, `docs/…`, `test/…`), never
 commit to `main`, Conventional Commits, atomic commits that each build and
 pass tests. Only public-domain/CC0 or self-drawn assets, every third-party one
-recorded in `docs/CREDITS.md`. Details in [`CLAUDE.md`](CLAUDE.md).
+recorded in `docs/CREDITS.md`. Short version:
+[`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md); full rules:
+[`CLAUDE.md`](CLAUDE.md).
