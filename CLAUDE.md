@@ -36,6 +36,8 @@ real data later **without code changes**.
   If a task grows beyond that, stop and propose splitting it into two PRs.
 - Conventional Commits: `feat(editor): add pattern scale slider`. Scopes: `app, catalog, editor, ui, i18n, export, ci, deps, docs`.
 - Before every commit (once the scripts exist): `npm run lint && npm run typecheck && npm test -- --run`.
+- Before pushing, check the branch's PR state with `gh pr view`; never push to a branch whose PR is merged or closed —
+  create a new branch from main instead. One branch = one PR.
 - When finished: push the branch and open a PR with `gh pr create` using the PR template. If `gh` is unavailable, push and print the PR title + body for me.
 - Don't merge PRs yourself.
 

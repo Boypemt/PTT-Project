@@ -22,6 +22,10 @@ Never commit to `main`. One task = one branch, named by what it does:
 
 Branch from the latest `main`: `git switch main && git pull && git switch -c feat/pattern-panel`.
 
+Before pushing, check the branch's PR state with `gh pr view`; never push to a
+branch whose PR is merged or closed — create a new branch from main instead.
+One branch = one PR.
+
 ## Commits
 
 [Conventional Commits](https://www.conventionalcommits.org/), checked by
