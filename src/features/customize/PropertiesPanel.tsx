@@ -15,6 +15,44 @@ import { useLocalized } from '@/i18n/useLocalized'
 import { formatPrice } from '@/lib/price'
 import { BaseColorPicker } from './BaseColorPicker'
 
+/**
+ * Puts a stub layer on the selected print area, so the clipping and the layer
+ * renderer can be seen working before the pattern library lands in task 08.
+ *
+ * Dev builds only — `import.meta.env.DEV` is a constant Vite folds away, so
+ * neither the button nor this text reaches a visitor. Untranslated for the
+ * same reason, as on /dev/catalog.
+ */
+function AddTestLayerButton({ product }: { product: Product }) {
+  const addLayer = useDesignStore((state) => state.addLayer)
+  const selected = useDesignStore((state) => state.selectedPrintAreaId)
+  const printAreaId = selected ?? product.printAreas[0]?.id
+
+  if (printAreaId === undefined) return null
+
+  return (
+    <button
+      type="button"
+      onClick={() => {
+        addLayer({
+          type: 'tile',
+          patternId: 'dev-stub',
+          printAreaId,
+          scale: 1,
+          rotation: 0,
+          offsetX: 0,
+          offsetY: 0,
+          colors: ['#a23b62'],
+          opacity: 0.5,
+        })
+      }}
+      className="min-h-touch rounded-xl border border-dashed border-border-soft px-3 text-sm text-ink-500 hover:bg-paper-100"
+    >
+      Add test layer — {printAreaId} (dev)
+    </button>
+  )
+}
+
 export function PropertiesPanel({ product }: { product: Product }) {
   const { t } = useTranslation()
   const localized = useLocalized()
@@ -37,6 +75,8 @@ export function PropertiesPanel({ product }: { product: Product }) {
       />
 
       <PlaceholderNote>{t('customize.propertiesPlaceholder')}</PlaceholderNote>
+
+      {import.meta.env.DEV ? <AddTestLayerButton product={product} /> : null}
     </>
   )
 }

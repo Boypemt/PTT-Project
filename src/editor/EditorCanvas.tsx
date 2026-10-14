@@ -20,6 +20,9 @@ import Konva from 'konva'
 import { Group, Image as KonvaImage, Layer, Rect, Stage } from 'react-konva'
 import type { Product } from '@/catalog'
 import { fitContain, pixelRatio, type Fit } from '@/lib/geometry'
+import { clipFunc } from './clip'
+import { LayerRenderer } from './LayerRenderer'
+import { buildScene } from './scene'
 import { useDesignFor } from './useDesignStore'
 import { useImage } from './useImage'
 import { useMeasuredSize } from './useMeasuredSize'
@@ -100,9 +103,10 @@ function Shading({ src, fit }: { src: string; fit: Fit }) {
 
 export function EditorCanvas({ product }: { product: Product }) {
   const [containerRef, size] = useMeasuredSize<HTMLDivElement>()
-  const { baseColor } = useDesignFor(product)
+  const design = useDesignFor(product)
   const { mockup } = product
   const fit = fitContain(mockup, size)
+  const scene = buildScene(product, design)
 
   return (
     <div ref={containerRef} className="min-h-0 min-w-0 flex-1">
@@ -122,7 +126,29 @@ export function EditorCanvas({ product }: { product: Product }) {
               fill={PAPER}
             />
 
-            <TintedBase src={mockup.base} color={baseColor} fit={fit} />
+            <TintedBase src={mockup.base} color={design.baseColor} fit={fit} />
+
+            {/* Inside this group the coordinates are the catalog's own, so a
+                print area's clip and a layer's position are written once in
+                mockup space and never converted. */}
+            <Group
+              x={fit.offsetX}
+              y={fit.offsetY}
+              scaleX={fit.scale}
+              scaleY={fit.scale}
+            >
+              {scene.areas.map(({ area, layers }) => (
+                <Group key={area.id} clipFunc={clipFunc(area.clip)}>
+                  {layers.map((layer) => (
+                    <LayerRenderer
+                      key={layer.id}
+                      layer={layer}
+                      mockup={mockup}
+                    />
+                  ))}
+                </Group>
+              ))}
+            </Group>
 
             {mockup.overlay === undefined ? null : (
               <Shading src={mockup.overlay} fit={fit} />
