@@ -35,7 +35,7 @@
       "kind": "tile",
       "src": "/catalog/patterns/houndstooth.svg",
       "recolorable": true,
-      "defaultColors": ["#4B2A4F", "#6A5A72"],
+      "defaultColors": ["#4B2A4F", "#5A3458"],
       "tags": ["geometric", "houndstooth", "placeholder"],
       "source": {
         "type": "placeholder",
