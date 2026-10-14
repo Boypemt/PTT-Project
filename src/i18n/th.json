@@ -53,9 +53,17 @@
     "patterns": "ลาย",
     "properties": "ปรับแต่ง",
     "panelSwitcher": "แผงเครื่องมือ",
-    "patternsPlaceholder": "คลังลายจะมาในขั้นตอนถัดไป",
     "propertiesPlaceholder": "การตั้งค่าลายจะแสดงที่นี่เมื่อวางลายบนผ้าแล้ว",
     "printArea": "พื้นที่วางลาย",
+    "searchPatterns": "ค้นหาลาย",
+    "kindFilter": "ชนิดของลาย",
+    "kinds": {
+      "tile": "ลายต่อเนื่อง",
+      "motif": "ลายใบไม้"
+    },
+    "comingSoon": "เร็ว ๆ นี้",
+    "noPatterns": "ไม่พบลายที่ตรงกับคำค้นหา",
+    "noPrintArea": "ผลิตภัณฑ์นี้ยังไม่มีพื้นที่สำหรับวางลาย",
     "baseColor": "สีผ้าพื้น",
     "baseColorOption": "สีผ้าพื้น {{color}}",
     "showPrintAreas": "แสดงพื้นที่วางลาย",
