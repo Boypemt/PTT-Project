@@ -8,7 +8,7 @@
  * motifs only (the handkerchief's corner, the plate's centre), one tile-only
  * (the shirt's sleeves).
  */
-import { screen, within } from '@testing-library/react'
+import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import type { Pattern, PrintArea } from '@/catalog'
@@ -151,7 +151,11 @@ describe('the print area selector', () => {
 
     // The store selects the product's first area; the library cannot offer
     // that one, so the chips — and the next pattern — point at the cloth.
-    expect(editorStore.getState().selectedPrintAreaId).toBe(corner.id)
+    // Waited for rather than read straight away: the product reaches the store
+    // from an effect, which runs after the paint that put the panel on screen.
+    await waitFor(() => {
+      expect(editorStore.getState().selectedPrintAreaId).toBe(corner.id)
+    })
     expect(chip(cloth.name.th)).toHaveAttribute('aria-pressed', 'true')
   })
 })

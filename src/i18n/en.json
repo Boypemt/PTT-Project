@@ -21,10 +21,47 @@
     "prototype": "Prototype by Enactus"
   },
   "home": {
-    "title": "Design leaf prints on community products",
-    "intro": "Pick a product, add patterns printed from Pa Ton Phueng leaves, and see the result straight away.",
-    "cta": "Browse products",
-    "placeholder": "Placeholder page — the community story arrives in a later step."
+    "title": "Leaves that prevent forest fires become income",
+    "intro": "At Pa Ton Phueng Community Enterprise in Mae Pong, Doi Saket, fallen dipterocarp leaves are gathered out of the community forest and made into plates, which takes wildfire fuel away with them. The cloth is printed by hand with fresh leaves and flowers — no chemicals, and no two pieces alike.",
+    "cta": "Design your own",
+    "preview": "A sample print on the {{product}}",
+    "how": {
+      "title": "Design it in three steps",
+      "steps": {
+        "product": {
+          "title": "Choose a product",
+          "body": "A shawl, a handkerchief, a shirt, a leaf plate or a small gift."
+        },
+        "pattern": {
+          "title": "Choose a pattern",
+          "body": "Pick patterns from the community's library, layer them, move and turn them."
+        },
+        "colors": {
+          "title": "Adjust the leaf colours",
+          "body": "Recolour the print with dyes the leaves themselves give — teak, marigold, oroxylum."
+        }
+      }
+    },
+    "facts": {
+      "title": "The community behind every piece",
+      "households": {
+        "value": "42",
+        "label": "households in the Pa Ton Phueng community enterprise"
+      },
+      "forest": {
+        "value": "983 rai",
+        "label": "of community forest they look after — gathering fallen leaves takes away wildfire fuel"
+      },
+      "fund": {
+        "value": "5%",
+        "label": "of revenue planned to go to the community forest fund"
+      }
+    },
+    "leaves": {
+      "title": "Colours the leaves give",
+      "intro": "Every colour comes from leaves and flowers growing nearby, with no chemical dyes. The values shown are approximations until they are matched against the group's own cloth."
+    },
+    "placeholder": "Prototype — the patterns are placeholders until the community's designer delivers the real ones."
   },
   "products": {
     "title": "Choose a product",

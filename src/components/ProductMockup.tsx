@@ -9,6 +9,10 @@
  *
  * `children` draw inside the frame, above the mockup — the internal catalog
  * page puts its print-area outlines there.
+ *
+ * The frame fills itself with paper so a pale cloth still reads as cloth on a
+ * white card. `transparent` turns that off for the one caller that supplies its
+ * own backdrop — the landing hero stands the product on a piece of leaf print.
  */
 import type { ReactNode } from 'react'
 import type { ProductMockup as Mockup } from '@/catalog'
@@ -17,16 +21,19 @@ export function ProductMockup({
   mockup,
   baseColor,
   className = '',
+  transparent = false,
   children,
 }: {
   mockup: Mockup
   baseColor: string
   className?: string
+  /** Leaves the frame unpainted, so whatever is behind it shows through. */
+  transparent?: boolean
   children?: ReactNode
 }) {
   return (
     <div
-      className={`relative overflow-hidden bg-paper-100 ${className}`}
+      className={`relative overflow-hidden ${transparent ? '' : 'bg-paper-100'} ${className}`}
       style={{ aspectRatio: `${mockup.width} / ${mockup.height}` }}
     >
       <div

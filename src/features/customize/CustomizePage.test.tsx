@@ -11,7 +11,7 @@
  * the picture is covered by the store assertion below plus the canvas's own
  * pure helpers, and by Playwright from task 14.
  */
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { editorStore } from '@/editor/store'
@@ -109,9 +109,13 @@ describe('the editor page', () => {
     openEditor()
     await findSwatch(PAPER)
 
-    expect(editorStore.getState().selectedPrintAreaId).toBe(
-      product.printAreas[0].id,
-    )
+    // The product reaches the store from an effect, which runs after the paint
+    // the swatch was found on — so this waits rather than reading at once.
+    await waitFor(() => {
+      expect(editorStore.getState().selectedPrintAreaId).toBe(
+        product.printAreas[0].id,
+      )
+    })
   })
 
   it('asks the canvas for print-area outlines, off to begin with', async () => {
