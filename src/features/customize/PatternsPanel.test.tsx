@@ -265,6 +265,7 @@ describe('the pattern library', () => {
     layer.colors.push('#000000')
 
     await user.click(addLayerButton())
+    await user.click(thumb(seigaiha))
 
     expect(editorStore.getState().design.layers[1].colors).toEqual(
       seigaiha.defaultColors,
@@ -337,14 +338,58 @@ describe('tapping a pattern with a layer selected', () => {
     await findPanel()
 
     await user.click(thumb(seigaiha))
-    await user.click(
-      screen.getByRole('button', { name: th.customize.layers.add }),
-    )
+    await user.click(addLayerButton())
     await user.click(thumb(gingham))
 
     expect(
       editorStore.getState().design.layers.map((layer) => layer.patternId),
     ).toEqual([seigaiha.id, gingham.id])
+  })
+
+  it('adds nothing until that next tap, and says so meanwhile', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    const panel = await findPanel()
+
+    await user.click(thumb(seigaiha))
+    expect(panel).not.toHaveTextContent(th.customize.layers.tapAdds)
+
+    await user.click(addLayerButton())
+
+    // The button has done its work by letting the selection go: no second
+    // layer yet, and nothing is marked as the one a tap would change.
+    expect(editorStore.getState().design.layers).toHaveLength(1)
+    expect(editorStore.getState().selectedLayerId).toBeNull()
+    expect(panel).toHaveTextContent(th.customize.layers.tapAdds)
+    expect(thumb(seigaiha)).toHaveAttribute('aria-pressed', 'false')
+    expect(
+      screen.queryByRole('button', { name: th.customize.layers.add }),
+    ).toBeNull()
+
+    await user.click(thumb(gingham))
+
+    expect(editorStore.getState().design.layers).toHaveLength(2)
+    expect(panel).not.toHaveTextContent(th.customize.layers.tapAdds)
+  })
+
+  it('says the next tap adds once the selected layer is deleted', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    const panel = await findPanel()
+
+    await user.click(thumb(seigaiha))
+    await user.click(addLayerButton())
+    await user.click(thumb(gingham))
+
+    // Deleted from the layer list, the way a visitor would.
+    await user.click(
+      screen.getByRole('button', {
+        name: th.customize.layers.delete.replace('{{name}}', gingham.name.th),
+      }),
+    )
+
+    expect(editorStore.getState().design.layers).toHaveLength(1)
+    expect(panel).toHaveTextContent(th.customize.layers.tapAdds)
   })
 
   it('offers nothing to add before a layer is there to add beside', async () => {

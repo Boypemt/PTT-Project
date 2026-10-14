@@ -41,6 +41,7 @@ export function PatternsPanel({ product }: { product: Product }) {
   )
   const addLayer = useDesignStore((state) => state.addLayer)
   const updateLayer = useDesignStore((state) => state.updateLayer)
+  const selectLayer = useDesignStore((state) => state.selectLayer)
   const design = useDesignStore((state) => state.design)
   const selectedLayerId = useDesignStore((state) => state.selectedLayerId)
 
@@ -56,7 +57,14 @@ export function PatternsPanel({ product }: { product: Product }) {
     area === undefined
       ? undefined
       : replaceableTile(design, selectedLayerId, area.id)
-  const selectedPattern = all.find((entry) => entry.id === selected?.patternId)
+
+  /**
+   * Whether the next tap starts a layer rather than changing one. True once
+   * "add layer" has let the selection go, and equally true after the selected
+   * layer is deleted or one on another print area is picked — in each of
+   * those the next tap really does add, so the same line says so.
+   */
+  const addsNext = selected === undefined && design.layers.length > 0
 
   const add = (pattern: Pattern, printAreaId: string) => {
     addLayer({
@@ -120,10 +128,17 @@ export function PatternsPanel({ product }: { product: Product }) {
             />
           </div>
 
-          {/* Only where a tap would change something rather than add it: with
-              nothing selected a tap already starts a layer, and a button
-              saying so twice is in the way. */}
-          {selected === undefined ? null : (
+          {/* The button only where a tap would change something rather than
+              add it; otherwise the line saying the next tap starts a layer.
+              Never both, because they are the two halves of one answer to
+              "what happens if I tap a pattern now". */}
+          {selected === undefined ? (
+            addsNext ? (
+              <p className="text-xs text-forest-700">
+                {t('customize.layers.tapAdds')}
+              </p>
+            ) : null
+          ) : (
             <div className="flex flex-col gap-1">
               <p className="hidden text-xs text-ink-500 md:block">
                 {t('customize.layers.tapReplaces')}
@@ -131,13 +146,11 @@ export function PatternsPanel({ product }: { product: Product }) {
               <button
                 type="button"
                 onClick={() => {
-                  // Starts as what is already there, so the next tap on a
-                  // pattern has a layer of its own to change. Looked up in the
-                  // whole catalog, not the list on screen, which a search may
-                  // have narrowed past it.
-                  if (selectedPattern !== undefined) {
-                    add(selectedPattern, area.id)
-                  }
+                  // Nothing is added here. Letting the selection go is what
+                  // makes the next tap add rather than change, and the line
+                  // above takes this button's place until it does — a layer
+                  // added now would be an invisible copy of the one it sits on.
+                  selectLayer(null)
                 }}
                 className="min-h-touch self-start rounded-xl border border-dashed border-forest-600 px-3 text-sm font-medium text-forest-700 transition-colors hover:bg-forest-50"
               >
