@@ -48,6 +48,7 @@
   },
   "customize": {
     "title": "Design your print",
+    "loading": "Opening the design tools…",
     "back": "All products",
     "patterns": "Patterns",
     "properties": "Properties",
