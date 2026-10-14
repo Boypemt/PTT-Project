@@ -22,7 +22,7 @@ function ProductEditor({ product }: { product: Product }) {
   const { baseColor } = useDesignFor(product)
 
   return (
-    <section className="flex flex-col">
+    <section className="flex flex-1 flex-col">
       <header className="flex flex-wrap items-baseline gap-x-4 gap-y-1 px-4 py-3">
         <Link
           to="/products"
