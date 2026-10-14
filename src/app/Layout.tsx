@@ -4,6 +4,7 @@
  */
 import { useTranslation } from 'react-i18next'
 import { Outlet } from 'react-router-dom'
+import { useSyncLanguage } from '@/i18n/useSyncLanguage'
 import { Footer } from './Footer'
 import { Header } from './Header'
 
@@ -11,6 +12,8 @@ const MAIN_ID = 'main-content'
 
 export function Layout() {
   const { t } = useTranslation()
+
+  useSyncLanguage()
 
   return (
     <div className="flex min-h-dvh flex-col">

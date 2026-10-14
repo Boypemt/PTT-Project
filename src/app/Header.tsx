@@ -7,6 +7,7 @@
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router-dom'
+import { LanguageToggle } from '@/components/LanguageToggle'
 
 const NAV_ID = 'primary-nav'
 
@@ -79,20 +80,23 @@ export function Header() {
           {t('brand.name')}
         </Link>
 
-        <button
-          type="button"
-          aria-expanded={menuOpen}
-          aria-controls={NAV_ID}
-          onClick={() => {
-            setMenuOpen((open) => !open)
-          }}
-          className="order-2 flex size-touch items-center justify-center rounded-lg text-ink-700 hover:bg-paper-100 md:order-3 md:hidden"
-        >
-          <MenuIcon open={menuOpen} />
-          <span className="sr-only">
-            {menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
-          </span>
-        </button>
+        <div className="order-2 flex items-center gap-1 md:order-3">
+          <LanguageToggle />
+          <button
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls={NAV_ID}
+            onClick={() => {
+              setMenuOpen((open) => !open)
+            }}
+            className="flex size-touch items-center justify-center rounded-lg text-ink-700 hover:bg-paper-100 md:hidden"
+          >
+            <MenuIcon open={menuOpen} />
+            <span className="sr-only">
+              {menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
+            </span>
+          </button>
+        </div>
 
         <nav
           id={NAV_ID}
