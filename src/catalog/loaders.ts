@@ -3,7 +3,9 @@
  * Nothing else in the app reads /catalog/*.json directly.
  */
 import type { z } from 'zod'
+import { validateCatalogRefs } from './crossRefs'
 import { CatalogError } from './errors'
+import { CATALOG_FILES } from './files'
 import {
   leafDyeSchema,
   patternSchema,
@@ -12,11 +14,7 @@ import {
 } from './schemas'
 import type { Catalog, LeafDye, Pattern, Product } from './types'
 
-export const CATALOG_FILES = {
-  leafDyes: 'leaf-dyes.json',
-  patterns: 'patterns.json',
-  products: 'products.json',
-} as const
+export { CATALOG_FILES } from './files'
 
 export type CatalogLoadOptions = {
   /** Injectable for tests; defaults to the global `fetch`. */
@@ -169,7 +167,11 @@ export function loadProducts(
   return loadCatalogFile(CATALOG_FILES.products, productSchema, options)
 }
 
-/** Loads all three files in parallel and returns the validated catalog. */
+/**
+ * Loads all three files in parallel, then checks them against each other.
+ * This is the entry point the app uses; the single-file loaders exist for
+ * tests and for tooling that only needs one of them.
+ */
 export async function loadCatalog(
   options: CatalogLoadOptions = {},
 ): Promise<Catalog> {
@@ -179,5 +181,7 @@ export async function loadCatalog(
     loadProducts(options),
   ])
 
-  return { leafDyes, patterns, products }
+  const catalog: Catalog = { leafDyes, patterns, products }
+  validateCatalogRefs(catalog)
+  return catalog
 }
