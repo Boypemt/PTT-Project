@@ -3,10 +3,14 @@
 ## Client
 **วิสาหกิจชุมชนป่าต้นผึ้ง** (Pa Ton Phueng Community Enterprise), Moo 7, Mae Pong, Doi Saket, Chiang Mai.
 42 households. Works with Enactus. Two product lines:
-1. **Eco-print fabric (ผ้าพิมพ์ลาย)** — real leaves are laid on mordanted cotton/silk, rolled and steamed for 2 h.
-   No chemicals; every piece is handmade and unique.
-2. **Leaf plates from ใบตองตึง** (dipterocarp leaves) — collecting fallen leaves removes wildfire fuel from the
+1. **Eco-print fabric (ผ้าพิมพ์ลาย)** — mostly **fresh** leaves and flowers are laid on mordanted cotton/silk,
+   rolled and steamed for 2 h. No chemicals; every piece is handmade and unique.
+2. **Leaf plates from ใบตองตึง** (dipterocarp leaves) — collecting **fallen** leaves removes wildfire fuel from the
    983-rai community forest. Story: *"leaves that reduce forest fires become income."*
+
+The wildfire story belongs to the **plates**, not to the fabric: copy must not say the printed cloth is made
+from leaves swept off the forest floor. The **5% of revenue to a community forest fund** is a target in the
+Enactus business plan, not current practice — wherever it appears on screen it has to read as a plan.
 
 Today they sell only walk-in and at booths. They want **online sales**, **unique designs nobody else has**,
 and to reach hotels, foreign tourists, OTOP and export.
