@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>Cotton shawl — shading and folds (multiply)</title>
+  <defs>
+    <clipPath id="cloth">
+      <path d="M180 250C360 214 640 214 820 250C836 254 846 263 846 275V725C846 737 836 746 820 750C640 786 360 786 180 750C164 746 154 737 154 725V275C154 263 164 254 180 250Z" />
+    </clipPath>
+    <linearGradient id="fold" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#000" stop-opacity="0" />
+      <stop offset="0.5" stop-color="#000" stop-opacity="0.16" />
+      <stop offset="1" stop-color="#000" stop-opacity="0" />
+    </linearGradient>
+    <linearGradient id="edge" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0.14" />
+      <stop offset="0.18" stop-color="#000" stop-opacity="0" />
+      <stop offset="0.82" stop-color="#000" stop-opacity="0" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.16" />
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#cloth)">
+    <rect x="150" y="200" width="700" height="600" fill="url(#edge)" />
+    <rect x="196" y="200" width="104" height="600" fill="url(#fold)" />
+    <rect x="330" y="200" width="88" height="600" fill="url(#fold)" opacity="0.8" />
+    <rect x="452" y="200" width="112" height="600" fill="url(#fold)" opacity="0.65" />
+    <rect x="596" y="200" width="92" height="600" fill="url(#fold)" opacity="0.85" />
+    <rect x="712" y="200" width="104" height="600" fill="url(#fold)" opacity="0.7" />
+    <path d="M154 300C320 268 680 268 846 300" fill="none" stroke="#000" stroke-opacity="0.07" stroke-width="22" />
+    <path d="M154 700C320 732 680 732 846 700" fill="none" stroke="#000" stroke-opacity="0.07" stroke-width="22" />
+  </g>
+  <path d="M180 250C360 214 640 214 820 250C836 254 846 263 846 275V725C846 737 836 746 820 750C640 786 360 786 180 750C164 746 154 737 154 725V275C154 263 164 254 180 250Z" fill="none" stroke="#000" stroke-opacity="0.2" stroke-width="3" />
+  <path d="M174 276C356 242 644 242 826 276V724C644 758 356 758 174 724Z" fill="none" stroke="#000" stroke-opacity="0.16" stroke-width="2" stroke-dasharray="10 9" />
+</svg>
