@@ -131,6 +131,9 @@ export const productSchema = z.strictObject({
   }),
   printAreas: z.array(printAreaSchema).min(1),
   baseColors: z.array(hexColorSchema).min(1),
+  // Optional in the file, always an array once parsed, so a product the
+  // designer adds without tags still reads as "no tags" everywhere.
+  tags: z.array(z.string().min(1)).default([]),
   story: localizedSchema.optional(),
   source: assetSourceSchema.optional(),
 })

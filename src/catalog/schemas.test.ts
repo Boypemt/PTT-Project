@@ -101,6 +101,22 @@ describe('productSchema', () => {
     expect(result.success).toBe(false)
     expect(result.error?.issues[0]?.path).toEqual(['printAreas'])
   })
+
+  it('defaults tags to an empty array when the file omits them', () => {
+    const untagged: Record<string, unknown> = { ...makeProduct() }
+    delete untagged.tags
+    const result = productSchema.safeParse(untagged)
+
+    expect(result.data?.tags).toEqual([])
+  })
+
+  it('keeps the tags a product carries', () => {
+    const result = productSchema.safeParse(
+      makeProduct({ tags: ['bestseller'] }),
+    )
+
+    expect(result.data?.tags).toEqual(['bestseller'])
+  })
 })
 
 describe('priceSchema', () => {

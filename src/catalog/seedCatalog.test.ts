@@ -92,6 +92,16 @@ describe('the seeded catalog in public/catalog', () => {
     ).toEqual([null, null])
   })
 
+  it('tags the two best sellers from the field report', () => {
+    const { products } = loadSeedCatalog()
+
+    expect(
+      products
+        .filter((product) => product.tags.includes('bestseller'))
+        .map((product) => product.id),
+    ).toEqual(['shawl-cotton', 'handkerchief'])
+  })
+
   it('references only asset files that exist under public/', () => {
     const paths = [...new Set(collectAssetPaths(loadSeedCatalog()))].sort()
 

@@ -40,6 +40,7 @@
         }
       ],
       "baseColors": ["#F3EADA", "#FFFFFF", "#E4D9C3", "#D8C9AE"],
+      "tags": ["bestseller"],
       "story": {
         "th": "ผ้าคลุมไหล่ฝ้ายพิมพ์ลายจากใบไม้จริง วางใบไม้บนผ้าที่ย้อมสารช่วยติดสี ม้วนแล้วนึ่งสองชั่วโมง ไม่ใช้สารเคมี และเป็นสินค้าขายดีที่สุดของกลุ่ม",
         "en": "The group's best seller: a cotton shawl printed from real leaves laid on mordanted cloth, rolled and steamed for two hours with no chemicals."
@@ -138,6 +139,7 @@
         }
       ],
       "baseColors": ["#F3EADA", "#FFFFFF", "#E4D9C3"],
+      "tags": ["bestseller"],
       "story": {
         "th": "ผ้าเช็ดหน้าฝ้ายพิมพ์ลายจากใบไม้จริง วางใบไม้บนผ้าที่ย้อมสารช่วยติดสี ม้วนแล้วนึ่ง 2 ชั่วโมง ไม่ใช้สารเคมี ทุกผืนทำด้วยมือและไม่เหมือนกัน",
         "en": "A cotton handkerchief printed with real leaves: the leaves are laid on mordanted cotton, rolled and steamed for two hours. No chemicals, and every piece is handmade and one of a kind."
