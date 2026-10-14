@@ -78,15 +78,17 @@ export function EditorWorkspace({
   }
 
   return (
-    <div className="flex flex-col gap-0 md:flex-row md:items-start md:gap-4 md:px-4 md:pb-6">
-      <div className="order-1 flex min-h-[55vh] items-center justify-center bg-paper-100 p-4 md:order-2 md:min-h-[70vh] md:flex-1 md:rounded-2xl">
+    <div className="flex flex-1 flex-col gap-0 md:flex-row md:items-start md:gap-4 md:px-4 md:pb-6">
+      {/* `mb-auto` keeps the sheet on the bottom edge when the canvas does
+          not fill the screen. */}
+      <div className="order-1 flex min-h-[55vh] items-center justify-center bg-paper-100 p-4 max-md:mb-auto md:order-2 md:min-h-[70vh] md:flex-1 md:rounded-2xl">
         {children}
       </div>
 
       <div
         role="group"
         aria-label={t('customize.panelSwitcher')}
-        className="order-2 flex gap-1 rounded-t-2xl border-t border-border-soft bg-surface px-2 pt-2 md:hidden"
+        className="order-2 flex gap-1 rounded-t-2xl border-t border-border-soft bg-surface px-2 pt-2 shadow-[0_-10px_24px_-12px_rgba(36,31,24,0.45)] md:hidden"
       >
         {PANELS.map((panel) => (
           <button

@@ -54,6 +54,16 @@ describe('routing', () => {
     ).toBeInTheDocument()
   })
 
+  it('keeps the footer off the phone-width customizer, which needs the screen', async () => {
+    renderApp({ route: '/customize/handkerchief' })
+    await screen.findByRole('heading', {
+      level: 1,
+      name: makeProduct().name.th,
+    })
+
+    expect(screen.getByRole('contentinfo')).toHaveClass('hidden', 'md:block')
+  })
+
   it('keeps the header and footer on every page', () => {
     renderApp({ route: '/nope' })
 
