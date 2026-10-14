@@ -1,8 +1,24 @@
+import { CatalogProvider } from '@/catalog'
+import { DevCatalogPage } from '@/features/dev-catalog/DevCatalogPage'
+
+/** Stands in for a route until react-router arrives with the app shell task. */
+function isDevCatalogPath(): boolean {
+  return import.meta.env.DEV && window.location.pathname === '/dev/catalog'
+}
+
 /**
  * Placeholder shell until the app routes land (see docs/ROADMAP.md).
  * Strings are hardcoded here on purpose; i18n arrives with the app shell task.
  */
 function App() {
+  if (isDevCatalogPath()) {
+    return (
+      <CatalogProvider>
+        <DevCatalogPage />
+      </CatalogProvider>
+    )
+  }
+
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-6 px-6 py-16 text-center">
       <p className="font-medium tracking-[0.2em] text-forest-600 uppercase">
