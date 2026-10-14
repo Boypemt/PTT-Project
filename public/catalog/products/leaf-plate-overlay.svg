@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>Printed leaf plate — rim, leaf fibre and shading (multiply)</title>
+  <defs>
+    <clipPath id="plate">
+      <path d="M860 500A360 360 0 0 1 746 746A360 360 0 0 1 500 860A360 360 0 0 1 254 746A360 360 0 0 1 140 500A360 360 0 0 1 254 254A360 360 0 0 1 500 140A360 360 0 0 1 746 254A360 360 0 0 1 860 500Z" />
+    </clipPath>
+    <radialGradient id="well" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000" stop-opacity="0.04" />
+      <stop offset="0.62" stop-color="#000" stop-opacity="0.05" />
+      <stop offset="0.78" stop-color="#000" stop-opacity="0.14" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.2" />
+    </radialGradient>
+  </defs>
+  <g clip-path="url(#plate)">
+    <rect x="130" y="130" width="740" height="740" fill="url(#well)" />
+    <g stroke="#000" stroke-opacity="0.1" stroke-width="3" fill="none">
+      <path d="M500 500 160 420M500 500 180 560M500 500 240 300M500 500 380 170M500 500 540 150M500 500 700 210M500 500 820 360M500 500 840 540M500 500 760 700M500 500 600 830M500 500 420 840M500 500 260 720" />
+    </g>
+    <g stroke="#000" stroke-opacity="0.07" stroke-width="7" fill="none" stroke-linecap="round">
+      <path d="M300 320C380 400 420 520 400 700" />
+      <path d="M700 330C640 430 620 560 660 700" />
+      <path d="M470 160C440 320 460 520 520 840" />
+    </g>
+  </g>
+  <path d="M860 500A360 360 0 0 1 746 746A360 360 0 0 1 500 860A360 360 0 0 1 254 746A360 360 0 0 1 140 500A360 360 0 0 1 254 254A360 360 0 0 1 500 140A360 360 0 0 1 746 254A360 360 0 0 1 860 500Z" fill="none" stroke="#000" stroke-opacity="0.22" stroke-width="3" />
+  <circle cx="500" cy="500" r="300" fill="none" stroke="#000" stroke-opacity="0.16" stroke-width="3" />
+  <circle cx="500" cy="500" r="318" fill="none" stroke="#000" stroke-opacity="0.1" stroke-width="2" stroke-dasharray="8 10" />
+</svg>

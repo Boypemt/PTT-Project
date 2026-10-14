@@ -2,6 +2,104 @@
   "catalogVersion": 1,
   "items": [
     {
+      "id": "shawl-cotton",
+      "name": { "th": "ผ้าคลุมไหล่", "en": "Cotton shawl" },
+      "line": "fabric",
+      "price": { "min": 259, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/shawl-cotton-base.svg",
+        "overlay": "/catalog/products/shawl-cotton-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "cloth",
+          "name": { "th": "ทั้งผืน", "en": "Whole cloth" },
+          "clip": {
+            "type": "rect",
+            "x": 170,
+            "y": 268,
+            "width": 660,
+            "height": 464
+          },
+          "allowedKinds": ["tile", "motif"]
+        },
+        {
+          "id": "end-band",
+          "name": { "th": "แถบริมผ้า", "en": "End band" },
+          "clip": {
+            "type": "rect",
+            "x": 170,
+            "y": 268,
+            "width": 180,
+            "height": 464
+          },
+          "allowedKinds": ["tile", "motif"]
+        }
+      ],
+      "baseColors": ["#F3EADA", "#FFFFFF", "#E4D9C3", "#D8C9AE"],
+      "story": {
+        "th": "ผ้าคลุมไหล่ฝ้ายพิมพ์ลายจากใบไม้จริง วางใบไม้บนผ้าที่ย้อมสารช่วยติดสี ม้วนแล้วนึ่งสองชั่วโมง ไม่ใช้สารเคมี และเป็นสินค้าขายดีที่สุดของกลุ่ม",
+        "en": "The group's best seller: a cotton shawl printed from real leaves laid on mordanted cloth, rolled and steamed for two hours with no chemicals."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "shawl-silk",
+      "name": { "th": "ผ้าคลุมไหล่ไหม", "en": "Silk shawl" },
+      "line": "fabric",
+      "price": { "min": 1490, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/shawl-silk-base.svg",
+        "overlay": "/catalog/products/shawl-silk-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "cloth",
+          "name": { "th": "ทั้งผืน", "en": "Whole cloth" },
+          "clip": {
+            "type": "rect",
+            "x": 170,
+            "y": 268,
+            "width": 660,
+            "height": 464
+          },
+          "allowedKinds": ["tile", "motif"]
+        },
+        {
+          "id": "end-band",
+          "name": { "th": "แถบริมผ้า", "en": "End band" },
+          "clip": {
+            "type": "rect",
+            "x": 170,
+            "y": 268,
+            "width": 180,
+            "height": 464
+          },
+          "allowedKinds": ["tile", "motif"]
+        }
+      ],
+      "baseColors": ["#F7F1E4", "#FFFFFF", "#EADFC6", "#D9C7A6"],
+      "story": {
+        "th": "ผ้าคลุมไหล่ไหมพิมพ์ลายใบไม้ ไหมรับสีจากใบไม้ได้ลึกและเงางามกว่าผ้าฝ้าย ทุกผืนจึงไม่ซ้ำกัน",
+        "en": "Silk takes the leaf dyes deeper and glossier than cotton, so every shawl comes out one of a kind."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
       "id": "handkerchief",
       "name": { "th": "ผ้าเช็ดหน้า", "en": "Handkerchief" },
       "line": "fabric",
@@ -10,8 +108,8 @@
       "mockup": {
         "base": "/catalog/products/handkerchief-base.svg",
         "overlay": "/catalog/products/handkerchief-overlay.svg",
-        "width": 800,
-        "height": 800
+        "width": 1000,
+        "height": 1000
       },
       "printAreas": [
         {
@@ -19,12 +117,24 @@
           "name": { "th": "ทั้งผืน", "en": "Whole cloth" },
           "clip": {
             "type": "rect",
-            "x": 60,
-            "y": 60,
-            "width": 680,
-            "height": 680
+            "x": 210,
+            "y": 210,
+            "width": 580,
+            "height": 580
           },
           "allowedKinds": ["tile", "motif"]
+        },
+        {
+          "id": "corner",
+          "name": { "th": "มุมผ้า", "en": "Corner" },
+          "clip": {
+            "type": "rect",
+            "x": 556,
+            "y": 556,
+            "width": 234,
+            "height": 234
+          },
+          "allowedKinds": ["motif"]
         }
       ],
       "baseColors": ["#F3EADA", "#FFFFFF", "#E4D9C3"],
@@ -34,7 +144,324 @@
       },
       "source": {
         "type": "placeholder",
-        "credit": "Mockup drawn as SVG for this prototype — to be replaced with real product photography",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "shirt-women",
+      "name": { "th": "เสื้อผู้หญิง", "en": "Women's shirt" },
+      "line": "fabric",
+      "price": { "min": 599, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/shirt-women-base.svg",
+        "overlay": "/catalog/products/shirt-women-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "front",
+          "name": { "th": "ด้านหน้า", "en": "Front panel" },
+          "clip": {
+            "type": "path",
+            "d": "M360 306C424 346 576 346 640 306C652 356 654 406 658 446C662 560 660 676 666 786C556 812 444 812 334 786C340 676 338 560 342 446C346 406 348 356 360 306Z"
+          },
+          "allowedKinds": ["tile", "motif"]
+        },
+        {
+          "id": "sleeves",
+          "name": { "th": "แขนเสื้อ", "en": "Sleeves" },
+          "clip": {
+            "type": "path",
+            "d": "M722 300L784 404C789 414 786 424 777 428L727 452C718 456 709 452 705 443L688 410ZM278 300L216 404C211 414 214 424 223 428L273 452C282 456 291 452 295 443L312 410Z"
+          },
+          "allowedKinds": ["tile"]
+        }
+      ],
+      "baseColors": ["#FFFFFF", "#F3EADA", "#E4D9C3", "#D5DCC8"],
+      "story": {
+        "th": "เสื้อผู้หญิงผ้าฝ้ายพิมพ์ลายใบไม้ พิมพ์ลายและตัดเย็บโดยสมาชิกวิสาหกิจชุมชนป่าต้นผึ้ง",
+        "en": "A cotton blouse, eco-printed and sewn by members of the Pa Ton Phueng community enterprise."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "shirt-men",
+      "name": { "th": "เสื้อผู้ชาย", "en": "Men's shirt" },
+      "line": "fabric",
+      "price": { "min": 699, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/shirt-men-base.svg",
+        "overlay": "/catalog/products/shirt-men-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "front",
+          "name": { "th": "ด้านหน้า", "en": "Front panel" },
+          "clip": {
+            "type": "path",
+            "d": "M356 302C424 344 576 344 644 302C654 356 656 420 658 470C660 600 660 700 664 792C556 818 444 818 336 792C340 700 340 600 342 470C344 420 346 356 356 302Z"
+          },
+          "allowedKinds": ["tile", "motif"]
+        },
+        {
+          "id": "sleeves",
+          "name": { "th": "แขนเสื้อ", "en": "Sleeves" },
+          "clip": {
+            "type": "path",
+            "d": "M744 304L810 412C815 422 812 432 803 436L745 464C736 468 727 464 723 455L702 420ZM256 304L190 412C185 422 188 432 197 436L255 464C264 468 273 464 277 455L298 420Z"
+          },
+          "allowedKinds": ["tile"]
+        }
+      ],
+      "baseColors": ["#FFFFFF", "#F3EADA", "#E4D9C3", "#CBD3C2"],
+      "story": {
+        "th": "เสื้อผู้ชายผ้าฝ้ายพิมพ์ลายใบไม้ ลายของแต่ละตัวเกิดจากใบไม้จริง จึงไม่มีตัวไหนเหมือนกัน",
+        "en": "A cotton shirt printed from real leaves, which means no two shirts are the same."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "wrap-cloth",
+      "name": { "th": "ผ้าห่อของขวัญ", "en": "Gift wrap cloth" },
+      "line": "fabric",
+      "price": { "min": 220, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/wrap-cloth-base.svg",
+        "overlay": "/catalog/products/wrap-cloth-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "cloth",
+          "name": { "th": "ทั้งผืน", "en": "Whole cloth" },
+          "clip": {
+            "type": "path",
+            "d": "M500 150C616 226 774 384 850 500C774 616 616 774 500 850C384 774 226 616 150 500C226 384 384 226 500 150Z"
+          },
+          "allowedKinds": ["tile", "motif"]
+        },
+        {
+          "id": "centre",
+          "name": { "th": "กลางผืน", "en": "Centre" },
+          "clip": {
+            "type": "rect",
+            "x": 400,
+            "y": 400,
+            "width": 200,
+            "height": 200
+          },
+          "allowedKinds": ["motif"]
+        }
+      ],
+      "baseColors": ["#F3EADA", "#E4D9C3", "#D8C9AE", "#CBB89A"],
+      "story": {
+        "th": "ผ้าห่อของขวัญพิมพ์ลายใบไม้ ใช้ห่อของขวัญแทนกระดาษ และใช้ซ้ำได้หลายครั้ง",
+        "en": "A printed cloth for wrapping gifts instead of paper, and reusable many times over."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "leaf-plate",
+      "name": { "th": "จานพิมพ์ลาย", "en": "Printed leaf plate" },
+      "line": "leaf",
+      "price": { "min": 18, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/leaf-plate-base.svg",
+        "overlay": "/catalog/products/leaf-plate-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "face",
+          "name": { "th": "หน้าจาน", "en": "Plate face" },
+          "clip": {
+            "type": "path",
+            "d": "M200 500A300 300 0 1 1 800 500A300 300 0 1 1 200 500Z"
+          },
+          "allowedKinds": ["tile", "motif"]
+        },
+        {
+          "id": "centre",
+          "name": { "th": "กลางจาน", "en": "Plate centre" },
+          "clip": {
+            "type": "path",
+            "d": "M330 500A170 170 0 1 1 670 500A170 170 0 1 1 330 500Z"
+          },
+          "allowedKinds": ["motif"]
+        }
+      ],
+      "baseColors": ["#D9BE92", "#C8A978", "#E3D0B0"],
+      "story": {
+        "th": "จานจากใบตองตึงที่ร่วงในป่าชุมชน 983 ไร่ การเก็บใบไม้ช่วยลดเชื้อไฟป่า ใบไม้ที่ลดไฟป่าจึงกลายเป็นรายได้ ลายพิมพ์อยู่บนชั้นกระดาษเคลือบไขพืชด้านบน",
+        "en": "A plate pressed from tong tung leaves fallen in the 983-rai community forest. Collecting them removes wildfire fuel, so leaves that reduce forest fires become income. The pattern sits on the plant-wax paper top layer."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "fan",
+      "name": { "th": "พัด", "en": "Fan" },
+      "line": "gift",
+      "price": { "min": 250, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/fan-base.svg",
+        "overlay": "/catalog/products/fan-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "face",
+          "name": { "th": "หน้าพัด", "en": "Fan face" },
+          "clip": {
+            "type": "path",
+            "d": "M250 410A250 250 0 1 1 750 410A250 250 0 1 1 250 410Z"
+          },
+          "allowedKinds": ["tile", "motif"]
+        }
+      ],
+      "baseColors": ["#F3EADA", "#E4D9C3", "#D9BE92"],
+      "story": {
+        "th": "พัดที่ทำจากใบไม้ ผ้า หรือทั้งสองอย่าง ของฝากชิ้นเล็กที่เล่าเรื่องป่าชุมชน",
+        "en": "A fan made from leaves, cloth or both — a small gift that carries the community forest's story."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "keychain",
+      "name": { "th": "พวงกุญแจ", "en": "Keychain" },
+      "line": "gift",
+      "price": { "min": 59, "max": 89, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/keychain-base.svg",
+        "overlay": "/catalog/products/keychain-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "face",
+          "name": { "th": "หน้าป้าย", "en": "Tag face" },
+          "clip": {
+            "type": "path",
+            "d": "M350 560A150 150 0 1 1 650 560A150 150 0 1 1 350 560Z"
+          },
+          "allowedKinds": ["tile", "motif"]
+        }
+      ],
+      "baseColors": ["#F3EADA", "#E4D9C3", "#D8C9AE"],
+      "story": {
+        "th": "พวงกุญแจป้ายผ้ากลมพิมพ์ลายใบไม้ แบบใบไม้ 59 บาท แบบผ้า 89 บาท",
+        "en": "A round fabric tag printed with leaves: 59 baht for the leaf version, 89 for the fabric one."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "mug",
+      "name": { "th": "แก้วเซรามิค", "en": "Ceramic mug" },
+      "line": "drinkware",
+      "price": null,
+      "status": "planned",
+      "mockup": {
+        "base": "/catalog/products/mug-base.svg",
+        "overlay": "/catalog/products/mug-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "wrap",
+          "name": { "th": "รอบแก้ว", "en": "Wrap" },
+          "clip": {
+            "type": "rect",
+            "x": 368,
+            "y": 400,
+            "width": 264,
+            "height": 290
+          },
+          "allowedKinds": ["tile", "motif"]
+        }
+      ],
+      "baseColors": ["#FFFFFF", "#F3EADA", "#E6E2DA"],
+      "story": {
+        "th": "แก้วเซรามิคพิมพ์ลายใบไม้ เป็นสินค้าที่ชุมชนอยากทำต่อ ยังไม่เริ่มผลิตและยังไม่มีราคา",
+        "en": "A ceramic mug carrying the leaf prints: a product the community wants to add, not in production and not yet priced."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "tumbler",
+      "name": { "th": "แก้วเก็บความเย็น", "en": "Tumbler" },
+      "line": "drinkware",
+      "price": null,
+      "status": "planned",
+      "mockup": {
+        "base": "/catalog/products/tumbler-base.svg",
+        "overlay": "/catalog/products/tumbler-overlay.svg",
+        "width": 1000,
+        "height": 1000
+      },
+      "printAreas": [
+        {
+          "id": "wrap",
+          "name": { "th": "รอบแก้ว", "en": "Wrap" },
+          "clip": {
+            "type": "rect",
+            "x": 412,
+            "y": 360,
+            "width": 176,
+            "height": 380
+          },
+          "allowedKinds": ["tile", "motif"]
+        }
+      ],
+      "baseColors": ["#FFFFFF", "#E6E2DA", "#CBD3C2"],
+      "story": {
+        "th": "แก้วเก็บความเย็นพิมพ์ลายใบไม้ เป็นสินค้าที่ชุมชนอยากทำต่อ ยังไม่เริ่มผลิตและยังไม่มีราคา",
+        "en": "An insulated tumbler with the leaf prints: a community wish, not in production and not yet priced."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder — drawn mockup, to be replaced with real product photography",
         "license": "CC0-1.0"
       }
     }

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>Fan — binding, ribs and handle shading (multiply)</title>
+  <defs>
+    <clipPath id="face">
+      <circle cx="500" cy="410" r="300" />
+    </clipPath>
+    <radialGradient id="dome" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#000" stop-opacity="0.03" />
+      <stop offset="0.74" stop-color="#000" stop-opacity="0.05" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.19" />
+    </radialGradient>
+    <linearGradient id="grip" x1="0" x2="1" y1="0" y2="0">
+      <stop offset="0" stop-color="#000" stop-opacity="0.2" />
+      <stop offset="0.4" stop-color="#000" stop-opacity="0.04" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.22" />
+    </linearGradient>
+  </defs>
+  <g clip-path="url(#face)">
+    <rect x="200" y="110" width="600" height="600" fill="url(#dome)" />
+    <g stroke="#000" stroke-opacity="0.09" stroke-width="4" fill="none">
+      <path d="M500 410 500 118M500 410 672 140M500 410 790 290M500 410 790 530M500 410 672 680M500 410 500 702M500 410 328 680M500 410 210 530M500 410 210 290M500 410 328 140" />
+    </g>
+    <circle cx="500" cy="410" r="266" fill="none" stroke="#000" stroke-opacity="0.12" stroke-width="2" stroke-dasharray="9 9" />
+  </g>
+  <rect x="468" y="640" width="64" height="300" rx="30" fill="url(#grip)" stroke="#000" stroke-opacity="0.22" stroke-width="3" />
+  <path d="M468 700H532" stroke="#000" stroke-opacity="0.16" stroke-width="3" />
+  <circle cx="500" cy="410" r="300" fill="none" stroke="#000" stroke-opacity="0.22" stroke-width="3" />
+  <circle cx="500" cy="410" r="284" fill="none" stroke="#000" stroke-opacity="0.14" stroke-width="10" />
+  <circle cx="500" cy="410" r="20" fill="#000" fill-opacity="0.12" stroke="#000" stroke-opacity="0.2" stroke-width="3" />
+</svg>

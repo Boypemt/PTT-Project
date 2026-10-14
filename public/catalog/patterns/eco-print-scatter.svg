@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" width="600" height="600">
+  <title>Eco-print leaf scatter — seamless tile</title>
+  <defs>
+    <g id="leaf-broad" stroke-width="3" stroke-linecap="round">
+      <path d="M0 -100C56 -62 70 18 0 100C-70 18 -56 -62 0 -100Z" stroke="none" />
+      <path d="M0 92V-92M0 40C22 32 32 20 38 4M0 40C-22 32 -32 20 -38 4M0 -8C20 -16 30 -28 34 -44M0 -8C-20 -16 -30 -28 -34 -44" fill="none" />
+    </g>
+    <g id="leaf-narrow" stroke-width="2.5" stroke-linecap="round">
+      <path d="M0 -100C30 -40 34 40 0 100C-34 40 -30 -40 0 -100Z" stroke="none" />
+      <path d="M0 92V-92M0 44C14 36 20 26 22 12M0 44C-14 36 -20 26 -22 12M0 -4C13 -12 19 -22 21 -36M0 -4C-13 -12 -19 -22 -21 -36" fill="none" />
+    </g>
+    <g id="leaf-round" stroke-width="2.5" stroke-linecap="round">
+      <path d="M0 -60C40 -34 46 20 0 60C-46 20 -40 -34 0 -60Z" stroke="none" />
+      <path d="M0 54V-54M0 14C18 8 26 -2 30 -14M0 14C-18 8 -26 -2 -30 -14" fill="none" />
+    </g>
+    <g id="unit">
+      <use href="#leaf-broad" transform="translate(110 120) rotate(-22)" fill="var(--c1, #4b2a4f)" fill-opacity="0.6" stroke="var(--c1, #4b2a4f)" stroke-opacity="0.35" />
+      <use href="#leaf-round" transform="translate(330 80) rotate(38) scale(0.8)" fill="var(--c2, #6b8e3d)" fill-opacity="0.55" stroke="var(--c2, #6b8e3d)" stroke-opacity="0.35" />
+      <use href="#leaf-narrow" transform="translate(500 190) rotate(-55) scale(1.05)" fill="var(--c1, #4b2a4f)" fill-opacity="0.5" stroke="var(--c1, #4b2a4f)" stroke-opacity="0.3" />
+      <use href="#leaf-narrow" transform="translate(80 340) rotate(64) scale(0.9)" fill="var(--c2, #6b8e3d)" fill-opacity="0.6" stroke="var(--c2, #6b8e3d)" stroke-opacity="0.35" />
+      <use href="#leaf-broad" transform="translate(260 300) rotate(12) scale(1.15)" fill="var(--c3, #e8b923)" fill-opacity="0.45" stroke="var(--c3, #e8b923)" stroke-opacity="0.4" />
+      <use href="#leaf-broad" transform="translate(455 420) rotate(-32) scale(0.95)" fill="var(--c1, #4b2a4f)" fill-opacity="0.55" stroke="var(--c1, #4b2a4f)" stroke-opacity="0.3" />
+      <use href="#leaf-round" transform="translate(180 520) rotate(-70) scale(0.85)" fill="var(--c2, #6b8e3d)" fill-opacity="0.5" stroke="var(--c2, #6b8e3d)" stroke-opacity="0.35" />
+      <use href="#leaf-narrow" transform="translate(380 560) rotate(25)" fill="var(--c1, #4b2a4f)" fill-opacity="0.45" stroke="var(--c1, #4b2a4f)" stroke-opacity="0.3" />
+      <use href="#leaf-round" transform="translate(590 520) rotate(50) scale(0.75)" fill="var(--c3, #e8b923)" fill-opacity="0.55" stroke="var(--c3, #e8b923)" stroke-opacity="0.4" />
+      <use href="#leaf-round" transform="translate(20 20) rotate(15) scale(0.7)" fill="var(--c2, #6b8e3d)" fill-opacity="0.5" stroke="var(--c2, #6b8e3d)" stroke-opacity="0.35" />
+    </g>
+    <clipPath id="cell">
+      <rect width="600" height="600" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#cell)">
+    <use href="#unit" x="-600" y="-600" />
+    <use href="#unit" x="0" y="-600" />
+    <use href="#unit" x="600" y="-600" />
+    <use href="#unit" x="-600" y="0" />
+    <use href="#unit" x="0" y="0" />
+    <use href="#unit" x="600" y="0" />
+    <use href="#unit" x="-600" y="600" />
+    <use href="#unit" x="0" y="600" />
+    <use href="#unit" x="600" y="600" />
+  </g>
+</svg>

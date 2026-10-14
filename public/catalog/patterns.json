@@ -6,14 +6,208 @@
       "name": { "th": "ลายคลื่น (เซงไกฮะ)", "en": "Seigaiha waves" },
       "kind": "tile",
       "src": "/catalog/patterns/seigaiha.svg",
-      "thumbnail": "/catalog/patterns/seigaiha-thumb.svg",
       "recolorable": true,
-      "defaultColors": ["#4B2A4F"],
-      "leafIds": ["teak"],
+      "defaultColors": ["#4B2A4F", "#A98FAE"],
       "tags": ["geometric", "waves", "placeholder"],
       "source": {
         "type": "placeholder",
-        "credit": "Drawn as SVG for this prototype",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "asanoha",
+      "name": { "th": "ลายใบกัญชง (อาซาโนฮะ)", "en": "Asanoha hemp leaf" },
+      "kind": "tile",
+      "src": "/catalog/patterns/asanoha.svg",
+      "recolorable": true,
+      "defaultColors": ["#6A5A72", "#A98FAE"],
+      "tags": ["geometric", "hemp-leaf", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "gingham",
+      "name": { "th": "ลายตารางกิงแฮม", "en": "Gingham check" },
+      "kind": "tile",
+      "src": "/catalog/patterns/gingham.svg",
+      "recolorable": true,
+      "defaultColors": ["#4B2A4F"],
+      "tags": ["geometric", "check", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "polka",
+      "name": { "th": "ลายจุด", "en": "Polka dots" },
+      "kind": "tile",
+      "src": "/catalog/patterns/polka.svg",
+      "recolorable": true,
+      "defaultColors": ["#A23B62", "#E8B923"],
+      "tags": ["geometric", "dots", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "ikat-stripe",
+      "name": { "th": "ลายทางมัดหมี่", "en": "Ikat stripes" },
+      "kind": "tile",
+      "src": "/catalog/patterns/ikat-stripe.svg",
+      "recolorable": true,
+      "defaultColors": ["#4A3222", "#C9A13B"],
+      "tags": ["geometric", "stripes", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "vine-scroll",
+      "name": { "th": "ลายเครือเถา", "en": "Vine scroll" },
+      "kind": "tile",
+      "src": "/catalog/patterns/vine-scroll.svg",
+      "recolorable": true,
+      "defaultColors": ["#6B8E3D", "#E8B923"],
+      "tags": ["vine", "scroll", "original", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "eco-print-scatter",
+      "name": { "th": "ลายใบไม้กระจาย", "en": "Eco-print leaf scatter" },
+      "kind": "tile",
+      "src": "/catalog/patterns/eco-print-scatter.svg",
+      "recolorable": true,
+      "defaultColors": ["#4B2A4F", "#6B8E3D", "#E8B923"],
+      "leafIds": [
+        "teak",
+        "golden-teak",
+        "mango",
+        "marigold",
+        "pheka",
+        "takhop"
+      ],
+      "tags": ["eco-print", "leaf", "scatter", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "teak",
+      "name": { "th": "ใบสัก", "en": "Teak leaf" },
+      "kind": "motif",
+      "src": "/catalog/patterns/teak.svg",
+      "recolorable": true,
+      "defaultColors": ["#4B2A4F", "#A23B62"],
+      "leafIds": ["teak"],
+      "tags": ["leaf", "eco-print", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "golden-teak",
+      "name": { "th": "ใบสักทอง", "en": "Golden teak leaf" },
+      "kind": "motif",
+      "src": "/catalog/patterns/golden-teak.svg",
+      "recolorable": true,
+      "defaultColors": ["#6A5A72", "#B98A8A"],
+      "leafIds": ["golden-teak"],
+      "tags": ["leaf", "eco-print", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "mango",
+      "name": { "th": "ใบมะม่วงเบา", "en": "Mango leaf" },
+      "kind": "motif",
+      "src": "/catalog/patterns/mango.svg",
+      "recolorable": true,
+      "defaultColors": ["#6B8E3D", "#A7BF7E"],
+      "leafIds": ["mango"],
+      "tags": ["leaf", "eco-print", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "marigold-flower",
+      "name": { "th": "ดอกดาวเรือง", "en": "Marigold flower" },
+      "kind": "motif",
+      "src": "/catalog/patterns/marigold-flower.svg",
+      "recolorable": true,
+      "defaultColors": ["#E8B923", "#A67C2E"],
+      "leafIds": ["marigold"],
+      "tags": ["flower", "eco-print", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "pheka",
+      "name": { "th": "ใบเพกา", "en": "Oroxylum leaf" },
+      "kind": "motif",
+      "src": "/catalog/patterns/pheka.svg",
+      "recolorable": true,
+      "defaultColors": ["#4A3222", "#C9A13B"],
+      "leafIds": ["pheka"],
+      "tags": ["leaf", "eco-print", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "takhop",
+      "name": { "th": "ใบตะขบ", "en": "Jamaica cherry leaf" },
+      "kind": "motif",
+      "src": "/catalog/patterns/takhop.svg",
+      "recolorable": true,
+      "defaultColors": ["#9C7A3C", "#D8C08A"],
+      "leafIds": ["takhop"],
+      "tags": ["leaf", "eco-print", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "tong-tung",
+      "name": { "th": "ใบตองตึง", "en": "Tong tung leaf" },
+      "kind": "motif",
+      "src": "/catalog/patterns/tong-tung.svg",
+      "recolorable": true,
+      "defaultColors": ["#4A3222", "#9C7A3C"],
+      "tags": ["leaf", "eco-print", "leaf-plate", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
         "license": "CC0-1.0"
       }
     }

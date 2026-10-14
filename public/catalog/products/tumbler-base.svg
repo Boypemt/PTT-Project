@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>Tumbler — base silhouette</title>
+  <g fill="#ffffff">
+    <rect x="366" y="226" width="268" height="78" rx="24" />
+    <path d="M384 304L420 782C422 802 452 816 500 816C548 816 578 802 580 782L616 304Z" />
+  </g>
+</svg>

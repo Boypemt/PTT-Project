@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120" width="240" height="120">
+  <title>Vine scroll — seamless tile (original drawing)</title>
+  <defs>
+    <g id="unit">
+      <path d="M0 30C60 30 60 90 120 90C180 90 180 30 240 30" fill="none" stroke="var(--c1, #6b8e3d)" stroke-width="5" stroke-linecap="round" />
+      <path d="M120 90C137 90 146 79 139 70C133 63 123 66 122 73" fill="none" stroke="var(--c1, #6b8e3d)" stroke-width="4" stroke-linecap="round" />
+      <path d="M0 30C-4 20 4 12 14 14" fill="none" stroke="var(--c1, #6b8e3d)" stroke-width="4" stroke-linecap="round" />
+      <path d="M240 30C236 20 244 12 254 14" fill="none" stroke="var(--c1, #6b8e3d)" stroke-width="4" stroke-linecap="round" />
+      <path d="M56 38C40 25 42 9 60 3C55 17 62 28 56 38Z" fill="var(--c2, #e8b923)" />
+      <path d="M184 82C200 95 198 111 180 117C185 103 178 92 184 82Z" fill="var(--c2, #e8b923)" />
+      <path d="M94 96C86 108 92 116 104 114C98 108 98 102 94 96Z" fill="var(--c2, #e8b923)" fill-opacity="0.75" />
+      <path d="M146 24C154 12 148 4 136 6C142 12 142 18 146 24Z" fill="var(--c2, #e8b923)" fill-opacity="0.75" />
+      <circle cx="30" cy="22" r="4" fill="var(--c1, #6b8e3d)" />
+      <circle cx="210" cy="98" r="4" fill="var(--c1, #6b8e3d)" />
+    </g>
+    <clipPath id="cell">
+      <rect width="240" height="120" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#cell)">
+    <use href="#unit" x="-240" y="-120" />
+    <use href="#unit" x="0" y="-120" />
+    <use href="#unit" x="240" y="-120" />
+    <use href="#unit" x="-240" y="0" />
+    <use href="#unit" x="0" y="0" />
+    <use href="#unit" x="240" y="0" />
+    <use href="#unit" x="-240" y="120" />
+    <use href="#unit" x="0" y="120" />
+    <use href="#unit" x="240" y="120" />
+  </g>
+</svg>

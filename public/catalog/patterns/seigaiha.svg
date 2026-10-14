@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <title>Seigaiha waves — seamless tile</title>
+  <defs>
+    <g id="fan" fill="none" stroke-width="7">
+      <path d="M-100 0A100 100 0 0 0 100 0" stroke="var(--c1, #4b2a4f)" />
+      <path d="M-78 0A78 78 0 0 0 78 0" stroke="var(--c2, #a98fae)" />
+      <path d="M-56 0A56 56 0 0 0 56 0" stroke="var(--c1, #4b2a4f)" />
+      <path d="M-34 0A34 34 0 0 0 34 0" stroke="var(--c2, #a98fae)" />
+      <path d="M-13 0A13 13 0 0 0 13 0" stroke="var(--c1, #4b2a4f)" />
+    </g>
+    <g id="unit">
+      <use href="#fan" />
+      <use href="#fan" x="100" y="100" />
+    </g>
+    <clipPath id="cell">
+      <rect width="200" height="200" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#cell)">
+    <use href="#unit" x="-200" y="-200" />
+    <use href="#unit" x="0" y="-200" />
+    <use href="#unit" x="200" y="-200" />
+    <use href="#unit" x="-200" y="0" />
+    <use href="#unit" x="0" y="0" />
+    <use href="#unit" x="200" y="0" />
+    <use href="#unit" x="-200" y="200" />
+    <use href="#unit" x="0" y="200" />
+    <use href="#unit" x="200" y="200" />
+  </g>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <title>Teak leaf — eco-print motif</title>
+  <path d="M200 26C300 96 352 236 200 364C48 236 100 96 200 26Z" fill="var(--c1, #4b2a4f)" fill-opacity="0.82" />
+  <g fill="none" stroke="var(--c2, #a23b62)" stroke-opacity="0.5" stroke-width="4" stroke-linecap="round">
+    <path d="M200 352V40" stroke-width="6" />
+    <path d="M200 318C226 308 238 294 246 274M200 266C240 258 262 240 276 212M200 212C238 204 262 182 274 154M200 158C228 150 248 130 258 106M200 108C218 100 232 86 238 70" />
+    <path d="M200 318C174 308 162 294 154 274M200 266C160 258 138 240 124 212M200 212C162 204 138 182 126 154M200 158C172 150 152 130 142 106M200 108C182 100 168 86 162 70" />
+  </g>
+  <path d="M200 26C300 96 352 236 200 364C48 236 100 96 200 26Z" fill="none" stroke="var(--c1, #4b2a4f)" stroke-opacity="0.45" stroke-width="3" />
+  <path d="M200 364V392" stroke="var(--c1, #4b2a4f)" stroke-opacity="0.7" stroke-width="7" stroke-linecap="round" />
+</svg>
