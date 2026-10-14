@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 173.20508" width="300" height="173.20508">
+  <title>Asanoha hemp leaf — seamless tile</title>
+  <defs>
+    <g id="hexleaf" fill="none" stroke-linejoin="round">
+      <path d="M100 0L50 86.60254L-50 86.60254L-100 0L-50 -86.60254L50 -86.60254Z" stroke="var(--c1, #6a5a72)" stroke-width="5" />
+      <path d="M-100 0H100M-50 -86.60254L50 86.60254M50 -86.60254L-50 86.60254" stroke="var(--c1, #6a5a72)" stroke-width="5" />
+      <path d="M100 0L-50 86.60254L-50 -86.60254ZM-100 0L50 -86.60254L50 86.60254Z" stroke="var(--c2, #a98fae)" stroke-width="4" />
+    </g>
+    <g id="unit">
+      <use href="#hexleaf" />
+      <use href="#hexleaf" x="150" y="86.60254" />
+    </g>
+    <clipPath id="cell">
+      <rect width="300" height="173.20508" />
+    </clipPath>
+  </defs>
+  <g clip-path="url(#cell)">
+    <use href="#unit" x="-300" y="-173.20508" />
+    <use href="#unit" x="0" y="-173.20508" />
+    <use href="#unit" x="300" y="-173.20508" />
+    <use href="#unit" x="-300" y="0" />
+    <use href="#unit" x="0" y="0" />
+    <use href="#unit" x="300" y="0" />
+    <use href="#unit" x="-300" y="173.20508" />
+    <use href="#unit" x="0" y="173.20508" />
+    <use href="#unit" x="300" y="173.20508" />
+  </g>
+</svg>

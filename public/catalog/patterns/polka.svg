@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <title>Polka dots — seamless tile</title>
+  <g fill="var(--c1, #a23b62)">
+    <circle cx="0" cy="0" r="26" />
+    <circle cx="200" cy="0" r="26" />
+    <circle cx="0" cy="200" r="26" />
+    <circle cx="200" cy="200" r="26" />
+    <circle cx="100" cy="100" r="26" />
+  </g>
+  <g fill="var(--c2, #e8b923)">
+    <circle cx="100" cy="0" r="10" />
+    <circle cx="100" cy="200" r="10" />
+    <circle cx="0" cy="100" r="10" />
+    <circle cx="200" cy="100" r="10" />
+  </g>
+</svg>

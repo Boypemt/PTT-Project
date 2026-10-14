@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <title>Houndstooth — seamless tile</title>
+  <g fill="var(--c1, #4b2a4f)">
+    <path d="M0 0H100V100H0Z" />
+    <path d="M100 100H200V200H100Z" />
+  </g>
+  <g fill="var(--c2, #6a5a72)">
+    <path d="M100 0H150L100 50Z" />
+    <path d="M0 100H50L0 150Z" />
+    <path d="M150 100H200V50Z" />
+    <path d="M100 150V200H50Z" />
+  </g>
+</svg>
