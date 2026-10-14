@@ -14,6 +14,7 @@
  *
  * Coordinates are mockup coordinates: the group above applies the fit.
  */
+import { useState } from 'react'
 import { Rect } from 'react-konva'
 import {
   useCatalog,
@@ -32,6 +33,9 @@ const FALLBACK_COLOR = '#a23b62'
 /** A motif's side at scale 1, in mockup units. */
 const MOTIF_SIZE = 220
 
+/** What the stage is painting now: an image that has finished decoding. */
+type Painted = { image: HTMLImageElement; ratio: number }
+
 /** The still rectangle whose *fill* carries the tile. */
 function PatternFill({
   layer,
@@ -42,12 +46,30 @@ function PatternFill({
   pattern: Pattern
   mockup: ProductMockup
 }) {
-  const { status, image, ratio } = usePatternImage(pattern.src)
+  const { status, image, ratio } = usePatternImage(pattern.src, layer.colors)
 
-  // An undecoded image paints nothing and a broken one makes Konva throw.
-  if (status !== 'loaded') return null
+  // Changing a colour builds a new image, and for the frame or two it takes to
+  // decode there is nothing to paint. Keeping the last one that loaded carries
+  // the cloth through a tap on a leaf-dye swatch instead of blinking. An
+  // undecoded image paints nothing anyway, and a broken one makes Konva throw,
+  // so this is also what keeps either off the stage.
+  const [painted, setPainted] = useState<Painted | null>(null)
 
-  return <Rect {...tileFill(layer, mockup, ratio)} fillPatternImage={image} />
+  // Adjusted during render rather than in an effect, so the new image is on
+  // the stage in the same commit it became ready — React re-runs this
+  // component before anything is shown, and the comparison stops it there.
+  if (status === 'loaded' && painted?.image !== image) {
+    setPainted({ image, ratio })
+  }
+
+  if (painted === null) return null
+
+  return (
+    <Rect
+      {...tileFill(layer, mockup, painted.ratio)}
+      fillPatternImage={painted.image}
+    />
+  )
 }
 
 function TileLayerView({

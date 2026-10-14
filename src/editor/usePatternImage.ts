@@ -20,14 +20,16 @@
  * browser refusing a canvas — it falls back to the SVG element itself at
  * `ratio` 1. Konva can still fill with that; only the sharpness is lost.
  *
- * Colours are not a parameter yet. A pattern loaded through `new Image()`
- * never sees the page's CSS, so each tile rasterises in the `var(--c1, …)`
- * fallbacks written into its own file — which are its `defaultColors`. Task 10
- * recolours by serializing the SVG with the variables set and keying the cache
- * below on the colours as well.
+ * Colours arrive through `useTintedSvg`, which hands over the same file with
+ * the design's colours written into it. The raster cache is keyed on them too,
+ * so one tile in two colourways is two bitmaps and going back to the first
+ * costs nothing. A design with no colours, or a file that could not be read,
+ * rasterises the pattern as it is on disk — in the `var(--c1, …)` fallbacks
+ * written into it, which are its `defaultColors`.
  */
 import { useMemo } from 'react'
 import { useImage, type ImageStatus } from './useImage'
+import { useTintedSvg } from './useTintedSvg'
 
 /** Image pixels per natural pixel of a tile. Two is enough for any screen. */
 export const RASTER_SCALE = 2
@@ -73,8 +75,7 @@ function drawRaster(image: HTMLImageElement): string | null {
   return canvas.toDataURL('image/png')
 }
 
-function rasterUrl(src: string, image: HTMLImageElement): string | null {
-  const key = `${src}@${String(RASTER_SCALE)}x`
+function rasterUrl(key: string, image: HTMLImageElement): string | null {
   const cached = rasters.get(key)
   if (cached !== undefined) return cached
 
@@ -84,18 +85,29 @@ function rasterUrl(src: string, image: HTMLImageElement): string | null {
   return url
 }
 
-export function usePatternImage(src: string): PatternImage {
-  const source = useImage(src)
+export function usePatternImage(
+  src: string,
+  colors: readonly string[] = [],
+): PatternImage {
+  // The file with the design's colours in it, or nothing while that is being
+  // fetched — and then the pattern as it is on disk, in its own defaults.
+  const tinted = useTintedSvg(src, colors)
+  const url = tinted.url ?? src
+  const source = useImage(url)
+
+  // Keyed by the pattern and its colours rather than by the URL: a tinted URL
+  // is the whole file, and the same tile in two colourways is two rasters.
+  const key = `${src}|${colors.join(',')}@${String(RASTER_SCALE)}x`
 
   const raster = useMemo(
-    () => (source.status === 'loaded' ? rasterUrl(src, source.image) : null),
-    [src, source.status, source.image],
+    () => (source.status === 'loaded' ? rasterUrl(key, source.image) : null),
+    [key, source.status, source.image],
   )
 
   // One `useImage` call either way, so the hook order never changes. Before a
   // raster exists this asks for the SVG the line above already holds, which
   // the cache answers without a second request.
-  const rastered = useImage(raster ?? src)
+  const rastered = useImage(raster ?? url)
 
   if (raster === null) return { ...source, ratio: 1 }
 

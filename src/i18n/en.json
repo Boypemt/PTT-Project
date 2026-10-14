@@ -85,6 +85,11 @@
       "reset": "Reset",
       "delete": "Delete layer"
     },
+    "leafDyes": {
+      "title": "Leaf dye colours",
+      "main": "Main colour",
+      "second": "Second colour"
+    },
     "baseColor": "Base colour",
     "baseColorOption": "Base colour {{color}}",
     "showPrintAreas": "Show print areas",

@@ -137,7 +137,13 @@ const MAX_PRESSES = 400
  */
 async function run(page: Page, step: Step): Promise<void> {
   if (step.kind === 'click') {
-    await page.getByRole('button', { name: step.name, exact: true }).click()
+    // The first of them where a name is on more than one button — the leaf
+    // dyes offer the same colour once per slot — so a shot is of the page as
+    // it is rather than of an argument refined until it matches one thing.
+    await page
+      .getByRole('button', { name: step.name, exact: true })
+      .first()
+      .click()
     return
   }
 

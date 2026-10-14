@@ -17,6 +17,7 @@ import { useCatalog, type Product } from '@/catalog'
 import type { LayerPatch } from '@/editor/store'
 import { useDesignStore } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
+import { LeafDyePicker } from './LeafDyePicker'
 import { SliderField } from './SliderField'
 
 /** Both ends of each slider, with the step a visitor can feel. */
@@ -120,11 +121,33 @@ export function LayerProperties({ product }: { product: Product }) {
         }}
       />
 
+      <LeafDyePicker
+        dyes={status === 'ready' ? catalog.leafDyes : []}
+        pattern={pattern}
+        colors={layer.colors}
+        onChange={(colors) => {
+          set({ colors })
+        }}
+      />
+
       <div className="flex flex-wrap gap-2">
         <button
           type="button"
           onClick={() => {
-            set({ scale: 1, rotation: 0, offsetX: 0, offsetY: 0, opacity: 1 })
+            set({
+              scale: 1,
+              rotation: 0,
+              offsetX: 0,
+              offsetY: 0,
+              opacity: 1,
+              // Back to the pattern as the designer drew it, dyes included —
+              // one button for "undo what I did to this layer". A pattern the
+              // catalog no longer has keeps whatever colours the layer
+              // carries: there is nothing to put back.
+              ...(pattern === undefined
+                ? {}
+                : { colors: [...pattern.defaultColors] }),
+            })
           }}
           className="min-h-touch rounded-xl border border-border-soft px-3 text-sm font-medium text-ink-700 transition-colors hover:bg-paper-100"
         >
