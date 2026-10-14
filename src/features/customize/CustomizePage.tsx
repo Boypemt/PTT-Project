@@ -1,35 +1,25 @@
 /**
  * The customizer at `/customize/:productId`: the page a visitor designs on.
  *
- * It resolves the id in the URL against the catalog and hands the product to
- * the workspace — it never names a product itself. What sits in the canvas
- * area is a still `ProductMockup` for now; the react-konva stage replaces it in
- * the next PR (07b in docs/ROADMAP.md), and matching this look is how that one
- * is judged.
+ * The route component resolves the id in the URL against the catalog — it
+ * never names a product itself — and the editor below it works from whatever
+ * product that is. What sits in the canvas area is a still `ProductMockup` for
+ * now; the react-konva stage replaces it in the next PR (07b in
+ * docs/ROADMAP.md), and matching this look is how that one is judged.
  */
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
-import { useCatalog } from '@/catalog'
-import { NotFoundPage } from '@/app/NotFoundPage'
+import { useCatalog, type Product } from '@/catalog'
 import { ProductMockup } from '@/components/ProductMockup'
+import { useDesignFor } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
 import { EditorWorkspace } from './EditorWorkspace'
+import { ProductNotFound } from './ProductNotFound'
 
-export function CustomizePage() {
+function ProductEditor({ product }: { product: Product }) {
   const { t } = useTranslation()
   const localized = useLocalized()
-  const { productId = '' } = useParams<{ productId: string }>()
-  const { status, catalog } = useCatalog()
-
-  // Loading and failure are drawn by CatalogGate, which this route sits behind.
-  if (status !== 'ready') return null
-
-  const product = catalog.products.find((entry) => entry.id === productId)
-
-  // A product-specific not-found lands in the next commit.
-  if (product === undefined) return <NotFoundPage />
-
-  const baseColor = product.baseColors[0] ?? '#ffffff'
+  const { baseColor } = useDesignFor(product)
 
   return (
     <section className="flex flex-col">
@@ -58,4 +48,18 @@ export function CustomizePage() {
       </EditorWorkspace>
     </section>
   )
+}
+
+export function CustomizePage() {
+  const { productId = '' } = useParams<{ productId: string }>()
+  const { status, catalog } = useCatalog()
+
+  // Loading and failure are drawn by CatalogGate, which this route sits behind.
+  if (status !== 'ready') return null
+
+  const product = catalog.products.find((entry) => entry.id === productId)
+
+  if (product === undefined) return <ProductNotFound />
+
+  return <ProductEditor product={product} />
 }

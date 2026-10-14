@@ -53,7 +53,14 @@
     "properties": "Properties",
     "panelSwitcher": "Editor panels",
     "patternsPlaceholder": "The pattern library arrives in the next step.",
-    "propertiesPlaceholder": "Pattern settings appear here once a pattern is on the cloth."
+    "propertiesPlaceholder": "Pattern settings appear here once a pattern is on the cloth.",
+    "baseColor": "Base colour",
+    "baseColorOption": "Base colour {{color}}",
+    "notFound": {
+      "title": "This product is not in the catalogue",
+      "body": "The link may be mistyped, or the product has been renamed. Pick one from the list instead.",
+      "back": "Choose a product"
+    }
   },
   "notFound": {
     "title": "Page not found",

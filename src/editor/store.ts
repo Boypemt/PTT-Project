@@ -96,6 +96,22 @@ export function createLayerId(): string {
 }
 
 /**
+ * The design a product starts with: its first base colour and no layers.
+ *
+ * Exported because React needs it before the store has caught up — a page
+ * opening a product can draw its starting design on the first paint, and
+ * `initForProduct` writes exactly the same thing a moment later.
+ */
+export function designForProduct(product: Product): Design {
+  return {
+    version: 1,
+    productId: product.id,
+    baseColor: product.baseColors[0] ?? FALLBACK_BASE_COLOR,
+    layers: [],
+  }
+}
+
+/**
  * Spreads the patch over the layer of its own kind, so a tile keeps its
  * `offsetX/offsetY` and a motif its `x/y`.
  */
@@ -129,12 +145,7 @@ export const createEditorStore = () =>
 
     initForProduct: (product) =>
       set({
-        design: {
-          version: 1,
-          productId: product.id,
-          baseColor: product.baseColors[0] ?? FALLBACK_BASE_COLOR,
-          layers: [],
-        },
+        design: designForProduct(product),
         selectedLayerId: null,
         selectedPrintAreaId: product.printAreas[0]?.id ?? null,
       }),
