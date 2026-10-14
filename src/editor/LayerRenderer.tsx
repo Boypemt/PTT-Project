@@ -1,51 +1,79 @@
 /**
  * Draws one layer of the design, inside the clipped group of its print area.
  *
- * Every layer is a flat translucent rectangle for now, whichever kind it is:
- * this PR is about the stage and the clipping, and a rectangle is the
- * clearest thing to see a clip shape through. The switch is here so the two
- * real renderers have somewhere to land — the repeating pattern fill in task
- * 08, the placeable motif with its transform handles in task 09.
+ * A tile layer is real from this task on: the pattern's SVG is rasterised and
+ * repeated across the print area (see `tileFill.ts` for the geometry and
+ * `usePatternImage.ts` for the raster). A motif is still the flat rectangle
+ * stub — placing and transforming one is task 09.
+ *
+ * The pattern a layer names is looked up in the catalog here rather than
+ * passed in, so nothing above this file has to know that a layer needs an
+ * asset at all. A layer naming a pattern the catalog does not have draws
+ * nothing: a design can outlive a pattern being renamed, and a blank print
+ * area says that more clearly than a block of fallback colour would.
  *
  * Coordinates are mockup coordinates: the group above applies the fit.
  */
 import { Rect } from 'react-konva'
-import type { Layer, ProductMockup } from '@/catalog'
+import {
+  useCatalog,
+  type Layer,
+  type MotifLayer,
+  type Pattern,
+  type ProductMockup,
+  type TileLayer,
+} from '@/catalog'
+import { tileFill } from './tileFill'
+import { usePatternImage } from './usePatternImage'
 
-/** `--color-teak-pink`, for a layer that carries no colour of its own. */
+/** `--color-teak-pink`, for a motif stub that carries no colour of its own. */
 const FALLBACK_COLOR = '#a23b62'
 
 /** A motif's side at scale 1, in mockup units. */
 const MOTIF_SIZE = 220
 
-export function LayerRenderer({
+/** The still rectangle whose *fill* carries the tile. */
+function PatternFill({
+  layer,
+  pattern,
+  mockup,
+}: {
+  layer: TileLayer
+  pattern: Pattern
+  mockup: ProductMockup
+}) {
+  const { status, image, ratio } = usePatternImage(pattern.src)
+
+  // An undecoded image paints nothing and a broken one makes Konva throw.
+  if (status !== 'loaded') return null
+
+  return <Rect {...tileFill(layer, mockup, ratio)} fillPatternImage={image} />
+}
+
+function TileLayerView({
   layer,
   mockup,
 }: {
-  layer: Layer
+  layer: TileLayer
   mockup: ProductMockup
 }) {
-  const fill = layer.colors[0] ?? FALLBACK_COLOR
+  const { status, catalog } = useCatalog()
 
-  // A tile covers its whole print area, so the stub covers the mockup and
-  // lets the clip decide what shows — which is exactly what is being checked.
-  if (layer.type === 'tile') {
-    return (
-      <Rect
-        x={layer.offsetX}
-        y={layer.offsetY}
-        width={mockup.width}
-        height={mockup.height}
-        rotation={layer.rotation}
-        fill={fill}
-        opacity={layer.opacity}
-      />
-    )
-  }
+  // The canvas only renders behind `CatalogGate`, so this is ready; the guard
+  // is here because the type says it might not be.
+  if (status !== 'ready') return null
 
+  const pattern = catalog.patterns.find((entry) => entry.id === layer.patternId)
+
+  if (pattern === undefined) return null
+
+  return <PatternFill layer={layer} pattern={pattern} mockup={mockup} />
+}
+
+/** A motif sits at a point, so the stub is centred on it and turns around it. */
+function MotifLayerStub({ layer }: { layer: MotifLayer }) {
   const size = MOTIF_SIZE * layer.scale
 
-  // A motif sits at a point, so the stub is centred on it and turns around it.
   return (
     <Rect
       x={layer.x}
@@ -55,8 +83,22 @@ export function LayerRenderer({
       offsetX={size / 2}
       offsetY={size / 2}
       rotation={layer.rotation}
-      fill={fill}
+      fill={layer.colors[0] ?? FALLBACK_COLOR}
       opacity={layer.opacity}
     />
+  )
+}
+
+export function LayerRenderer({
+  layer,
+  mockup,
+}: {
+  layer: Layer
+  mockup: ProductMockup
+}) {
+  return layer.type === 'tile' ? (
+    <TileLayerView layer={layer} mockup={mockup} />
+  ) : (
+    <MotifLayerStub layer={layer} />
   )
 }
