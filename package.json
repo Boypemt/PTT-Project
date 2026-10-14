@@ -15,6 +15,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test": "vitest",
+    "shot": "tsx scripts/shot.ts",
     "test:coverage": "vitest run --coverage",
     "preview": "vite preview",
     "prepare": "husky"
