@@ -46,8 +46,12 @@ function Panel({
     <section
       id={panelId(panel)}
       aria-labelledby={`${panelId(panel)}-title`}
-      className={`${open ? 'flex' : 'hidden'} max-h-[40dvh] flex-col gap-3 overflow-y-auto bg-surface px-4 pt-3 pb-6 md:flex md:max-h-none md:rounded-2xl md:border md:border-border-soft md:p-4 ${className}`}
+      className={`${open ? 'flex' : 'hidden'} max-h-[40dvh] flex-col gap-3 overflow-y-auto bg-surface px-4 pt-3 pb-6 md:flex md:max-h-[70vh] md:rounded-2xl md:border md:border-border-soft md:p-4 ${className}`}
     >
+      {/* Both widths cap the panel and let it scroll inside itself: a sheet
+          at 40dvh so the canvas keeps the rest of the phone screen, a column
+          at the canvas's own 70vh so a long library does not stretch the
+          desktop page past the thing being designed. */}
       {/* In the sheet the switcher above already says which panel this is, so
           the heading only shows from `md` up — but it stays in the accessibility
           tree at every width, because it is what names this region. */}
