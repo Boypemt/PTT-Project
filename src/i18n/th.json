@@ -55,6 +55,7 @@
     "panelSwitcher": "แผงเครื่องมือ",
     "patternsPlaceholder": "คลังลายจะมาในขั้นตอนถัดไป",
     "propertiesPlaceholder": "การตั้งค่าลายจะแสดงที่นี่เมื่อวางลายบนผ้าแล้ว",
+    "printArea": "พื้นที่วางลาย",
     "baseColor": "สีผ้าพื้น",
     "baseColorOption": "สีผ้าพื้น {{color}}",
     "showPrintAreas": "แสดงพื้นที่วางลาย",

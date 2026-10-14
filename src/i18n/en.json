@@ -55,6 +55,7 @@
     "panelSwitcher": "Editor panels",
     "patternsPlaceholder": "The pattern library arrives in the next step.",
     "propertiesPlaceholder": "Pattern settings appear here once a pattern is on the cloth.",
+    "printArea": "Print area",
     "baseColor": "Base colour",
     "baseColorOption": "Base colour {{color}}",
     "showPrintAreas": "Show print areas",

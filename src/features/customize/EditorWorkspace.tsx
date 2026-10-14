@@ -121,7 +121,7 @@ export function EditorWorkspace({
         open={openPanel === 'patterns'}
         className="order-3 md:order-1 md:w-60 lg:w-64"
       >
-        <PatternsPanel />
+        <PatternsPanel product={product} />
       </Panel>
 
       <Panel
