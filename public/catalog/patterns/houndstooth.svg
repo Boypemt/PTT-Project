@@ -1,13 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
   <title>Houndstooth — seamless tile</title>
+  <!--
+    The dark cells of a 2/2 twill woven four dark, four light in both warp and
+    weft: the weave houndstooth comes from. The solid block is the body of the
+    tooth, the stepped cells are its fangs.
+  -->
   <g fill="var(--c1, #4b2a4f)">
-    <path d="M0 0H100V100H0Z" />
-    <path d="M100 100H200V200H100Z" />
+    <rect x="0" y="0" width="100" height="100" />
   </g>
   <g fill="var(--c2, #6a5a72)">
-    <path d="M100 0H150L100 50Z" />
-    <path d="M0 100H50L0 150Z" />
-    <path d="M150 100H200V50Z" />
-    <path d="M100 150V200H50Z" />
+    <rect x="150" y="0" width="50" height="25" />
+    <rect x="100" y="25" width="25" height="25" />
+    <rect x="175" y="25" width="25" height="25" />
+    <rect x="100" y="50" width="50" height="25" />
+    <rect x="125" y="75" width="50" height="25" />
+    <rect x="0" y="100" width="50" height="25" />
+    <rect x="25" y="125" width="50" height="25" />
+    <rect x="50" y="150" width="50" height="25" />
+    <rect x="0" y="175" width="25" height="25" />
+    <rect x="75" y="175" width="25" height="25" />
   </g>
 </svg>

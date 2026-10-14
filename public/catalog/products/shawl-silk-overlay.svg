@@ -6,8 +6,7 @@
     </clipPath>
     <linearGradient id="sheen" x1="0" x2="1" y1="0" y2="0">
       <stop offset="0" stop-color="#000" stop-opacity="0" />
-      <stop offset="0.42" stop-color="#000" stop-opacity="0.26" />
-      <stop offset="0.58" stop-color="#000" stop-opacity="0.26" />
+      <stop offset="0.5" stop-color="#000" stop-opacity="0.18" />
       <stop offset="1" stop-color="#000" stop-opacity="0" />
     </linearGradient>
     <linearGradient id="sweep" x1="0" x2="1" y1="0" y2="1">
@@ -19,15 +18,10 @@
   </defs>
   <g clip-path="url(#cloth)">
     <rect x="150" y="200" width="700" height="600" fill="url(#sweep)" />
-    <rect x="192" y="200" width="54" height="600" fill="url(#sheen)" />
-    <rect x="268" y="200" width="42" height="600" fill="url(#sheen)" opacity="0.7" />
-    <rect x="344" y="200" width="58" height="600" fill="url(#sheen)" opacity="0.85" />
-    <rect x="428" y="200" width="40" height="600" fill="url(#sheen)" opacity="0.6" />
-    <rect x="496" y="200" width="56" height="600" fill="url(#sheen)" opacity="0.9" />
-    <rect x="580" y="200" width="42" height="600" fill="url(#sheen)" opacity="0.65" />
-    <rect x="650" y="200" width="54" height="600" fill="url(#sheen)" opacity="0.8" />
-    <rect x="734" y="200" width="44" height="600" fill="url(#sheen)" opacity="0.7" />
-    <rect x="796" y="200" width="40" height="600" fill="url(#sheen)" opacity="0.5" />
+    <rect x="186" y="200" width="130" height="600" fill="url(#sheen)" />
+    <rect x="350" y="200" width="110" height="600" fill="url(#sheen)" opacity="0.7" />
+    <rect x="500" y="200" width="140" height="600" fill="url(#sheen)" opacity="0.9" />
+    <rect x="672" y="200" width="118" height="600" fill="url(#sheen)" opacity="0.75" />
   </g>
   <path d="M180 250C360 214 640 214 820 250C836 254 846 263 846 275V725C846 737 836 746 820 750C640 786 360 786 180 750C164 746 154 737 154 725V275C154 263 164 254 180 250Z" fill="none" stroke="#000" stroke-opacity="0.22" stroke-width="3" />
   <path d="M168 272C354 236 646 236 832 272V728C646 764 354 764 168 728Z" fill="none" stroke="#000" stroke-opacity="0.13" stroke-width="2" />
