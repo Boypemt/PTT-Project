@@ -66,4 +66,6 @@ real data later **without code changes**.
 
 ## Definition of done for each task
 Lint, typecheck, tests and `npm run build` pass. New logic has tests. UI strings in both languages.
+For any UI change, run `npm run build && npm run shot -- <page>` for desktop and `--mobile`, look at the
+images yourself, and fix what's wrong before opening the PR. List the pages you checked in the PR body.
 Finish by summarizing: what changed, commits made, and what I should test manually.
