@@ -160,6 +160,17 @@ async function run(page: Page, step: Step): Promise<void> {
 
   await slider.press('Home')
   for (let i = 0; i < presses; i += 1) await slider.press('ArrowRight')
+
+  // A control that is in the DOM but off screen — the sheet's other tab on a
+  // phone — takes the key presses nowhere. Better a failed run than a
+  // screenshot quietly showing the value nobody asked for.
+  const reached = Number(await slider.inputValue())
+
+  if (Math.abs(reached - Number(step.value)) > stride / 2) {
+    throw new Error(
+      `"${step.label}" stayed at ${String(reached)}, not ${step.value} — is it on screen at this width?`,
+    )
+  }
 }
 
 /** `/customize/shawl-cotton` → `customize-shawl-cotton`, `/` → `home`. */
