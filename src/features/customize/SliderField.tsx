@@ -35,6 +35,11 @@ export function SliderField({
       </span>
       <input
         type="range"
+        // Named directly rather than by the row above it: that row also holds
+        // the value, and a slider called "Rotation 45°" is a slider whose name
+        // changes every time it moves — which is no name at all for a test, a
+        // screenshot script, or anyone listening to it.
+        aria-label={label}
         value={value}
         min={min}
         max={max}
