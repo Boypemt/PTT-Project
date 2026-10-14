@@ -11,8 +11,9 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 04 | `feat/placeholder-assets` | feat(catalog): placeholder patterns and product mockups | `prompts/04-placeholder-assets.md` | 03 |
 | 05 | `feat/app-shell-i18n` | feat(app): routing, layout and TH/EN i18n | `prompts/05-app-shell-i18n.md` | 02 (parallel with 03/04) |
 | 06 | `feat/product-picker` | feat(app): product picker page | `prompts/06-product-picker.md` | 04, 05 |
-| 07 | `feat/editor-canvas` | feat(editor): canvas with mockup and print-area clipping | `prompts/07-editor-canvas.md` | 06 |
-| 08 | `feat/pattern-panel` | feat(editor): pattern library and tile layers | `prompts/08-pattern-panel.md` | 07 |
+| 07a | `feat/editor-canvas` | feat(editor): design store, geometry and editor page layout | `prompts/07-editor-canvas.md` | 06 |
+| 07b | `feat/editor-konva` | feat(editor): canvas with mockup and print-area clipping | `prompts/07-editor-canvas.md` | 07a |
+| 08 | `feat/pattern-panel` | feat(editor): pattern library and tile layers | `prompts/08-pattern-panel.md` | 07b |
 | 09 | `feat/motif-transform` | feat(editor): placeable leaf motifs with transform handles | `prompts/09-motif-transform.md` | 08 |
 | 10 | `feat/leaf-dye-colors` | feat(editor): recolour by leaf dye and base colour | `prompts/10-leaf-dye-colors.md` | 08 |
 | 11 | `feat/history-persist` | feat(editor): undo/redo, autosave and share link | `prompts/11-history-persist.md` | 09, 10 |
