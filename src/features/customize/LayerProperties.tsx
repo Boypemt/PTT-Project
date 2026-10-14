@@ -17,6 +17,7 @@ import { useCatalog, type Product } from '@/catalog'
 import type { LayerPatch } from '@/editor/store'
 import { useDesignStore } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
+import { LeafDyePicker } from './LeafDyePicker'
 import { SliderField } from './SliderField'
 
 /** Both ends of each slider, with the step a visitor can feel. */
@@ -117,6 +118,15 @@ export function LayerProperties({ product }: { product: Product }) {
         {...RANGES.opacity}
         onChange={(opacity) => {
           set({ opacity })
+        }}
+      />
+
+      <LeafDyePicker
+        dyes={status === 'ready' ? catalog.leafDyes : []}
+        pattern={pattern}
+        colors={layer.colors}
+        onChange={(colors) => {
+          set({ colors })
         }}
       />
 

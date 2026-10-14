@@ -85,6 +85,11 @@
       "reset": "คืนค่าเริ่มต้น",
       "delete": "ลบเลเยอร์นี้"
     },
+    "leafDyes": {
+      "title": "สีจากใบไม้",
+      "main": "สีหลัก",
+      "second": "สีรอง"
+    },
     "baseColor": "สีผ้าพื้น",
     "baseColorOption": "สีผ้าพื้น {{color}}",
     "showPrintAreas": "แสดงพื้นที่วางลาย",
