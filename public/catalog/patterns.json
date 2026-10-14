@@ -30,13 +30,13 @@
       }
     },
     {
-      "id": "houndstooth",
-      "name": { "th": "ลายฟันสุนัข", "en": "Houndstooth" },
+      "id": "gingham",
+      "name": { "th": "ลายตารางกิงแฮม", "en": "Gingham check" },
       "kind": "tile",
-      "src": "/catalog/patterns/houndstooth.svg",
+      "src": "/catalog/patterns/gingham.svg",
       "recolorable": true,
-      "defaultColors": ["#4B2A4F", "#5A3458"],
-      "tags": ["geometric", "houndstooth", "placeholder"],
+      "defaultColors": ["#4B2A4F"],
+      "tags": ["geometric", "check", "placeholder"],
       "source": {
         "type": "placeholder",
         "credit": "Generated placeholder",

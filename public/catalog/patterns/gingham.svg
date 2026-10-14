@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="240" height="240">
+  <title>Gingham check — seamless tile</title>
+  <!--
+    Gingham the way it is woven: one set of bands across the warp, one across
+    the weft, each let through at the same strength, so the base shows between
+    them, a single band is a mid tone and the two crossing make the dark check.
+    The bands are semi-transparent rather than three fixed colours, so one ink
+    over any base colour gives all three tones. Band and gap are both 30,
+    repeating every 60, and the unit holds four of those, so nothing crosses
+    the edge and the tile has no seam.
+  -->
+  <g fill="var(--c1, #4b2a4f)" fill-opacity="0.45">
+    <rect x="0" y="0" width="30" height="240" />
+    <rect x="60" y="0" width="30" height="240" />
+    <rect x="120" y="0" width="30" height="240" />
+    <rect x="180" y="0" width="30" height="240" />
+    <rect x="0" y="0" width="240" height="30" />
+    <rect x="0" y="60" width="240" height="30" />
+    <rect x="0" y="120" width="240" height="30" />
+    <rect x="0" y="180" width="240" height="30" />
+  </g>
+</svg>

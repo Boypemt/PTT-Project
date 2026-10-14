@@ -36,13 +36,13 @@ for real product photography.**
 | --- | --- | --- | --- |
 | `seigaiha.svg` | Seigaiha waves | Drawn for this project | CC0-1.0 |
 | `asanoha.svg` | Asanoha hemp leaf | Drawn for this project | CC0-1.0 |
-| `houndstooth.svg` | Houndstooth | Drawn for this project | CC0-1.0 |
+| `gingham.svg` | Gingham check | Drawn for this project | CC0-1.0 |
 | `polka.svg` | Polka dots | Drawn for this project | CC0-1.0 |
 | `ikat-stripe.svg` | Ikat stripes | Drawn for this project | CC0-1.0 |
 | `vine-scroll.svg` | Vine scroll | Drawn for this project | CC0-1.0 |
 | `eco-print-scatter.svg` | Eco-print leaf scatter | Drawn for this project | CC0-1.0 |
 
-Seigaiha, asanoha, houndstooth, polka dots and ikat are **traditional motifs in
+Seigaiha, asanoha, gingham, polka dots and ikat are **traditional motifs in
 the public domain** — the geometry here was constructed from their description,
 not traced from anyone's artwork. `vine-scroll.svg` is an original drawing of a
 plain vine scroll; it makes no claim to be Thai lai and is not a copy of any
