@@ -65,6 +65,7 @@ export const leafDyeSchema = z.strictObject({
   id: idSchema,
   name: localizedSchema,
   colors: z.array(leafDyeColorSchema).min(1),
+  source: assetSourceSchema.optional(),
 })
 
 export const patternKindSchema = z.enum(['tile', 'motif'])
@@ -131,6 +132,7 @@ export const productSchema = z.strictObject({
   printAreas: z.array(printAreaSchema).min(1),
   baseColors: z.array(hexColorSchema).min(1),
   story: localizedSchema.optional(),
+  source: assetSourceSchema.optional(),
 })
 
 const layerBase = {

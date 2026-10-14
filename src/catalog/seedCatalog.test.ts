@@ -60,4 +60,16 @@ describe('the seeded catalog in public/catalog', () => {
       patterns.every((pattern) => pattern.source.type === 'placeholder'),
     ).toBe(true)
   })
+
+  it('marks the approximate leaf-dye hexes and drawn mockups as placeholders', () => {
+    const { leafDyes, products } = loadSeedCatalog()
+
+    expect(
+      leafDyes.every((leafDye) => leafDye.source?.type === 'placeholder'),
+    ).toBe(true)
+    expect(leafDyes[0]?.source?.credit).toContain('colour-matched')
+    expect(
+      products.every((product) => product.source?.type === 'placeholder'),
+    ).toBe(true)
+  })
 })

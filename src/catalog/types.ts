@@ -24,6 +24,8 @@ export type LeafDye = {
   id: string
   name: Localized
   colors: LeafDyeColor[]
+  /** Where the hex values came from; placeholder until colour-matched to fabric. */
+  source?: AssetSource
 }
 
 /** `tile` repeats across a surface; `motif` is a single placeable element. */
@@ -84,6 +86,8 @@ export type Product = {
   /** Fabric/base colour choices, as hex. */
   baseColors: string[]
   story?: Localized
+  /** Where the mockup came from; placeholder until real product photos land. */
+  source?: AssetSource
 }
 
 export type TileLayer = {

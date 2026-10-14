@@ -10,7 +10,12 @@
           "name": { "th": "เขียว", "en": "Green" },
           "hex": "#6B8E3D"
         }
-      ]
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
     },
     {
       "id": "golden-teak",
@@ -26,7 +31,12 @@
           "name": { "th": "เขียวอมม่วง", "en": "Green-purple" },
           "hex": "#6A5A72"
         }
-      ]
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
     },
     {
       "id": "marigold",
@@ -47,7 +57,12 @@
           "name": { "th": "เหลืองน้ำตาล", "en": "Yellow-brown" },
           "hex": "#A67C2E"
         }
-      ]
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
     },
     {
       "id": "teak",
@@ -63,7 +78,12 @@
           "name": { "th": "ชมพูเข้ม", "en": "Deep pink" },
           "hex": "#A23B62"
         }
-      ]
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
     },
     {
       "id": "pheka",
@@ -79,7 +99,12 @@
           "name": { "th": "เหลืองทอง", "en": "Golden yellow" },
           "hex": "#C9A13B"
         }
-      ]
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
     },
     {
       "id": "takhop",
@@ -90,7 +115,12 @@
           "name": { "th": "เหลืองน้ำตาล", "en": "Yellow-brown" },
           "hex": "#9C7A3C"
         }
-      ]
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
     }
   ]
 }

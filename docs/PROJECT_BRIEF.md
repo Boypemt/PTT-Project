@@ -47,7 +47,11 @@ Hex values are **placeholder approximations** — to be colour-matched against r
 type Localized = { th: string; en: string };
 type AssetSource = { type: 'placeholder' | 'community'; credit: string; license: string; url?: string };
 
-type LeafDye = { id: string; name: Localized; colors: { id: string; name: Localized; hex: string }[] };
+type LeafDye = {
+  id: string; name: Localized;
+  colors: { id: string; name: Localized; hex: string }[];
+  source?: AssetSource;            // placeholder until the hexes are colour-matched to fabric samples
+};
 
 type Pattern = {
   id: string;
@@ -77,6 +81,7 @@ type Product = {
   printAreas: PrintArea[];
   baseColors: string[];   // fabric/base colour choices
   story?: Localized;
+  source?: AssetSource;   // placeholder until real product photography replaces the drawn mockup
 };
 
 type Layer =
