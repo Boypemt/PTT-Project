@@ -57,6 +57,17 @@ describe('how it works', () => {
   })
 })
 
+describe('the community facts', () => {
+  it('gives the three numbers that describe the enterprise', () => {
+    renderApp()
+
+    expect(screen.getByText(th.home.facts.households.value)).toBeInTheDocument()
+    expect(screen.getByText(th.home.facts.forest.value)).toBeInTheDocument()
+    expect(screen.getByText(th.home.facts.fund.value)).toBeInTheDocument()
+    expect(screen.getByText(th.home.facts.fund.label)).toBeInTheDocument()
+  })
+})
+
 describe('the leaf colour strip', () => {
   const dyes = [
     // The placeholder pattern is printed from teak, so the catalog's

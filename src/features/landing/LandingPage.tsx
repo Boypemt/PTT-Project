@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { useCatalog } from '@/catalog'
 import { PlaceholderNote } from '@/components/PlaceholderNote'
 import { pickHeroPattern, pickHeroProduct } from '@/lib/hero'
+import { CommunityFacts } from './CommunityFacts'
 import { HeroSection } from './HeroSection'
 import { HowItWorks } from './HowItWorks'
 import { LeafColorStrip } from './LeafColorStrip'
@@ -32,6 +33,8 @@ export function LandingPage() {
       <HowItWorks />
 
       <LeafColorStrip dyes={ready?.leafDyes ?? []} />
+
+      <CommunityFacts />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-8">
         <PlaceholderNote>{t('home.placeholder')}</PlaceholderNote>

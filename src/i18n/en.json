@@ -42,6 +42,21 @@
         }
       }
     },
+    "facts": {
+      "title": "The community behind every piece",
+      "households": {
+        "value": "42",
+        "label": "households in the Pa Ton Phueng community enterprise"
+      },
+      "forest": {
+        "value": "983 rai",
+        "label": "of community forest they look after — gathering fallen leaves takes away wildfire fuel"
+      },
+      "fund": {
+        "value": "5%",
+        "label": "of revenue goes into the fund that cares for the forest"
+      }
+    },
     "leaves": {
       "title": "Colours the leaves give",
       "intro": "Every colour comes from leaves and flowers growing nearby, with no chemical dyes. The values shown are approximations until they are matched against the group's own cloth."
