@@ -89,8 +89,12 @@ const named = (pattern: Pattern) => new RegExp(`^${pattern.name.th}`)
 const addLayerButton = () =>
   screen.getByRole('button', { name: th.customize.layers.add })
 
+/** Scoped to the library: the layer list names its rows after patterns too. */
 const thumb = (pattern: Pattern) =>
-  screen.getByRole('button', { name: named(pattern) })
+  within(screen.getByRole('region', { name: th.customize.patterns })).getByRole(
+    'button',
+    { name: named(pattern) },
+  )
 
 beforeEach(() => {
   editorStore.getState().reset()

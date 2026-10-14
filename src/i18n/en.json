@@ -65,7 +65,12 @@
     "noPrintArea": "This product has no area to print a pattern on yet.",
     "layers": {
       "tapReplaces": "Tapping a pattern changes the selected layer.",
-      "add": "+ Add layer"
+      "add": "+ Add layer",
+      "title": "Layers",
+      "empty": "Nothing on the product yet. Pick a pattern on the Patterns tab to start.",
+      "moveUp": "Move {{name}} up",
+      "moveDown": "Move {{name}} down",
+      "delete": "Delete {{name}}"
     },
     "layer": {
       "title": "Selected layer",

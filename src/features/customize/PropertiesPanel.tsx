@@ -12,6 +12,7 @@ import { useDesignFor, useDesignStore } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
 import { formatPrice } from '@/lib/price'
 import { BaseColorPicker } from './BaseColorPicker'
+import { LayerList } from './LayerList'
 import { LayerProperties } from './LayerProperties'
 
 export function PropertiesPanel({ product }: { product: Product }) {
@@ -34,7 +35,8 @@ export function PropertiesPanel({ product }: { product: Product }) {
       {/* Before the settings that act on the whole product: once a pattern is
           on the cloth, this is what the visitor came back to the panel for,
           and on a phone the sheet is short enough that order decides what
-          they have to scroll for. */}
+          they have to scroll for. Which layer, then that layer's settings. */}
+      <LayerList product={product} />
       <LayerProperties product={product} />
 
       <BaseColorPicker
