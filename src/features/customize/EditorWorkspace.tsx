@@ -48,9 +48,12 @@ function Panel({
       aria-labelledby={`${panelId(panel)}-title`}
       className={`${open ? 'flex' : 'hidden'} max-h-[45vh] flex-col gap-3 overflow-y-auto bg-surface px-4 pt-3 pb-6 md:flex md:max-h-none md:rounded-2xl md:border md:border-border-soft md:p-4 ${className}`}
     >
+      {/* In the sheet the switcher above already says which panel this is, so
+          the heading only shows from `md` up — but it stays in the accessibility
+          tree at every width, because it is what names this region. */}
       <h2
         id={`${panelId(panel)}-title`}
-        className="font-display font-semibold text-ink-900"
+        className="sr-only font-display font-semibold text-ink-900 md:not-sr-only"
       >
         {title}
       </h2>
