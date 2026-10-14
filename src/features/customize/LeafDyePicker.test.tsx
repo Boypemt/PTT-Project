@@ -185,6 +185,21 @@ describe('the leaf dye colours', () => {
     expect(dyeSwatch(mango)[0]).toHaveAttribute('aria-pressed', 'false')
   })
 
+  it('gives the pattern its own dyes back when the layer is reset', async () => {
+    const user = userEvent.setup()
+    openEditor()
+    await place(user, twoColors)
+
+    await user.click(dyeSwatch(teak, 1)[0])
+    await user.click(
+      within(properties()).getByRole('button', {
+        name: th.customize.layer.reset,
+      }),
+    )
+
+    expect(layer().colors).toEqual(twoColors.defaultColors)
+  })
+
   it('leaves the rest of the layer alone', async () => {
     const user = userEvent.setup()
     openEditor()

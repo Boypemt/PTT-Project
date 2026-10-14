@@ -169,6 +169,7 @@ describe('the layer properties', () => {
       offsetX: 40,
       offsetY: 40,
       opacity: 0.4,
+      colors: ['#123456'],
     })
 
     await user.click(
@@ -177,12 +178,14 @@ describe('the layer properties', () => {
       }),
     )
 
+    // One button undoes everything done to this layer, the dyes included.
     expect(editorStore.getState().design.layers[0]).toMatchObject({
       scale: 1,
       rotation: 0,
       offsetX: 0,
       offsetY: 0,
       opacity: 1,
+      colors: seigaiha.defaultColors,
     })
   })
 
