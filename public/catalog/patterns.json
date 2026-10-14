@@ -72,13 +72,13 @@
       }
     },
     {
-      "id": "lai-scroll",
-      "name": { "th": "ลายกนกเครือวัลย์", "en": "Lai kranok-inspired scroll" },
+      "id": "vine-scroll",
+      "name": { "th": "ลายเครือเถา", "en": "Vine scroll" },
       "kind": "tile",
-      "src": "/catalog/patterns/lai-scroll.svg",
+      "src": "/catalog/patterns/vine-scroll.svg",
       "recolorable": true,
       "defaultColors": ["#6B8E3D", "#E8B923"],
-      "tags": ["thai", "scroll", "original", "placeholder"],
+      "tags": ["vine", "scroll", "original", "placeholder"],
       "source": {
         "type": "placeholder",
         "credit": "Generated placeholder",
