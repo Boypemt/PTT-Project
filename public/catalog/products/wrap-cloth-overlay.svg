@@ -1,29 +1,26 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
-  <title>Gift wrap cloth — creases and hem (multiply)</title>
+  <title>Gift wrap cloth — folds and hem (multiply)</title>
   <defs>
     <clipPath id="cloth">
       <path d="M500 112C624 196 804 376 888 500C804 624 624 804 500 888C376 804 196 624 112 500C196 376 376 196 500 112Z" />
     </clipPath>
-    <linearGradient id="creaseV" x1="0" x2="1" y1="0" y2="0">
+    <linearGradient id="fold" x1="0" x2="1" y1="0" y2="0">
       <stop offset="0" stop-color="#000" stop-opacity="0" />
-      <stop offset="0.5" stop-color="#000" stop-opacity="0.17" />
+      <stop offset="0.5" stop-color="#000" stop-opacity="0.12" />
       <stop offset="1" stop-color="#000" stop-opacity="0" />
     </linearGradient>
-    <linearGradient id="creaseH" x1="0" x2="0" y1="0" y2="1">
-      <stop offset="0" stop-color="#000" stop-opacity="0" />
-      <stop offset="0.5" stop-color="#000" stop-opacity="0.13" />
-      <stop offset="1" stop-color="#000" stop-opacity="0" />
+    <linearGradient id="sweep" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#000" stop-opacity="0.09" />
+      <stop offset="0.5" stop-color="#000" stop-opacity="0" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.13" />
     </linearGradient>
   </defs>
   <g clip-path="url(#cloth)">
+    <rect x="100" y="100" width="800" height="800" fill="url(#sweep)" />
     <g transform="rotate(45 500 500)">
-      <rect x="248" y="248" width="96" height="504" fill="url(#creaseV)" />
-      <rect x="656" y="248" width="96" height="504" fill="url(#creaseV)" opacity="0.8" />
-      <rect x="248" y="300" width="504" height="88" fill="url(#creaseH)" opacity="0.9" />
-      <rect x="248" y="620" width="504" height="88" fill="url(#creaseH)" opacity="0.75" />
+      <rect x="300" y="236" width="150" height="528" fill="url(#fold)" />
+      <rect x="566" y="236" width="130" height="528" fill="url(#fold)" opacity="0.75" />
     </g>
-    <path d="M500 112V888" stroke="#000" stroke-opacity="0.1" stroke-width="12" />
-    <path d="M112 500H888" stroke="#000" stroke-opacity="0.08" stroke-width="12" />
   </g>
   <path d="M500 112C624 196 804 376 888 500C804 624 624 804 500 888C376 804 196 624 112 500C196 376 376 196 500 112Z" fill="none" stroke="#000" stroke-opacity="0.2" stroke-width="3" />
   <path d="M500 150C616 226 774 384 850 500C774 616 616 774 500 850C384 774 226 616 150 500C226 384 384 226 500 150Z" fill="none" stroke="#000" stroke-opacity="0.16" stroke-width="2" stroke-dasharray="10 9" />
