@@ -3,15 +3,12 @@
  *
  * The route component resolves the id in the URL against the catalog — it
  * never names a product itself — and the editor below it works from whatever
- * product that is. What sits in the canvas area is a still `ProductMockup` for
- * now; the react-konva stage replaces it in the next PR (07b in
- * docs/ROADMAP.md), and matching this look is how that one is judged.
+ * product that is.
  */
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router-dom'
 import { useCatalog, type Product } from '@/catalog'
-import { ProductMockup } from '@/components/ProductMockup'
-import { useDesignFor } from '@/editor/useDesignStore'
+import { EditorCanvas } from '@/editor/EditorCanvas'
 import { useLocalized } from '@/i18n/useLocalized'
 import { EditorWorkspace } from './EditorWorkspace'
 import { ProductNotFound } from './ProductNotFound'
@@ -19,7 +16,6 @@ import { ProductNotFound } from './ProductNotFound'
 function ProductEditor({ product }: { product: Product }) {
   const { t } = useTranslation()
   const localized = useLocalized()
-  const { baseColor } = useDesignFor(product)
 
   return (
     <section className="flex flex-1 flex-col">
@@ -40,11 +36,7 @@ function ProductEditor({ product }: { product: Product }) {
       </header>
 
       <EditorWorkspace product={product}>
-        <ProductMockup
-          mockup={product.mockup}
-          baseColor={baseColor}
-          className="max-h-full w-full max-w-lg rounded-xl"
-        />
+        <EditorCanvas product={product} />
       </EditorWorkspace>
     </section>
   )

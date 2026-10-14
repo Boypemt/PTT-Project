@@ -279,17 +279,42 @@ describe('selectPrintArea', () => {
   })
 })
 
+describe('setShowPrintAreas', () => {
+  it('starts off and turns on and off again', () => {
+    const { store } = openedStore()
+
+    expect(store.getState().showPrintAreas).toBe(false)
+
+    store.getState().setShowPrintAreas(true)
+    expect(store.getState().showPrintAreas).toBe(true)
+
+    store.getState().setShowPrintAreas(false)
+    expect(store.getState().showPrintAreas).toBe(false)
+  })
+
+  it('leaves the design alone — it is a way of looking, not a change', () => {
+    const { store } = openedStore(1)
+    const before = store.getState().design
+
+    store.getState().setShowPrintAreas(true)
+
+    expect(store.getState().design).toBe(before)
+  })
+})
+
 describe('reset', () => {
   it('goes back to the empty state', () => {
     const { store } = openedStore(2)
 
     store.getState().setBaseColor('#6B8E3D')
+    store.getState().setShowPrintAreas(true)
     store.getState().reset()
 
     expect(store.getState()).toMatchObject({
       design: emptyDesign,
       selectedLayerId: null,
       selectedPrintAreaId: null,
+      showPrintAreas: false,
     })
   })
 })

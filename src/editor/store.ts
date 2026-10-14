@@ -39,6 +39,12 @@ export type EditorState = {
   design: Design
   selectedLayerId: string | null
   selectedPrintAreaId: string | null
+  /**
+   * Whether the canvas outlines where patterns are allowed to print. A way of
+   * looking at the design rather than part of it, so it stays out of `Design`
+   * like the selection does.
+   */
+  showPrintAreas: boolean
 }
 
 export type EditorActions = {
@@ -57,6 +63,7 @@ export type EditorActions = {
   reorderLayer: (id: string, direction: ReorderDirection) => void
   selectLayer: (id: string | null) => void
   selectPrintArea: (id: string | null) => void
+  setShowPrintAreas: (show: boolean) => void
   /** Back to the empty state, as if no product had been opened yet. */
   reset: () => void
 }
@@ -75,6 +82,7 @@ const initialState: EditorState = {
   design: emptyDesign,
   selectedLayerId: null,
   selectedPrintAreaId: null,
+  showPrintAreas: false,
 }
 
 /**
@@ -205,6 +213,8 @@ export const createEditorStore = () =>
     },
 
     selectPrintArea: (id) => set({ selectedPrintAreaId: id }),
+
+    setShowPrintAreas: (show) => set({ showPrintAreas: show }),
 
     reset: () => set(initialState),
   }))
