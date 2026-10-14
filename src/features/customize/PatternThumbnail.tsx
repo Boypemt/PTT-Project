@@ -9,8 +9,13 @@
  * own swatch.
  *
  * The placeholder badge comes from `source.type`, so an entry the designer
- * replaces loses it by an edit to patterns.json. It is part of the button's
- * text rather than a tooltip, because a tooltip is nothing on a phone.
+ * replaces loses it by an edit to patterns.json. It is written on the button
+ * rather than hung off a tooltip, because a tooltip is nothing on a phone.
+ *
+ * The button says its own name instead of letting one be assembled from the
+ * text inside it: a name built from several elements picks up whatever spacing
+ * the browser decides on between them, and this is a name that tests and
+ * `npm run shot -- --click` have to be able to write down exactly.
  */
 import { useTranslation } from 'react-i18next'
 import type { Pattern } from '@/catalog'
@@ -26,10 +31,16 @@ export function PatternThumbnail({
   const { t } = useTranslation()
   const localized = useLocalized()
 
+  const name = localized(pattern.name)
+  const isPlaceholder = pattern.source.type === 'placeholder'
+
   return (
     <li className="w-24 shrink-0 md:w-auto">
       <button
         type="button"
+        aria-label={
+          isPlaceholder ? `${name} (${t('common.placeholderLabel')})` : name
+        }
         onClick={onPick}
         className="flex w-full flex-col items-start gap-1 rounded-xl border border-border-soft bg-surface p-1.5 text-left transition-colors hover:border-forest-600 hover:bg-paper-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600"
       >
@@ -39,11 +50,18 @@ export function PatternThumbnail({
           }}
           className="block aspect-square w-full rounded-lg border border-border-soft bg-paper-50 bg-[length:60%] bg-repeat"
         />
-        <span className="text-xs leading-tight font-medium text-ink-900">
-          {localized(pattern.name)}
+        {/* Already in the button's own label, so not read out twice. */}
+        <span
+          aria-hidden="true"
+          className="text-xs leading-tight font-medium text-ink-900"
+        >
+          {name}
         </span>
-        {pattern.source.type === 'placeholder' ? (
-          <span className="rounded-full bg-marigold-100 px-1.5 text-[0.625rem] font-semibold text-marigold-700">
+        {isPlaceholder ? (
+          <span
+            aria-hidden="true"
+            className="rounded-full bg-marigold-100 px-1.5 text-[0.625rem] font-semibold text-marigold-700"
+          >
             {t('common.placeholderLabel')}
           </span>
         ) : null}
