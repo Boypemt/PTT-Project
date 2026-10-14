@@ -23,12 +23,12 @@
       "colors": [
         {
           "id": "pinkish-green",
-          "name": { "th": "เขียวอมชมพู", "en": "Pinkish green" },
+          "name": { "th": "ชมพูอมเขียว", "en": "Pinkish green" },
           "hex": "#B98A8A"
         },
         {
           "id": "green-purple",
-          "name": { "th": "เขียวอมม่วง", "en": "Green-purple" },
+          "name": { "th": "เขียวม่วง", "en": "Green-purple" },
           "hex": "#6A5A72"
         }
       ],
@@ -44,17 +44,17 @@
       "colors": [
         {
           "id": "golden-shower-yellow",
-          "name": { "th": "เหลืองคูน", "en": "Golden shower yellow" },
+          "name": { "th": "เหลืองดอกคูน", "en": "Golden shower yellow" },
           "hex": "#E8B923"
         },
         {
           "id": "gold",
-          "name": { "th": "ทอง", "en": "Gold" },
+          "name": { "th": "เหลืองทอง", "en": "Gold" },
           "hex": "#C9962B"
         },
         {
           "id": "yellow-brown",
-          "name": { "th": "เหลืองน้ำตาล", "en": "Yellow-brown" },
+          "name": { "th": "เหลืองอมน้ำตาล", "en": "Yellow-brown" },
           "hex": "#A67C2E"
         }
       ],
@@ -112,7 +112,7 @@
       "colors": [
         {
           "id": "yellow-brown",
-          "name": { "th": "เหลืองน้ำตาล", "en": "Yellow-brown" },
+          "name": { "th": "เหลืองออกน้ำตาล", "en": "Yellow-brown" },
           "hex": "#9C7A3C"
         }
       ],
