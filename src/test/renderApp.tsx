@@ -4,7 +4,8 @@
  * screen, and what happens when I click.
  */
 import { render, type RenderResult } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
+import { useEffect } from 'react'
+import { MemoryRouter, useLocation } from 'react-router-dom'
 import { AppRoutes } from '@/app/AppRoutes'
 import { CatalogProvider } from '@/catalog'
 import {
@@ -21,6 +22,25 @@ export const validCatalogFiles: Record<string, unknown> = {
   'products.json': catalogFile([makeProduct()]),
 }
 
+let route = ''
+
+/**
+ * Where the router is now, as `"/products?line=fabric"`. Reported through a
+ * variable rather than into the DOM, so it cannot be picked up by the queries
+ * a test runs against the page.
+ */
+export const currentRoute = (): string => route
+
+function RouteProbe() {
+  const location = useLocation()
+
+  useEffect(() => {
+    route = `${location.pathname}${location.search}`
+  }, [location])
+
+  return null
+}
+
 type RenderAppOptions = {
   route?: string
   /** Catalog bodies served by file name. Ignored when `fetchImpl` is given. */
@@ -30,13 +50,16 @@ type RenderAppOptions = {
 }
 
 export function renderApp({
-  route = '/',
+  route: initialRoute = '/',
   files = validCatalogFiles,
   fetchImpl = fetchFromFiles(files),
 }: RenderAppOptions = {}): RenderResult {
+  route = initialRoute
+
   return render(
     <CatalogProvider baseUrl="/catalog/" fetchImpl={fetchImpl}>
-      <MemoryRouter initialEntries={[route]}>
+      <MemoryRouter initialEntries={[initialRoute]}>
+        <RouteProbe />
         <AppRoutes />
       </MemoryRouter>
     </CatalogProvider>,

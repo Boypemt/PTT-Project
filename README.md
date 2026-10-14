@@ -51,7 +51,7 @@ npm run typecheck # TypeScript project references, no emit
 | Path                    | Page                                                |
 | ----------------------- | --------------------------------------------------- |
 | `/`                     | Landing — the community story (placeholder for now) |
-| `/products`             | Product picker                                      |
+| `/products`             | Product picker — `?line=fabric` filters by line     |
 | `/customize/:productId` | The customizer                                      |
 | `/dev/catalog`          | Internal preview of every catalog asset             |
 

@@ -14,6 +14,7 @@
 import { useState } from 'react'
 import { useCatalog, type Pattern, type Product } from '@/catalog'
 import { useNoIndex } from '@/app/useNoIndex'
+import { ProductMockup } from '@/components/ProductMockup'
 import { useLocalized } from '@/i18n/useLocalized'
 
 const PRINT_AREA_INK = '#a23b62'
@@ -79,26 +80,11 @@ function ProductCard({
 
   return (
     <li className="rounded-xl border border-border-soft bg-surface p-3">
-      <div className="relative aspect-square overflow-hidden rounded-lg bg-paper-100">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0"
-          style={{
-            backgroundColor: baseColor,
-            maskImage: `url(${mockup.base})`,
-            WebkitMaskImage: `url(${mockup.base})`,
-            maskSize: 'contain',
-            maskRepeat: 'no-repeat',
-            maskPosition: 'center',
-          }}
-        />
-        {mockup.overlay ? (
-          <img
-            src={mockup.overlay}
-            alt=""
-            className="absolute inset-0 size-full mix-blend-multiply"
-          />
-        ) : null}
+      <ProductMockup
+        mockup={mockup}
+        baseColor={baseColor}
+        className="rounded-lg"
+      >
         {showPrintAreas ? (
           <svg
             aria-hidden="true"
@@ -131,7 +117,7 @@ function ProductCard({
             )}
           </svg>
         ) : null}
-      </div>
+      </ProductMockup>
 
       <h3 className="mt-3 font-medium text-ink-900">
         {localized(product.name)}

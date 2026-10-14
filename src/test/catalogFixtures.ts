@@ -57,6 +57,7 @@ export function makeProduct(overrides: Partial<Product> = {}): Product {
       },
     ],
     baseColors: ['#F3EADA'],
+    tags: [],
     ...overrides,
   }
 }

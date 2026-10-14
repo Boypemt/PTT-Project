@@ -28,8 +28,23 @@
   },
   "products": {
     "title": "Choose a product",
-    "intro": "Eco-print fabric and dipterocarp-leaf plates from the Pa Ton Phueng community enterprise.",
-    "placeholder": "Placeholder page — the product list arrives in a later step."
+    "intro": "Choose a product to design with community patterns",
+    "customize": "Customize",
+    "customizeProduct": "Customize {{product}}",
+    "priceComingSoon": "Price coming soon",
+    "bestseller": "Best seller",
+    "concept": "Concept",
+    "filterLabel": "Filter by line",
+    "count_one": "{{count}} product",
+    "count_other": "{{count}} products",
+    "empty": "No products in this line yet — try another one.",
+    "lines": {
+      "all": "All",
+      "fabric": "Fabric",
+      "leaf": "Leaf",
+      "gift": "Gift",
+      "drinkware": "Drinkware"
+    }
   },
   "customize": {
     "title": "Design your print",

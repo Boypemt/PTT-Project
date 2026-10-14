@@ -85,6 +85,8 @@ export type Product = {
   printAreas: PrintArea[]
   /** Fabric/base colour choices, as hex. */
   baseColors: string[]
+  /** Free-form marks the UI can read, e.g. `bestseller`. Defaults to empty. */
+  tags: string[]
   story?: Localized
   /** Where the mockup came from; placeholder until real product photos land. */
   source?: AssetSource

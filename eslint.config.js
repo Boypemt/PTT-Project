@@ -32,6 +32,13 @@ export default tseslint.config(
     languageOptions: { globals: globals.browser },
   },
 
+  // Tests and test helpers are never hot-reloaded, so a file there may hold a
+  // helper component next to the plain functions a test imports.
+  {
+    files: ['src/test/**/*.{ts,tsx}', 'src/**/*.test.{ts,tsx}'],
+    rules: { 'react-refresh/only-export-components': 'off' },
+  },
+
   // Config files run in Node and are not part of a type-checked project.
   {
     files: ['*.{js,ts}'],
