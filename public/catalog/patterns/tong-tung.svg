@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <title>Tong tung (dipterocarp) leaf — eco-print motif</title>
+  <path d="M200 32C310 80 356 226 200 368C44 226 90 80 200 32Z" fill="var(--c1, #4a3222)" fill-opacity="0.8" />
+  <g fill="none" stroke="var(--c2, #9c7a3c)" stroke-opacity="0.5" stroke-width="5" stroke-linecap="round">
+    <path d="M200 356V46" stroke-width="7" />
+    <path d="M200 330C232 320 248 304 258 282M200 288C244 278 270 258 284 230M200 244C248 234 278 212 292 182M200 198C244 188 272 166 284 138M200 152C238 142 260 122 270 98M200 108C228 100 244 84 250 66" />
+    <path d="M200 330C168 320 152 304 142 282M200 288C156 278 130 258 116 230M200 244C152 234 122 212 108 182M200 198C156 188 128 166 116 138M200 152C162 142 140 122 130 98M200 108C172 100 156 84 150 66" />
+  </g>
+  <path d="M200 32C310 80 356 226 200 368C44 226 90 80 200 32Z" fill="none" stroke="var(--c1, #4a3222)" stroke-opacity="0.45" stroke-width="3" />
+  <path d="M200 368V394" stroke="var(--c1, #4a3222)" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round" />
+</svg>
