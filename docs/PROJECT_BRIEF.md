@@ -92,10 +92,11 @@ type Design = { version: 1; productId: string; baseColor: string; layers: Layer[
 ```
 
 ## Placeholder patterns (until the designer delivers)
-Generated in code as SVG (no licensing risk) plus a few optional public-domain classics:
-- Geometric tiles: seigaiha (waves), asanoha (hemp leaf), houndstooth, polka, ikat-style stripes, Thai-style lai kranok-inspired simple scroll (original drawing, not copied).
-- "Eco-print style" leaf motifs drawn as SVG silhouettes: teak, mango, marigold, pheka, takhop, tong-tung leaf.
-- Optional public-domain images (William Morris *Strawberry Thief*, *Willow Bough*) — only with entry in `docs/CREDITS.md`.
+Hand-written SVG, nothing downloaded, every file CC0-1.0 and listed in `docs/CREDITS.md`:
+- Tiles: seigaiha (waves), asanoha (hemp leaf), gingham check, polka, ikat stripes, vine scroll
+  (original drawing, not copied), eco-print leaf scatter.
+- "Eco-print style" leaf motifs drawn as SVG silhouettes: teak, golden teak, mango, marigold flower,
+  pheka, takhop, tong-tung leaf.
 
 ## Out of scope for the prototype
 Real payments, user accounts, backend/database, inventory. "Order" = generate a summary + PNG and share via
