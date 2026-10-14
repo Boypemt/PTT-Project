@@ -2,7 +2,7 @@
  * Guards the real files in public/catalog: they must pass the same validation
  * the browser runs, so a bad edit fails here rather than in front of a visitor.
  */
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { validateCatalogRefs } from './crossRefs'
 import { CATALOG_FILES } from './files'
@@ -33,6 +33,23 @@ function loadSeedCatalog(): Catalog {
   }
 }
 
+/**
+ * Every string in the catalog that names an asset. Walking the whole tree
+ * rather than listing fields keeps the check honest when the model grows a
+ * second overlay or a thumbnail.
+ */
+function collectAssetPaths(value: unknown, found: string[] = []): string[] {
+  if (typeof value === 'string') {
+    if (value.startsWith('/catalog/')) found.push(value)
+  } else if (Array.isArray(value)) {
+    value.forEach((entry) => collectAssetPaths(entry, found))
+  } else if (typeof value === 'object' && value !== null) {
+    Object.values(value).forEach((entry) => collectAssetPaths(entry, found))
+  }
+
+  return found
+}
+
 describe('the seeded catalog in public/catalog', () => {
   it('validates, including across files', () => {
     expect(() => validateCatalogRefs(loadSeedCatalog())).not.toThrow()
@@ -50,6 +67,36 @@ describe('the seeded catalog in public/catalog', () => {
       'takhop',
     ])
     expect(leafDyes.flatMap((leafDye) => leafDye.colors)).toHaveLength(11)
+  })
+
+  it('carries all eleven products from the brief', () => {
+    const { products } = loadSeedCatalog()
+
+    expect(products.map((product) => product.id)).toEqual([
+      'shawl-cotton',
+      'shawl-silk',
+      'handkerchief',
+      'shirt-women',
+      'shirt-men',
+      'wrap-cloth',
+      'leaf-plate',
+      'fan',
+      'keychain',
+      'mug',
+      'tumbler',
+    ])
+    expect(
+      products
+        .filter((product) => product.status === 'planned')
+        .map((product) => product.price),
+    ).toEqual([null, null])
+  })
+
+  it('references only asset files that exist under public/', () => {
+    const paths = [...new Set(collectAssetPaths(loadSeedCatalog()))].sort()
+
+    expect(paths.length).toBeGreaterThan(0)
+    expect(paths.filter((path) => !existsSync(`public${path}`))).toEqual([])
   })
 
   it('marks every pattern as a placeholder until the designer delivers', () => {
