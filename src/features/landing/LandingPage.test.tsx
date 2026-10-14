@@ -8,8 +8,8 @@
 import { screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import th from '@/i18n/th.json'
-import { makeProduct } from '@/test/catalogFixtures'
-import { renderApp } from '@/test/renderApp'
+import { catalogFile, makeLeafDye, makeProduct } from '@/test/catalogFixtures'
+import { renderApp, validCatalogFiles } from '@/test/renderApp'
 
 const product = makeProduct()
 const previewCaption = th.home.preview.replace('{{product}}', product.name.th)
@@ -38,5 +38,63 @@ describe('the landing hero', () => {
     renderApp()
 
     expect(screen.getByText(th.home.placeholder)).toBeInTheDocument()
+  })
+})
+
+describe('how it works', () => {
+  it('names the three steps in order', () => {
+    renderApp()
+
+    const steps = screen
+      .getAllByRole('heading', { level: 3 })
+      .map((heading) => heading.textContent)
+
+    expect(steps).toEqual([
+      th.home.how.steps.product.title,
+      th.home.how.steps.pattern.title,
+      th.home.how.steps.colors.title,
+    ])
+  })
+})
+
+describe('the leaf colour strip', () => {
+  const dyes = [
+    // The placeholder pattern is printed from teak, so the catalog's
+    // cross-references want that leaf to exist.
+    makeLeafDye(),
+    makeLeafDye({
+      id: 'marigold',
+      name: { th: 'ดาวเรือง', en: 'Marigold' },
+      colors: [
+        { id: 'gold', name: { th: 'เหลืองทอง', en: 'Gold' }, hex: '#C9962B' },
+        {
+          id: 'yellow-brown',
+          name: { th: 'เหลืองอมน้ำตาล', en: 'Yellow-brown' },
+          hex: '#A67C2E',
+        },
+      ],
+    }),
+  ]
+
+  it('shows every leaf dye in the catalog, named and in its own colours', async () => {
+    renderApp({
+      files: { ...validCatalogFiles, 'leaf-dyes.json': catalogFile(dyes) },
+    })
+
+    expect(await screen.findByText('ดาวเรือง')).toBeInTheDocument()
+    // Each colour is a band of the leaf's bar, named for a screen reader by
+    // the text inside it.
+    expect(screen.getByText('เหลืองทอง').parentElement).toHaveStyle({
+      backgroundColor: '#C9962B',
+    })
+    expect(screen.getByText('เหลืองอมน้ำตาล').parentElement).toHaveStyle({
+      backgroundColor: '#A67C2E',
+    })
+  })
+
+  it('leaves the strip out while there is no catalog', () => {
+    renderApp()
+
+    expect(screen.queryByText(th.home.leaves.title)).not.toBeInTheDocument()
   })
 })

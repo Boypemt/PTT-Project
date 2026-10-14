@@ -13,6 +13,8 @@ import { useCatalog } from '@/catalog'
 import { PlaceholderNote } from '@/components/PlaceholderNote'
 import { pickHeroPattern, pickHeroProduct } from '@/lib/hero'
 import { HeroSection } from './HeroSection'
+import { HowItWorks } from './HowItWorks'
+import { LeafColorStrip } from './LeafColorStrip'
 
 export function LandingPage() {
   const { t } = useTranslation()
@@ -26,6 +28,10 @@ export function LandingPage() {
         product={ready === null ? undefined : pickHeroProduct(ready.products)}
         tile={ready === null ? undefined : pickHeroPattern(ready.patterns)}
       />
+
+      <HowItWorks />
+
+      <LeafColorStrip dyes={ready?.leafDyes ?? []} />
 
       <section className="mx-auto w-full max-w-6xl px-4 py-8">
         <PlaceholderNote>{t('home.placeholder')}</PlaceholderNote>

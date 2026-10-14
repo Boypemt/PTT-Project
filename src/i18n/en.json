@@ -25,6 +25,27 @@
     "intro": "At Pa Ton Phueng Community Enterprise in Mae Pong, Doi Saket, fallen leaves are gathered out of the community forest and printed onto cloth by hand — no chemicals, and no two pieces alike.",
     "cta": "Design your own",
     "preview": "A sample print on the {{product}}",
+    "how": {
+      "title": "Design it in three steps",
+      "steps": {
+        "product": {
+          "title": "Choose a product",
+          "body": "A shawl, a handkerchief, a shirt, a leaf plate or a small gift."
+        },
+        "pattern": {
+          "title": "Choose a pattern",
+          "body": "Pick patterns from the community's library, layer them, move and turn them."
+        },
+        "colors": {
+          "title": "Adjust the leaf colours",
+          "body": "Recolour the print with dyes the leaves themselves give — teak, marigold, oroxylum."
+        }
+      }
+    },
+    "leaves": {
+      "title": "Colours the leaves give",
+      "intro": "Every colour comes from leaves and flowers growing nearby, with no chemical dyes. The values shown are approximations until they are matched against the group's own cloth."
+    },
     "placeholder": "Prototype — the patterns are placeholders until the community's designer delivers the real ones."
   },
   "products": {
