@@ -6,6 +6,7 @@
  *   npm run shot -- /customize/shawl-cotton
  *   npm run shot -- /customize/shawl-cotton --mobile
  *   npm run shot -- /customize/shawl-cotton --click "ลายใบไม้กระจาย" --as shawl-scatter
+ *   npm run shot -- /customize/shawl-cotton --click "ลายจุด" --set "ความเข้มของลาย=0.6"
  *
  * On Git Bash for Windows, drop the leading slash — `npm run shot --
  * customize/shawl-cotton` — because that shell rewrites an argument starting
@@ -13,7 +14,8 @@
  *
  * It serves `dist/` with `vite preview` on a free port, opens the path, waits
  * for the network to go quiet (the catalog JSON is fetched by the page) and
- * for the webfonts, presses any `--click` buttons in the order given, writes
+ * for the webfonts, runs any `--click` and `--set` steps in the order given,
+ * writes
  * `screenshots/<slug>-<desktop|mobile>.png`, then shuts the server down. It
  * never builds: a stale `dist/` would be a screenshot of the wrong code, so a
  * missing one is an error instead.
@@ -33,7 +35,7 @@ import { createServer } from 'node:net'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { chromium, devices } from '@playwright/test'
+import { chromium, devices, type Page } from '@playwright/test'
 import { preview } from 'vite'
 
 /** Wide enough for the editor's three columns. */
@@ -46,24 +48,29 @@ const OUT_DIR = 'screenshots'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 
+/** One thing to do to the page before the shutter. */
+export type Step =
+  | { kind: 'click'; name: string }
+  | { kind: 'set'; label: string; value: string }
+
 type Options = {
   pagePath: string
   mobile: boolean
-  /** Accessible names of buttons to press, in order, before the shot. */
-  clicks: string[]
+  /** What to do before the shot, in the order it was asked for. */
+  steps: Step[]
   /** Overrides the file name the path would give. */
   as?: string
 }
 
 const USAGE =
-  'usage: npm run shot -- <path> [--mobile] [--click "<button name>"]… [--as <name>]'
+  'usage: npm run shot -- <path> [--mobile] [--click "<button name>"]… [--set "<label>=<value>"]… [--as <name>]'
 
 /** Flags that take the next argument as their value. */
-const VALUE_FLAGS = ['--click', '--as']
+const VALUE_FLAGS = ['--click', '--set', '--as']
 
 export function parseArgs(argv: string[]): Options {
   const paths: string[] = []
-  const clicks: string[] = []
+  const steps: Step[] = []
   let mobile = false
   let as: string | undefined
 
@@ -80,8 +87,20 @@ export function parseArgs(argv: string[]): Options {
       // A missing value would otherwise swallow the next flag, or the path.
       if (value === undefined || value.startsWith('--')) throw new Error(USAGE)
 
-      if (arg === '--click') clicks.push(value)
-      else as = value
+      if (arg === '--click') {
+        steps.push({ kind: 'click', name: value })
+      } else if (arg === '--set') {
+        const at = value.indexOf('=')
+        if (at < 1) throw new Error(USAGE)
+
+        steps.push({
+          kind: 'set',
+          label: value.slice(0, at),
+          value: value.slice(at + 1),
+        })
+      } else {
+        as = value
+      }
 
       i += 1
       continue
@@ -99,8 +118,58 @@ export function parseArgs(argv: string[]): Options {
   return {
     pagePath: pagePath.startsWith('/') ? pagePath : `/${pagePath}`,
     mobile,
-    clicks,
+    steps,
     ...(as === undefined ? {} : { as }),
+  }
+}
+
+/** As many arrow presses as a slider can need before something is wrong. */
+const MAX_PRESSES = 400
+
+/**
+ * Does one step to the page.
+ *
+ * `--set` walks a slider there with the keyboard — Home, then one arrow per
+ * step — rather than writing its value. `fill()` refuses an input nobody can
+ * type into, and setting `value` from script leaves React none the wiser,
+ * since it listens for the events a real key press sends. The keyboard is also
+ * the thing being photographed working.
+ */
+async function run(page: Page, step: Step): Promise<void> {
+  if (step.kind === 'click') {
+    await page.getByRole('button', { name: step.name, exact: true }).click()
+    return
+  }
+
+  const slider = page.getByLabel(step.label, { exact: true })
+  const [min, stride] = await Promise.all(
+    ['min', 'step'].map(async (name) =>
+      Number(await slider.getAttribute(name)),
+    ),
+  )
+
+  if (!Number.isFinite(min) || !(stride > 0)) {
+    throw new Error(`--set needs a slider with min and step: "${step.label}"`)
+  }
+
+  const presses = Math.round((Number(step.value) - min) / stride)
+
+  if (!Number.isInteger(presses) || presses < 0 || presses > MAX_PRESSES) {
+    throw new Error(`--set cannot reach ${step.value} on "${step.label}"`)
+  }
+
+  await slider.press('Home')
+  for (let i = 0; i < presses; i += 1) await slider.press('ArrowRight')
+
+  // A control that is in the DOM but off screen — the sheet's other tab on a
+  // phone — takes the key presses nowhere. Better a failed run than a
+  // screenshot quietly showing the value nobody asked for.
+  const reached = Number(await slider.inputValue())
+
+  if (Math.abs(reached - Number(step.value)) > stride / 2) {
+    throw new Error(
+      `"${step.label}" stayed at ${String(reached)}, not ${step.value} — is it on screen at this width?`,
+    )
   }
 }
 
@@ -137,7 +206,7 @@ function freePort(): Promise<number> {
   })
 }
 
-async function shoot({ pagePath, mobile, clicks, as }: Options): Promise<void> {
+async function shoot({ pagePath, mobile, steps, as }: Options): Promise<void> {
   if (!existsSync(path.join(root, 'dist', 'index.html'))) {
     throw new Error('dist/ is missing — run `npm run build` first')
   }
@@ -171,11 +240,9 @@ async function shoot({ pagePath, mobile, clicks, as }: Options): Promise<void> {
     })
     await page.evaluate('document.fonts.ready')
 
-    for (const name of clicks) {
-      await page.getByRole('button', { name, exact: true }).click()
-    }
+    for (const step of steps) await run(page, step)
 
-    if (clicks.length > 0) {
+    if (steps.length > 0) {
       // A click can start a pattern loading, and the canvas redraws once it is
       // decoded — which is after the network has gone quiet again.
       await page.waitForLoadState('networkidle')

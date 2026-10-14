@@ -23,9 +23,12 @@ import { useLocalized } from '@/i18n/useLocalized'
 
 export function PatternThumbnail({
   pattern,
+  current = false,
   onPick,
 }: {
   pattern: Pattern
+  /** Whether this is the pattern on the layer a tap would change. */
+  current?: boolean
   onPick: () => void
 }) {
   const { t } = useTranslation()
@@ -41,8 +44,15 @@ export function PatternThumbnail({
         aria-label={
           isPlaceholder ? `${name} (${t('common.placeholderLabel')})` : name
         }
+        // The pattern already on the selected layer, so the panel shows what a
+        // tap would be changing away from.
+        aria-pressed={current}
         onClick={onPick}
-        className="flex w-full flex-col items-start gap-1 rounded-xl border border-border-soft bg-surface p-1.5 text-left transition-colors hover:border-forest-600 hover:bg-paper-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600"
+        className={`flex w-full flex-col items-start gap-1 rounded-xl border bg-surface p-1.5 text-left transition-colors hover:border-forest-600 hover:bg-paper-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 ${
+          current
+            ? 'border-forest-600 ring-2 ring-forest-600'
+            : 'border-border-soft'
+        }`}
       >
         <span
           style={{

@@ -1,6 +1,7 @@
 # Roadmap — one prompt = one branch = one PR
 
 Merge each PR into `main` (squash-merge OFF; keep the small commits) before starting the next, unless noted as parallel-safe.
+A prompt that turns out too large for one reviewable PR is split into lettered rows, as task 08 was.
 Every PR gets a Vercel preview link once step 02 is done.
 
 | # | Branch | PR title | Prompt | Depends on |
@@ -13,9 +14,11 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 06 | `feat/product-picker` | feat(app): product picker page | `prompts/06-product-picker.md` | 04, 05 |
 | 07a | `feat/editor-canvas` | feat(editor): design store, geometry and editor page layout | `prompts/07-editor-canvas.md` | 06 |
 | 07b | `feat/editor-konva` | feat(editor): canvas with mockup and print-area clipping | `prompts/07-editor-canvas.md` | 07a |
-| 08 | `feat/pattern-panel` | feat(editor): pattern library and tile layers | `prompts/08-pattern-panel.md` | 07b |
-| 09 | `feat/motif-transform` | feat(editor): placeable leaf motifs with transform handles | `prompts/09-motif-transform.md` | 08 |
-| 10 | `feat/leaf-dye-colors` | feat(editor): recolour by leaf dye and base colour | `prompts/10-leaf-dye-colors.md` | 08 |
+| 08a | `feat/tile-rendering` | feat(editor): render tile layers and split the customizer chunk ([#12](https://github.com/Boypemt/PTT-Project/pull/12)) | `prompts/08-pattern-panel.md` | 07b |
+| 08b | `feat/pattern-panel` | feat(editor): pattern library and tile layers ([#13](https://github.com/Boypemt/PTT-Project/pull/13)) | `prompts/08-pattern-panel.md` | 08a |
+| 08c | `feat/layer-controls` | feat(editor): layer properties and layer list | `prompts/08-pattern-panel.md` | 08b |
+| 09 | `feat/motif-transform` | feat(editor): placeable leaf motifs with transform handles | `prompts/09-motif-transform.md` | 08c |
+| 10 | `feat/leaf-dye-colors` | feat(editor): recolour by leaf dye and base colour | `prompts/10-leaf-dye-colors.md` | 08c |
 | 11 | `feat/history-persist` | feat(editor): undo/redo, autosave and share link | `prompts/11-history-persist.md` | 09, 10 |
 | 12 | `feat/export-request` | feat(export): PNG export and order request summary | `prompts/12-export-request.md` | 11 |
 | 13 | `feat/landing-story` | feat(app): landing page with community story | `prompts/13-landing-story.md` | 05 |
