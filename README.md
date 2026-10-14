@@ -46,6 +46,22 @@ npm run format   # Prettier --write; format:check to verify only
 npm run typecheck # TypeScript project references, no emit
 ```
 
+## Routes
+
+| Path                    | Page                                                |
+| ----------------------- | --------------------------------------------------- |
+| `/`                     | Landing — the community story (placeholder for now) |
+| `/products`             | Product picker                                      |
+| `/customize/:productId` | The customizer                                      |
+| `/dev/catalog`          | Internal preview of every catalog asset             |
+
+`/dev/catalog` ships in **every** build, so the team and the designer can
+review mockups, tiles and motifs on the Vercel preview. It is not linked from
+the nav and marks itself `noindex` while open.
+
+The language toggle (TH/EN) is in the header; the choice is kept in
+localStorage and mirrored onto `<html lang>`.
+
 ## Deployment
 
 Vercel, configured by [`vercel.json`](vercel.json): framework `vite`, build

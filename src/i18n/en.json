@@ -1,0 +1,53 @@
+{
+  "brand": {
+    "name": "ป่าต้นผึ้ง · Pa Ton Phueng",
+    "enterprise": "Pa Ton Phueng Community Enterprise"
+  },
+  "nav": {
+    "label": "Main menu",
+    "home": "Home",
+    "products": "Products",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "skipToContent": "Skip to main content"
+  },
+  "language": {
+    "label": "Language",
+    "th": "ไทย",
+    "en": "English"
+  },
+  "footer": {
+    "address": "Moo 7, Mae Pong, Doi Saket, Chiang Mai",
+    "prototype": "Prototype by Enactus"
+  },
+  "home": {
+    "title": "Design leaf prints on community products",
+    "intro": "Pick a product, add patterns printed from Pa Ton Phueng leaves, and see the result straight away.",
+    "cta": "Browse products",
+    "placeholder": "Placeholder page — the community story arrives in a later step."
+  },
+  "products": {
+    "title": "Choose a product",
+    "intro": "Eco-print fabric and dipterocarp-leaf plates from the Pa Ton Phueng community enterprise.",
+    "placeholder": "Placeholder page — the product list arrives in a later step."
+  },
+  "customize": {
+    "title": "Design your print",
+    "product": "Product id: {{productId}}",
+    "placeholder": "Placeholder page — the customizer arrives in a later step."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "body": "The link may be mistyped, or the page has moved.",
+    "backHome": "Back to the home page"
+  },
+  "catalog": {
+    "loading": "Loading the catalog…",
+    "errorTitle": "The catalog could not be loaded",
+    "errorIntro": "Something in public/catalog/ is wrong. The details below name the file and the entry to fix.",
+    "retry": "Try again"
+  },
+  "common": {
+    "placeholderLabel": "Placeholder"
+  }
+}

@@ -76,15 +76,16 @@ export const catalogFile = (items: unknown[], catalogVersion: unknown = 1) => ({
   items,
 })
 
+/** The URL a `fetch` call was made with, whichever form the caller used. */
+export function requestUrl(input: Parameters<typeof fetch>[0]): string {
+  if (typeof input === 'string') return input
+  return input instanceof URL ? input.href : input.url
+}
+
 /** A `fetch` that serves the given bodies by file name and 404s anything else. */
 export function fetchFromFiles(files: Record<string, unknown>): typeof fetch {
   return (input) => {
-    const url =
-      typeof input === 'string'
-        ? input
-        : input instanceof URL
-          ? input.href
-          : input.url
+    const url = requestUrl(input)
     const match = Object.keys(files).find((file) => url.endsWith(file))
 
     return Promise.resolve(

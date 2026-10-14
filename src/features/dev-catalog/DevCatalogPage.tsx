@@ -1,15 +1,20 @@
 /**
- * Dev-only preview of every catalog asset, so the placeholder mockups,
- * tiles and motifs can be eyeballed in one place: are the mockups the right
- * shape, do the print areas sit inside them, do the tiles repeat without a
- * seam? Reached at /dev/catalog while `import.meta.env.DEV` (see App.tsx);
- * the real routing and the product picker arrive with tasks 05 and 06.
+ * Internal preview of every catalog asset, so the mockups, tiles and motifs
+ * can be eyeballed in one place: are the mockups the right shape, do the
+ * print areas sit inside them, do the tiles repeat without a seam?
  *
- * Strings here are deliberately not translated — this page is a drawing board
- * for whoever is building the catalog, not part of the visitor's site.
+ * Reached at /dev/catalog in every build, so the team and the designer can
+ * review assets on the Vercel preview. It is not linked from the nav and it
+ * asks robots not to index it while it is open.
+ *
+ * The page's own chrome is deliberately untranslated — it is a drawing board
+ * for whoever is building the catalog, not part of the visitor's site. Catalog
+ * data does go through `useLocalized`, so it reads as a visitor would see it.
  */
 import { useState } from 'react'
 import { useCatalog, type Pattern, type Product } from '@/catalog'
+import { useNoIndex } from '@/app/useNoIndex'
+import { useLocalized } from '@/i18n/useLocalized'
 
 const PRINT_AREA_INK = '#a23b62'
 
@@ -68,6 +73,7 @@ function ProductCard({
   product: Product
   showPrintAreas: boolean
 }) {
+  const localized = useLocalized()
   const [baseColor, setBaseColor] = useState(product.baseColors[0] ?? '#ffffff')
   const { mockup, printAreas } = product
 
@@ -128,8 +134,7 @@ function ProductCard({
       </div>
 
       <h3 className="mt-3 font-medium text-ink-900">
-        {product.name.th}{' '}
-        <span className="text-ink-500">/ {product.name.en}</span>
+        {localized(product.name)}
       </h3>
       <p className="text-sm text-ink-500">
         <code>{product.id}</code> · {product.line} · {formatPrice(product)} ·{' '}
@@ -161,6 +166,8 @@ function ProductCard({
 }
 
 function PatternCard({ pattern }: { pattern: Pattern }) {
+  const localized = useLocalized()
+
   return (
     <li className="rounded-xl border border-border-soft bg-surface p-3">
       {pattern.kind === 'tile' ? (
@@ -176,14 +183,13 @@ function PatternCard({ pattern }: { pattern: Pattern }) {
       ) : (
         <img
           src={pattern.src}
-          alt={`${pattern.name.en} motif`}
+          alt={`${localized(pattern.name)} motif`}
           className="aspect-square w-full rounded-lg border border-border-soft bg-paper-50 object-contain p-2"
         />
       )}
 
       <h3 className="mt-3 font-medium text-ink-900">
-        {pattern.name.th}{' '}
-        <span className="text-ink-500">/ {pattern.name.en}</span>
+        {localized(pattern.name)}
       </h3>
       <p className="text-sm text-ink-500">
         <code>{pattern.id}</code> · {pattern.kind}
@@ -202,33 +208,29 @@ function PatternCard({ pattern }: { pattern: Pattern }) {
 }
 
 export function DevCatalogPage() {
-  const { status, catalog, error } = useCatalog()
+  const { status, catalog } = useCatalog()
+  const localized = useLocalized()
   const [showPrintAreas, setShowPrintAreas] = useState(true)
 
-  if (status === 'loading') {
-    return <p className="p-8 text-ink-500">Loading the catalog…</p>
-  }
+  useNoIndex()
 
-  if (status === 'error') {
-    return (
-      <pre className="m-8 overflow-auto rounded-lg bg-teak-100 p-4 text-sm text-teak-900">
-        {error.message}
-      </pre>
-    )
-  }
+  // Loading and failure are drawn by CatalogGate, which this route sits behind.
+  if (status !== 'ready') return null
 
   const { leafDyes, patterns, products } = catalog
   const tiles = patterns.filter((pattern) => pattern.kind === 'tile')
   const motifs = patterns.filter((pattern) => pattern.kind === 'motif')
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-8">
+    <div className="mx-auto max-w-6xl px-4 py-8">
       <h1 className="font-display text-2xl font-bold text-teak-700">
-        Catalog preview <span className="text-ink-500">(dev only)</span>
+        Catalog preview <span className="text-ink-500">(internal)</span>
       </h1>
       <p className="mt-1 text-sm text-ink-500">
         {products.length} products · {tiles.length} tiles · {motifs.length}{' '}
         motifs · {leafDyes.length} leaf dyes. Every entry is a placeholder.
+        Names follow the language toggle; this page is not linked from the nav
+        and is marked noindex.
       </p>
 
       <section className="mt-6">
@@ -245,7 +247,7 @@ export function DevCatalogPage() {
                   style={{ backgroundColor: color.hex }}
                   className="size-6 rounded-full"
                 />
-                {leafDye.name.en} · {color.name.en}
+                {localized(leafDye.name)} · {localized(color.name)}
               </li>
             )),
           )}
@@ -295,6 +297,6 @@ export function DevCatalogPage() {
           ))}
         </ul>
       </section>
-    </main>
+    </div>
   )
 }

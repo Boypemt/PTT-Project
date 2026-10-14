@@ -6,6 +6,8 @@
     "module": "esnext",
     "types": ["vite/client"],
     "allowArbitraryExtensions": true,
+    /* The i18n message catalogs are imported as JSON modules. */
+    "resolveJsonModule": true,
     "skipLibCheck": true,
 
     /* Bundler mode */
