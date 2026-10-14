@@ -53,8 +53,17 @@
     "patterns": "Patterns",
     "properties": "Properties",
     "panelSwitcher": "Editor panels",
-    "patternsPlaceholder": "The pattern library arrives in the next step.",
     "propertiesPlaceholder": "Pattern settings appear here once a pattern is on the cloth.",
+    "printArea": "Print area",
+    "searchPatterns": "Search patterns",
+    "kindFilter": "Pattern kind",
+    "kinds": {
+      "tile": "Tile",
+      "motif": "Leaf motif"
+    },
+    "comingSoon": "coming soon",
+    "noPatterns": "No pattern matches that search.",
+    "noPrintArea": "This product has no area to print a pattern on yet.",
     "baseColor": "Base colour",
     "baseColorOption": "Base colour {{color}}",
     "showPrintAreas": "Show print areas",

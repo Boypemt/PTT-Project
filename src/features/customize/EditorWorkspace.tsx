@@ -46,8 +46,12 @@ function Panel({
     <section
       id={panelId(panel)}
       aria-labelledby={`${panelId(panel)}-title`}
-      className={`${open ? 'flex' : 'hidden'} max-h-[45vh] flex-col gap-3 overflow-y-auto bg-surface px-4 pt-3 pb-6 md:flex md:max-h-none md:rounded-2xl md:border md:border-border-soft md:p-4 ${className}`}
+      className={`${open ? 'flex' : 'hidden'} max-h-[40dvh] flex-col gap-3 overflow-y-auto bg-surface px-4 pt-3 pb-6 md:flex md:max-h-[70vh] md:rounded-2xl md:border md:border-border-soft md:p-4 ${className}`}
     >
+      {/* Both widths cap the panel and let it scroll inside itself: a sheet
+          at 40dvh so the canvas keeps the rest of the phone screen, a column
+          at the canvas's own 70vh so a long library does not stretch the
+          desktop page past the thing being designed. */}
       {/* In the sheet the switcher above already says which panel this is, so
           the heading only shows from `md` up — but it stays in the accessibility
           tree at every width, because it is what names this region. */}
@@ -79,8 +83,14 @@ export function EditorWorkspace({
 
   // Below `md` the whole area above the sheet is one surface, so the space
   // left over under a short canvas does not read as a separate band.
+  //
+  // On a phone this is the screen and nothing more: `min-h-0` lets the canvas
+  // box give way to the sheet, and `overflow-hidden` is the backstop that
+  // stops anything inside turning the page into something that scrolls. The
+  // canvas has to stay in sight while the sheet is open — a visitor choosing a
+  // pattern is looking at the cloth, not at the panel.
   return (
-    <div className="flex flex-1 flex-col gap-0 bg-paper-100 md:flex-row md:items-start md:gap-4 md:bg-transparent md:px-4 md:pb-6">
+    <div className="flex min-h-0 flex-1 flex-col gap-0 overflow-hidden bg-paper-100 md:flex-row md:items-start md:gap-4 md:overflow-visible md:bg-transparent md:px-4 md:pb-6">
       {/* The canvas area is a plain box with a size of its own — below `md`
           everything the sheet leaves, from `md` up the middle column at a
           height that keeps both panels on screen. It no longer takes the
@@ -121,7 +131,7 @@ export function EditorWorkspace({
         open={openPanel === 'patterns'}
         className="order-3 md:order-1 md:w-60 lg:w-64"
       >
-        <PatternsPanel />
+        <PatternsPanel product={product} />
       </Panel>
 
       <Panel

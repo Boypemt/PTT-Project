@@ -5,6 +5,7 @@
  *   npm run build
  *   npm run shot -- /customize/shawl-cotton
  *   npm run shot -- /customize/shawl-cotton --mobile
+ *   npm run shot -- /customize/shawl-cotton --click "ลายใบไม้กระจาย" --as shawl-scatter
  *
  * On Git Bash for Windows, drop the leading slash — `npm run shot --
  * customize/shawl-cotton` — because that shell rewrites an argument starting
@@ -12,9 +13,17 @@
  *
  * It serves `dist/` with `vite preview` on a free port, opens the path, waits
  * for the network to go quiet (the catalog JSON is fetched by the page) and
- * for the webfonts, writes `screenshots/<slug>-<desktop|mobile>.png`, then
- * shuts the server down. It never builds: a stale `dist/` would be a
- * screenshot of the wrong code, so a missing one is an error instead.
+ * for the webfonts, presses any `--click` buttons in the order given, writes
+ * `screenshots/<slug>-<desktop|mobile>.png`, then shuts the server down. It
+ * never builds: a stale `dist/` would be a screenshot of the wrong code, so a
+ * missing one is an error instead.
+ *
+ * `--click` takes the button's accessible name, matched exactly — the Thai
+ * pattern names all start with "ลาย", so a substring match would hit a
+ * thumbnail when the sheet's "ลาย" tab was meant. A page nobody has clicked is
+ * a page half the editor cannot be seen on, which is what this is for: the
+ * library puts the pattern on the cloth, and `--as` keeps each interaction in
+ * a file of its own instead of overwriting the plain shot of the same path.
  *
  * Playwright tests and CI belong to task 14 — this is only the camera.
  */
@@ -37,23 +46,61 @@ const OUT_DIR = 'screenshots'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
 
-type Options = { pagePath: string; mobile: boolean }
+type Options = {
+  pagePath: string
+  mobile: boolean
+  /** Accessible names of buttons to press, in order, before the shot. */
+  clicks: string[]
+  /** Overrides the file name the path would give. */
+  as?: string
+}
 
-const USAGE = 'usage: npm run shot -- <path> [--mobile]'
+const USAGE =
+  'usage: npm run shot -- <path> [--mobile] [--click "<button name>"]… [--as <name>]'
 
-function parseArgs(argv: string[]): Options {
-  const paths = argv.filter((arg) => !arg.startsWith('--'))
-  const unknownFlags = argv.filter(
-    (arg) => arg.startsWith('--') && arg !== '--mobile',
-  )
+/** Flags that take the next argument as their value. */
+const VALUE_FLAGS = ['--click', '--as']
 
-  if (paths.length !== 1 || unknownFlags.length > 0) throw new Error(USAGE)
+export function parseArgs(argv: string[]): Options {
+  const paths: string[] = []
+  const clicks: string[] = []
+  let mobile = false
+  let as: string | undefined
+
+  for (let i = 0; i < argv.length; i += 1) {
+    const arg = argv[i]
+
+    if (arg === '--mobile') {
+      mobile = true
+      continue
+    }
+
+    if (VALUE_FLAGS.includes(arg)) {
+      const value = argv[i + 1]
+      // A missing value would otherwise swallow the next flag, or the path.
+      if (value === undefined || value.startsWith('--')) throw new Error(USAGE)
+
+      if (arg === '--click') clicks.push(value)
+      else as = value
+
+      i += 1
+      continue
+    }
+
+    if (arg.startsWith('--')) throw new Error(USAGE)
+
+    paths.push(arg)
+  }
+
+  if (paths.length !== 1) throw new Error(USAGE)
 
   const pagePath = paths[0]
 
   return {
     pagePath: pagePath.startsWith('/') ? pagePath : `/${pagePath}`,
-    mobile: argv.includes('--mobile'),
+    mobile,
+    clicks,
+    ...(as === undefined ? {} : { as }),
   }
 }
 
@@ -90,7 +137,7 @@ function freePort(): Promise<number> {
   })
 }
 
-async function shoot({ pagePath, mobile }: Options): Promise<void> {
+async function shoot({ pagePath, mobile, clicks, as }: Options): Promise<void> {
   if (!existsSync(path.join(root, 'dist', 'index.html'))) {
     throw new Error('dist/ is missing — run `npm run build` first')
   }
@@ -124,10 +171,21 @@ async function shoot({ pagePath, mobile }: Options): Promise<void> {
     })
     await page.evaluate('document.fonts.ready')
 
+    for (const name of clicks) {
+      await page.getByRole('button', { name, exact: true }).click()
+    }
+
+    if (clicks.length > 0) {
+      // A click can start a pattern loading, and the canvas redraws once it is
+      // decoded — which is after the network has gone quiet again.
+      await page.waitForLoadState('networkidle')
+      await page.waitForTimeout(400)
+    }
+
     const file = path.join(
       root,
       OUT_DIR,
-      `${slugify(pagePath)}-${mobile ? 'mobile' : 'desktop'}.png`,
+      `${as ?? slugify(pagePath)}-${mobile ? 'mobile' : 'desktop'}.png`,
     )
     await mkdir(path.dirname(file), { recursive: true })
     await page.screenshot({ path: file, fullPage: true })
