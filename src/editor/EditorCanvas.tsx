@@ -15,15 +15,22 @@
  * `ProductMockup` stays in use on /products and /dev/catalog, where a still
  * picture is all those pages need.
  */
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type ReactNode } from 'react'
 import Konva from 'konva'
-import { Group, Image as KonvaImage, Layer, Rect, Stage } from 'react-konva'
-import type { Product } from '@/catalog'
+import {
+  Group,
+  Image as KonvaImage,
+  Layer,
+  Path,
+  Rect,
+  Stage,
+} from 'react-konva'
+import type { PrintAreaClip, Product } from '@/catalog'
 import { fitContain, pixelRatio, type Fit } from '@/lib/geometry'
 import { clipFunc } from './clip'
 import { LayerRenderer } from './LayerRenderer'
 import { buildScene } from './scene'
-import { useDesignFor } from './useDesignStore'
+import { useDesignFor, useDesignStore } from './useDesignStore'
 import { useImage } from './useImage'
 import { useMeasuredSize } from './useMeasuredSize'
 
@@ -34,6 +41,9 @@ Konva.pixelRatio = pixelRatio(globalThis.devicePixelRatio)
 
 /** `--color-paper-100`: the surface the DOM mockup sat on. */
 const PAPER = '#faf6ec'
+
+/** `--color-teak-pink`: the print-area ink, as on /dev/catalog. */
+const PRINT_AREA_INK = '#a23b62'
 
 /**
  * The silhouette, filled with the base colour.
@@ -101,9 +111,51 @@ function Shading({ src, fit }: { src: string; fit: Fit }) {
   )
 }
 
+/** A group whose children are drawn in the catalog's mockup coordinates. */
+function MockupSpace({ fit, children }: { fit: Fit; children: ReactNode }) {
+  return (
+    <Group
+      x={fit.offsetX}
+      y={fit.offsetY}
+      scaleX={fit.scale}
+      scaleY={fit.scale}
+    >
+      {children}
+    </Group>
+  )
+}
+
+/**
+ * Where a pattern is allowed to print, dashed over the mockup — the same ink
+ * and dashes /dev/catalog draws, so one look means the same thing on both.
+ *
+ * Drawn above the shading, as it is there, because it is an annotation rather
+ * than something printed on the cloth.
+ */
+function PrintAreaOutline({ clip }: { clip: PrintAreaClip }) {
+  const stroke = {
+    stroke: PRINT_AREA_INK,
+    strokeWidth: 4,
+    dash: [16, 12],
+  }
+
+  return clip.type === 'rect' ? (
+    <Rect
+      x={clip.x}
+      y={clip.y}
+      width={clip.width}
+      height={clip.height}
+      {...stroke}
+    />
+  ) : (
+    <Path data={clip.d} {...stroke} />
+  )
+}
+
 export function EditorCanvas({ product }: { product: Product }) {
   const [containerRef, size] = useMeasuredSize<HTMLDivElement>()
   const design = useDesignFor(product)
+  const showPrintAreas = useDesignStore((state) => state.showPrintAreas)
   const { mockup } = product
   const fit = fitContain(mockup, size)
   const scene = buildScene(product, design)
@@ -128,15 +180,7 @@ export function EditorCanvas({ product }: { product: Product }) {
 
             <TintedBase src={mockup.base} color={design.baseColor} fit={fit} />
 
-            {/* Inside this group the coordinates are the catalog's own, so a
-                print area's clip and a layer's position are written once in
-                mockup space and never converted. */}
-            <Group
-              x={fit.offsetX}
-              y={fit.offsetY}
-              scaleX={fit.scale}
-              scaleY={fit.scale}
-            >
+            <MockupSpace fit={fit}>
               {scene.areas.map(({ area, layers }) => (
                 <Group key={area.id} clipFunc={clipFunc(area.clip)}>
                   {layers.map((layer) => (
@@ -148,11 +192,19 @@ export function EditorCanvas({ product }: { product: Product }) {
                   ))}
                 </Group>
               ))}
-            </Group>
+            </MockupSpace>
 
             {mockup.overlay === undefined ? null : (
               <Shading src={mockup.overlay} fit={fit} />
             )}
+
+            {showPrintAreas ? (
+              <MockupSpace fit={fit}>
+                {scene.areas.map(({ area }) => (
+                  <PrintAreaOutline key={area.id} clip={area.clip} />
+                ))}
+              </MockupSpace>
+            ) : null}
           </Layer>
         </Stage>
       ) : null}

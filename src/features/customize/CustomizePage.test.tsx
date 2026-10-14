@@ -114,6 +114,22 @@ describe('the editor page', () => {
     )
   })
 
+  it('asks the canvas for print-area outlines, off to begin with', async () => {
+    const user = userEvent.setup()
+    openEditor()
+
+    const toggle = await screen.findByRole('checkbox', {
+      name: th.customize.showPrintAreas,
+    })
+    expect(toggle).not.toBeChecked()
+    expect(editorStore.getState().showPrintAreas).toBe(false)
+
+    await user.click(toggle)
+
+    expect(toggle).toBeChecked()
+    expect(editorStore.getState().showPrintAreas).toBe(true)
+  })
+
   it('shows one panel at a time in the bottom sheet', async () => {
     const user = userEvent.setup()
     openEditor()

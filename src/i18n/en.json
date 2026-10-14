@@ -56,6 +56,7 @@
     "propertiesPlaceholder": "Pattern settings appear here once a pattern is on the cloth.",
     "baseColor": "Base colour",
     "baseColorOption": "Base colour {{color}}",
+    "showPrintAreas": "Show print areas",
     "notFound": {
       "title": "This product is not in the catalogue",
       "body": "The link may be mistyped, or the product has been renamed. Pick one from the list instead.",
