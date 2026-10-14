@@ -21,10 +21,11 @@
     "prototype": "Prototype by Enactus"
   },
   "home": {
-    "title": "Design leaf prints on community products",
-    "intro": "Pick a product, add patterns printed from Pa Ton Phueng leaves, and see the result straight away.",
-    "cta": "Browse products",
-    "placeholder": "Placeholder page — the community story arrives in a later step."
+    "title": "Leaves that prevent forest fires become income",
+    "intro": "At Pa Ton Phueng Community Enterprise in Mae Pong, Doi Saket, fallen leaves are gathered out of the community forest and printed onto cloth by hand — no chemicals, and no two pieces alike.",
+    "cta": "Design your own",
+    "preview": "A sample print on the {{product}}",
+    "placeholder": "Prototype — the patterns are placeholders until the community's designer delivers the real ones."
   },
   "products": {
     "title": "Choose a product",
