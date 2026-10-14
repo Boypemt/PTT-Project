@@ -75,6 +75,10 @@ export function LayerList({ product }: { product: Product }) {
                 >
                   <button
                     type="button"
+                    // Named directly, like the controls beside it: the text in
+                    // the row is the pattern and the area it prints on, and a
+                    // name assembled from both is one nothing can write down.
+                    aria-label={t('customize.layers.select', { name })}
                     aria-pressed={isSelected}
                     onClick={() => {
                       selectLayer(layer.id)
