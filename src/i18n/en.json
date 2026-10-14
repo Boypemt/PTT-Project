@@ -64,6 +64,10 @@
     "comingSoon": "coming soon",
     "noPatterns": "No pattern matches that search.",
     "noPrintArea": "This product has no area to print a pattern on yet.",
+    "layers": {
+      "tapReplaces": "Tapping a pattern changes the selected layer.",
+      "add": "+ Add layer"
+    },
     "baseColor": "Base colour",
     "baseColorOption": "Base colour {{color}}",
     "showPrintAreas": "Show print areas",

@@ -86,6 +86,9 @@ const chip = (name: string) => screen.getByRole('button', { name })
  */
 const named = (pattern: Pattern) => new RegExp(`^${pattern.name.th}`)
 
+const addLayerButton = () =>
+  screen.getByRole('button', { name: th.customize.layers.add })
+
 const thumb = (pattern: Pattern) =>
   screen.getByRole('button', { name: named(pattern) })
 
@@ -248,19 +251,6 @@ describe('the pattern library', () => {
     })
   })
 
-  it('stacks a second pattern rather than replacing the first', async () => {
-    const user = userEvent.setup()
-    openProduct([cloth])
-    await findPanel()
-
-    await user.click(thumb(seigaiha))
-    await user.click(thumb(gingham))
-
-    expect(
-      editorStore.getState().design.layers.map((layer) => layer.patternId),
-    ).toEqual([seigaiha.id, gingham.id])
-  })
-
   it('does not hand the layer the catalog own colour array', async () => {
     const user = userEvent.setup()
     openProduct([cloth])
@@ -270,10 +260,106 @@ describe('the pattern library', () => {
     const layer = editorStore.getState().design.layers[0]
     layer.colors.push('#000000')
 
-    await user.click(thumb(seigaiha))
+    await user.click(addLayerButton())
 
     expect(editorStore.getState().design.layers[1].colors).toEqual(
       seigaiha.defaultColors,
     )
+  })
+})
+
+describe('tapping a pattern with a layer selected', () => {
+  it('changes the selected layer rather than stacking another one', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(thumb(seigaiha))
+    await user.click(thumb(gingham))
+
+    const { design } = editorStore.getState()
+    expect(design.layers).toHaveLength(1)
+    expect(design.layers[0]).toMatchObject({
+      patternId: gingham.id,
+      colors: gingham.defaultColors,
+    })
+  })
+
+  it('keeps the work done on the layer and takes the new pattern colours', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(thumb(seigaiha))
+    const { design, updateLayer } = editorStore.getState()
+    updateLayer(design.layers[0].id, {
+      scale: 1.6,
+      rotation: 45,
+      offsetX: 80,
+      offsetY: -20,
+      opacity: 0.5,
+    })
+
+    await user.click(thumb(gingham))
+
+    expect(editorStore.getState().design.layers[0]).toMatchObject({
+      patternId: gingham.id,
+      scale: 1.6,
+      rotation: 45,
+      offsetX: 80,
+      offsetY: -20,
+      opacity: 0.5,
+      colors: gingham.defaultColors,
+    })
+  })
+
+  it('starts a layer instead when the selection prints on another area', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth, band])
+    await findPanel()
+
+    await user.click(thumb(seigaiha))
+    await user.click(chip(band.name.th))
+    await user.click(thumb(gingham))
+
+    expect(
+      editorStore.getState().design.layers.map((layer) => layer.printAreaId),
+    ).toEqual([cloth.id, band.id])
+  })
+
+  it('stacks a new layer when asked for one outright', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(thumb(seigaiha))
+    await user.click(
+      screen.getByRole('button', { name: th.customize.layers.add }),
+    )
+    await user.click(thumb(gingham))
+
+    expect(
+      editorStore.getState().design.layers.map((layer) => layer.patternId),
+    ).toEqual([seigaiha.id, gingham.id])
+  })
+
+  it('offers nothing to add before a layer is there to add beside', async () => {
+    openProduct([cloth])
+    await findPanel()
+
+    expect(
+      screen.queryByRole('button', { name: th.customize.layers.add }),
+    ).toBeNull()
+  })
+
+  it('marks the pattern the selected layer is wearing', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(thumb(seigaiha))
+
+    expect(thumb(seigaiha)).toHaveAttribute('aria-pressed', 'true')
+    expect(thumb(gingham)).toHaveAttribute('aria-pressed', 'false')
   })
 })
