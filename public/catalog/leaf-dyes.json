@@ -1,0 +1,126 @@
+{
+  "catalogVersion": 1,
+  "items": [
+    {
+      "id": "mango",
+      "name": { "th": "ใบมะม่วงเบา", "en": "Mango leaf" },
+      "colors": [
+        {
+          "id": "green",
+          "name": { "th": "เขียว", "en": "Green" },
+          "hex": "#6B8E3D"
+        }
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "golden-teak",
+      "name": { "th": "ใบสักทอง", "en": "Golden teak leaf" },
+      "colors": [
+        {
+          "id": "pinkish-green",
+          "name": { "th": "ชมพูอมเขียว", "en": "Pinkish green" },
+          "hex": "#B98A8A"
+        },
+        {
+          "id": "green-purple",
+          "name": { "th": "เขียวม่วง", "en": "Green-purple" },
+          "hex": "#6A5A72"
+        }
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "marigold",
+      "name": { "th": "ดาวเรือง", "en": "Marigold" },
+      "colors": [
+        {
+          "id": "golden-shower-yellow",
+          "name": { "th": "เหลืองดอกคูน", "en": "Golden shower yellow" },
+          "hex": "#E8B923"
+        },
+        {
+          "id": "gold",
+          "name": { "th": "เหลืองทอง", "en": "Gold" },
+          "hex": "#C9962B"
+        },
+        {
+          "id": "yellow-brown",
+          "name": { "th": "เหลืองอมน้ำตาล", "en": "Yellow-brown" },
+          "hex": "#A67C2E"
+        }
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "teak",
+      "name": { "th": "ใบสัก", "en": "Teak leaf" },
+      "colors": [
+        {
+          "id": "deep-purple",
+          "name": { "th": "ม่วงเข้ม", "en": "Deep purple" },
+          "hex": "#4B2A4F"
+        },
+        {
+          "id": "deep-pink",
+          "name": { "th": "ชมพูเข้ม", "en": "Deep pink" },
+          "hex": "#A23B62"
+        }
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "pheka",
+      "name": { "th": "ใบเพกา", "en": "Oroxylum leaf" },
+      "colors": [
+        {
+          "id": "dark-brown",
+          "name": { "th": "น้ำตาลเข้ม", "en": "Dark brown" },
+          "hex": "#4A3222"
+        },
+        {
+          "id": "golden-yellow",
+          "name": { "th": "เหลืองทอง", "en": "Golden yellow" },
+          "hex": "#C9A13B"
+        }
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
+    },
+    {
+      "id": "takhop",
+      "name": { "th": "ใบตะขบ", "en": "Jamaica cherry leaf" },
+      "colors": [
+        {
+          "id": "yellow-brown",
+          "name": { "th": "เหลืองออกน้ำตาล", "en": "Yellow-brown" },
+          "hex": "#9C7A3C"
+        }
+      ],
+      "source": {
+        "type": "placeholder",
+        "credit": "Approximate hex — to be colour-matched with real fabric samples",
+        "license": "CC0-1.0"
+      }
+    }
+  ]
+}

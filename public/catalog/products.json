@@ -1,0 +1,42 @@
+{
+  "catalogVersion": 1,
+  "items": [
+    {
+      "id": "handkerchief",
+      "name": { "th": "ผ้าเช็ดหน้า", "en": "Handkerchief" },
+      "line": "fabric",
+      "price": { "min": 69, "currency": "THB" },
+      "status": "available",
+      "mockup": {
+        "base": "/catalog/products/handkerchief-base.svg",
+        "overlay": "/catalog/products/handkerchief-overlay.svg",
+        "width": 800,
+        "height": 800
+      },
+      "printAreas": [
+        {
+          "id": "cloth",
+          "name": { "th": "ทั้งผืน", "en": "Whole cloth" },
+          "clip": {
+            "type": "rect",
+            "x": 60,
+            "y": 60,
+            "width": 680,
+            "height": 680
+          },
+          "allowedKinds": ["tile", "motif"]
+        }
+      ],
+      "baseColors": ["#F3EADA", "#FFFFFF", "#E4D9C3"],
+      "story": {
+        "th": "ผ้าเช็ดหน้าฝ้ายพิมพ์ลายจากใบไม้จริง วางใบไม้บนผ้าที่ย้อมสารช่วยติดสี ม้วนแล้วนึ่ง 2 ชั่วโมง ไม่ใช้สารเคมี ทุกผืนทำด้วยมือและไม่เหมือนกัน",
+        "en": "A cotton handkerchief printed with real leaves: the leaves are laid on mordanted cotton, rolled and steamed for two hours. No chemicals, and every piece is handmade and one of a kind."
+      },
+      "source": {
+        "type": "placeholder",
+        "credit": "Mockup drawn as SVG for this prototype — to be replaced with real product photography",
+        "license": "CC0-1.0"
+      }
+    }
+  ]
+}

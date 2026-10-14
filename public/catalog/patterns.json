@@ -1,0 +1,21 @@
+{
+  "catalogVersion": 1,
+  "items": [
+    {
+      "id": "seigaiha",
+      "name": { "th": "ลายคลื่น (เซงไกฮะ)", "en": "Seigaiha waves" },
+      "kind": "tile",
+      "src": "/catalog/patterns/seigaiha.svg",
+      "thumbnail": "/catalog/patterns/seigaiha-thumb.svg",
+      "recolorable": true,
+      "defaultColors": ["#4B2A4F"],
+      "leafIds": ["teak"],
+      "tags": ["geometric", "waves", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Drawn as SVG for this prototype",
+        "license": "CC0-1.0"
+      }
+    }
+  ]
+}
