@@ -6,15 +6,18 @@ import { Route, Routes } from 'react-router-dom'
 import { CustomizePage } from '@/features/customize/CustomizePage'
 import { LandingPage } from '@/features/landing/LandingPage'
 import { ProductPickerPage } from '@/features/product-picker/ProductPickerPage'
+import { Layout } from './Layout'
 import { NotFoundPage } from './NotFoundPage'
 
 export function AppRoutes() {
   return (
     <Routes>
-      <Route index element={<LandingPage />} />
-      <Route path="products" element={<ProductPickerPage />} />
-      <Route path="customize/:productId" element={<CustomizePage />} />
-      <Route path="*" element={<NotFoundPage />} />
+      <Route element={<Layout />}>
+        <Route index element={<LandingPage />} />
+        <Route path="products" element={<ProductPickerPage />} />
+        <Route path="customize/:productId" element={<CustomizePage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Routes>
   )
 }
