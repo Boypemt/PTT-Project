@@ -4,6 +4,7 @@
  */
 import { Route, Routes } from 'react-router-dom'
 import { CustomizePage } from '@/features/customize/CustomizePage'
+import { DevCatalogPage } from '@/features/dev-catalog/DevCatalogPage'
 import { LandingPage } from '@/features/landing/LandingPage'
 import { ProductPickerPage } from '@/features/product-picker/ProductPickerPage'
 import { CatalogGate } from './CatalogGate'
@@ -21,6 +22,10 @@ export function AppRoutes() {
         <Route element={<CatalogGate />}>
           <Route path="products" element={<ProductPickerPage />} />
           <Route path="customize/:productId" element={<CustomizePage />} />
+
+          {/* Ships in every build so the team and the designer can review
+              assets on the Vercel preview. Unlinked, and noindex while open. */}
+          <Route path="dev/catalog" element={<DevCatalogPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
