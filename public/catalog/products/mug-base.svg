@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>Ceramic mug — base silhouette</title>
+  <g fill="#ffffff">
+    <path d="M668 430C764 430 800 478 800 540C800 602 764 650 668 650V604C730 604 752 576 752 540C752 504 730 476 668 476Z" />
+    <path d="M332 348V716C332 744 407 766 500 766C593 766 668 744 668 716V348Z" />
+    <ellipse cx="500" cy="348" rx="168" ry="34" />
+  </g>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <title>Keychain — split ring, stitching and shading (multiply)</title>
+  <defs>
+    <clipPath id="tag">
+      <circle cx="500" cy="560" r="190" />
+    </clipPath>
+    <radialGradient id="pad" cx="0.42" cy="0.38" r="0.62">
+      <stop offset="0" stop-color="#000" stop-opacity="0.02" />
+      <stop offset="0.68" stop-color="#000" stop-opacity="0.06" />
+      <stop offset="1" stop-color="#000" stop-opacity="0.2" />
+    </radialGradient>
+  </defs>
+  <g clip-path="url(#tag)">
+    <rect x="310" y="370" width="380" height="380" fill="url(#pad)" />
+  </g>
+  <circle cx="500" cy="560" r="190" fill="none" stroke="#000" stroke-opacity="0.22" stroke-width="3" />
+  <circle cx="500" cy="560" r="167" fill="none" stroke="#000" stroke-opacity="0.18" stroke-width="2" stroke-dasharray="10 9" />
+  <rect x="462" y="326" width="76" height="90" rx="20" fill="#000" fill-opacity="0.06" stroke="#000" stroke-opacity="0.22" stroke-width="3" />
+  <path d="M474 396H526" stroke="#000" stroke-opacity="0.16" stroke-width="2" stroke-dasharray="8 7" />
+  <circle cx="500" cy="280" r="62" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="12" />
+  <circle cx="500" cy="280" r="62" fill="none" stroke="#000" stroke-opacity="0.12" stroke-width="4" />
+</svg>
