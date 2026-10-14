@@ -32,10 +32,15 @@ describe('routing', () => {
     ).toBeInTheDocument()
   })
 
-  it('passes the product id through to /customize/:productId', async () => {
+  it('opens the product from /customize/:productId in the editor', async () => {
     renderApp({ route: '/customize/handkerchief' })
 
-    expect(await screen.findByText(/handkerchief/)).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: makeProduct().name.th,
+      }),
+    ).toBeInTheDocument()
   })
 
   it('shows the 404 page for an unknown route', () => {

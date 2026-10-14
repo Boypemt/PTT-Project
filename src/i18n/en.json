@@ -48,8 +48,12 @@
   },
   "customize": {
     "title": "Design your print",
-    "product": "Product id: {{productId}}",
-    "placeholder": "Placeholder page — the customizer arrives in a later step."
+    "back": "All products",
+    "patterns": "Patterns",
+    "properties": "Properties",
+    "panelSwitcher": "Editor panels",
+    "patternsPlaceholder": "The pattern library arrives in the next step.",
+    "propertiesPlaceholder": "Pattern settings appear here once a pattern is on the cloth."
   },
   "notFound": {
     "title": "Page not found",
