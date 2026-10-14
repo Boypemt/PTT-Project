@@ -52,7 +52,7 @@ function PatternIcon() {
       ].map(({ x, y, angle }) => (
         <g
           key={`${String(x)}-${String(y)}`}
-          transform={`translate(${String(x)} ${String(y)}) rotate(${String(angle)})`}
+          transform={`translate(${String(x)} ${String(y)}) rotate(${String(angle)}) scale(1.25)`}
         >
           <path d={LEAF} />
           <path d="M0 3V-3.6" />

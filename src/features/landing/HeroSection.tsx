@@ -30,19 +30,22 @@ function PrintedFrame({ product, tile }: { product: Product; tile?: Pattern }) {
   return (
     <figure className="flex flex-col items-center gap-3">
       <div
-        // A quarter-turn of the tile per side keeps the leaves large enough to
-        // read as leaves instead of becoming texture.
+        // Roughly a third of the card per repeat: large enough that the leaves
+        // still read as leaves rather than turning into texture.
         style={
           tile === undefined
             ? undefined
             : { backgroundImage: `url("${tile.src}")` }
         }
-        className="w-full max-w-md rounded-[1.75rem] border border-paper-400 bg-paper-200 bg-[length:45%] bg-repeat p-5 shadow-sm sm:p-7"
+        className="w-full max-w-md rounded-[1.75rem] border border-paper-400 bg-paper-200 bg-[length:32%] bg-repeat p-4 shadow-sm sm:p-6"
       >
+        {/* Unpainted, so the cloth sits on the leaf print rather than on a
+            card laid over it. */}
         <ProductMockup
           mockup={product.mockup}
           baseColor={baseColor}
-          className="rounded-2xl shadow-md"
+          transparent
+          className="drop-shadow-md"
         />
       </div>
       <figcaption className="text-sm text-ink-500">
