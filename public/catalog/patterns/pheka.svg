@@ -1,11 +1,33 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
   <title>Pheka (oroxylum) leaflet — eco-print motif</title>
-  <path d="M200 24C250 90 302 170 286 246C274 306 232 350 200 372C168 350 126 306 114 246C98 170 150 90 200 24Z" fill="var(--c1, #4a3222)" fill-opacity="0.82" />
-  <g fill="none" stroke="var(--c2, #c9a13b)" stroke-opacity="0.55" stroke-width="4" stroke-linecap="round">
+  <path
+    d="M200 18C210 60 222 92 238 124C266 176 288 222 288 268C288 320 250 362 200 374C150 362 112 320 112 268C112 222 134 176 162 124C178 92 190 60 200 18Z"
+    fill="var(--c1, #4a3222)"
+    fill-opacity="0.82"
+  />
+  <g
+    fill="none"
+    stroke="var(--c2, #c9a13b)"
+    stroke-opacity="0.55"
+    stroke-width="4"
+    stroke-linecap="round"
+  >
     <path d="M200 360V40" stroke-width="6" />
-    <path d="M200 330C226 322 242 306 250 286M200 282C236 274 258 254 268 228M200 230C238 222 262 198 270 170M200 176C230 168 250 146 256 122M200 124C218 116 232 100 238 82" />
-    <path d="M200 330C174 322 158 306 150 286M200 282C164 274 142 254 132 228M200 230C162 222 138 198 130 170M200 176C170 168 150 146 144 122M200 124C182 116 168 100 162 82" />
+    <path d="M200 332C226 326 244 314 254 298M200 288C230 282 252 266 262 246M200 240C226 234 244 220 252 202M200 192C222 186 236 174 242 158M200 146C216 140 226 130 230 116" />
+    <path d="M200 332C174 326 156 314 146 298M200 288C170 282 148 266 138 246M200 240C174 234 156 220 148 202M200 192C178 186 164 174 158 158M200 146C184 140 174 130 170 116" />
   </g>
-  <path d="M200 24C250 90 302 170 286 246C274 306 232 350 200 372C168 350 126 306 114 246C98 170 150 90 200 24Z" fill="none" stroke="var(--c1, #4a3222)" stroke-opacity="0.45" stroke-width="3" />
-  <path d="M200 372V394" stroke="var(--c1, #4a3222)" stroke-opacity="0.7" stroke-width="7" stroke-linecap="round" />
+  <path
+    d="M200 18C210 60 222 92 238 124C266 176 288 222 288 268C288 320 250 362 200 374C150 362 112 320 112 268C112 222 134 176 162 124C178 92 190 60 200 18Z"
+    fill="none"
+    stroke="var(--c1, #4a3222)"
+    stroke-opacity="0.45"
+    stroke-width="3"
+  />
+  <path
+    d="M200 374V396"
+    stroke="var(--c1, #4a3222)"
+    stroke-opacity="0.7"
+    stroke-width="7"
+    stroke-linecap="round"
+  />
 </svg>

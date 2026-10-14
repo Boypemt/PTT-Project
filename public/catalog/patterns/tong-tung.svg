@@ -1,11 +1,34 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
   <title>Tong tung (dipterocarp) leaf — eco-print motif</title>
-  <path d="M200 32C310 80 356 226 200 368C44 226 90 80 200 32Z" fill="var(--c1, #4a3222)" fill-opacity="0.8" />
-  <g fill="none" stroke="var(--c2, #9c7a3c)" stroke-opacity="0.5" stroke-width="5" stroke-linecap="round">
-    <path d="M200 356V46" stroke-width="7" />
-    <path d="M200 330C232 320 248 304 258 282M200 288C244 278 270 258 284 230M200 244C248 234 278 212 292 182M200 198C244 188 272 166 284 138M200 152C238 142 260 122 270 98M200 108C228 100 244 84 250 66" />
-    <path d="M200 330C168 320 152 304 142 282M200 288C156 278 130 258 116 230M200 244C152 234 122 212 108 182M200 198C156 188 128 166 116 138M200 152C162 142 140 122 130 98M200 108C172 100 156 84 150 66" />
+  <path
+    d="M200 44C280 52 352 120 356 208C360 286 316 344 262 364C236 374 212 348 200 328C188 348 164 374 138 364C84 344 40 286 44 208C48 120 120 52 200 44Z"
+    fill="var(--c1, #4a3222)"
+    fill-opacity="0.8"
+  />
+  <g
+    fill="none"
+    stroke="var(--c2, #9c7a3c)"
+    stroke-opacity="0.5"
+    stroke-width="5"
+    stroke-linecap="round"
+  >
+    <path d="M200 326V58" stroke-width="7" />
+    <path d="M200 296C242 292 276 278 300 256M200 254C250 250 292 234 318 206M200 210C252 206 296 190 322 162M200 166C246 162 284 146 306 122M200 124C238 120 268 106 286 88M200 86C224 82 242 74 248 66" />
+    <path d="M200 296C158 292 124 278 100 256M200 254C150 250 108 234 82 206M200 210C148 206 104 190 78 162M200 166C154 162 116 146 94 122M200 124C162 120 132 106 114 88M200 86C176 82 158 74 152 66" />
+    <path d="M200 320C180 338 162 350 146 356M200 320C220 338 238 350 254 356" />
   </g>
-  <path d="M200 32C310 80 356 226 200 368C44 226 90 80 200 32Z" fill="none" stroke="var(--c1, #4a3222)" stroke-opacity="0.45" stroke-width="3" />
-  <path d="M200 368V394" stroke="var(--c1, #4a3222)" stroke-opacity="0.7" stroke-width="8" stroke-linecap="round" />
+  <path
+    d="M200 44C280 52 352 120 356 208C360 286 316 344 262 364C236 374 212 348 200 328C188 348 164 374 138 364C84 344 40 286 44 208C48 120 120 52 200 44Z"
+    fill="none"
+    stroke="var(--c1, #4a3222)"
+    stroke-opacity="0.45"
+    stroke-width="3"
+  />
+  <path
+    d="M200 328V394"
+    stroke="var(--c1, #4a3222)"
+    stroke-opacity="0.7"
+    stroke-width="8"
+    stroke-linecap="round"
+  />
 </svg>
