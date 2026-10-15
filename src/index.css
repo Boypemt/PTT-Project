@@ -45,6 +45,9 @@
   --color-marigold-500: #e8b923;
   --color-marigold-600: #c9962b;
   --color-marigold-700: #a67c2e;
+  /* Readable ink for marigold badges, not a dye colour: the brief's yellow-brown
+     is only 3.3:1 on marigold-100 and 3.8:1 on paper, both under AA. */
+  --color-marigold-900: #6b4f14;
 
   /* Bark — pheka and jamaica cherry browns (brief) */
   --color-bark-300: #b99a62;

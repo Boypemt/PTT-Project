@@ -127,7 +127,7 @@ function ProductCard({
         <span
           className={
             product.status === 'planned'
-              ? 'text-marigold-700'
+              ? 'text-marigold-900'
               : 'text-forest-600'
           }
         >
