@@ -69,7 +69,9 @@ export function HeroSection({
     <section className="border-b border-border-soft bg-paper-100">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14 lg:py-16">
         <div className="flex flex-col items-start gap-5">
-          <p className="text-sm font-semibold tracking-[0.18em] text-forest-600 uppercase">
+          {/* Tracked capitals in English only — they break Thai mark
+              placement (see the `en:` variant in index.css). */}
+          <p className="text-sm font-semibold text-forest-600 en:tracking-[0.18em] en:uppercase">
             {t('brand.enterprise')}
           </p>
           {/* Thai sets a touch taller than Latin, hence the explicit leading. */}

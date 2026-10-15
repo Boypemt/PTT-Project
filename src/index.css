@@ -71,6 +71,23 @@
   --spacing-touch: 2.75rem;
 }
 
+/*
+ * `en:` — only when the text reads as English.
+ *
+ * Latin display type takes wide letter-spacing and capitals well; Thai takes
+ * neither. Thai vowel and tone marks are separate glyphs that sit above and
+ * below their consonant, and letter-spacing pushes them off it, so a tracked
+ * "วิสาหกิจชุมชนป่าต้นผึ้ง" has its marks drifting towards the next letter.
+ * Thai has no capitals either, so `uppercase` is at best a no-op on it.
+ *
+ * `:lang()` reads the inherited language, which `useSyncLanguage` keeps on
+ * `<html lang>` — so `en:tracking-[0.18em] en:uppercase` is the Latin
+ * treatment, and switching to Thai takes it away. Any letter-spacing or
+ * capitalising utility on a translated string goes behind this variant;
+ * `src/i18n/thaiTypography.test.ts` is the check.
+ */
+@custom-variant en (&:lang(en));
+
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
