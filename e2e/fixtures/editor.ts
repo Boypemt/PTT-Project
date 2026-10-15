@@ -6,7 +6,8 @@
  * does through roles and accessible names, the way a visitor does.
  */
 import { expect, type Locator, type Page } from '@playwright/test'
-import { interpolate, type Messages } from './ui'
+import { patternButtonName } from './catalog'
+import { interpolate, type Lang, type Messages } from './ui'
 
 type PanelId = 'patterns' | 'properties'
 
@@ -33,6 +34,29 @@ export async function openPanel(
 /** One pattern's button in the library. */
 export function patternButton(page: Page, name: string): Locator {
   return page.getByRole('button', { name, exact: true })
+}
+
+/**
+ * Prints one tile on the product and waits until the library says so.
+ *
+ * The editor is mostly invisible until something is on the cloth — the layer
+ * list, the sliders and the leaf dyes all belong to a selected layer — so this
+ * is the setup every spec that looks at the editor needs.
+ */
+export async function applyTile(
+  page: Page,
+  ui: Messages,
+  lang: Lang,
+  patternId: string,
+): Promise<void> {
+  await openPanel(page, ui, 'patterns')
+
+  const button = patternButton(
+    page,
+    patternButtonName(patternId, lang, ui.common.placeholderLabel),
+  )
+  await button.click()
+  await expect(button).toHaveAttribute('aria-pressed', 'true')
 }
 
 /** A layer's own row in the layer list, which is where its name is written. */
