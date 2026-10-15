@@ -9,9 +9,16 @@
  *
  * Two shapes, one DOM. From `md` up it is a column with a search box, kind
  * chips and a grid. Below `md` the panel is a sheet along the bottom edge
- * sharing the screen with the canvas, so the search and the chips go away and
- * the grid becomes a strip that scrolls sideways: the sheet stays short enough
- * to see what you are designing.
+ * sharing the screen with the canvas, so the search goes away and the grid
+ * becomes a strip that scrolls sideways: the sheet stays short enough to see
+ * what you are designing.
+ *
+ * The kind chips stay at every width, because they are what keeps tiles and
+ * leaves apart. One strip holding both would be fourteen thumbnails to scroll
+ * sideways through, and at that size a leaf silhouette and a tile swatch are
+ * not tellable apart — while someone laying leaves wants the leaves and
+ * nothing else. They cost one row of the sheet, and only appear where the
+ * print area takes more than one kind.
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -19,11 +26,13 @@ import {
   useCatalog,
   type Pattern,
   type PatternKind,
+  type PrintArea,
   type Product,
 } from '@/catalog'
 import { targetPrintArea, usableKinds } from '@/editor/layerKinds'
+import { newMotifLayer } from '@/editor/motifPlacement'
 import { filterPatterns } from '@/editor/patternFilter'
-import { replaceableTile } from '@/editor/selection'
+import { replaceableLayer } from '@/editor/selection'
 import { useDesignStore } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
 import { PatternKindFilter } from './PatternKindFilter'
@@ -56,7 +65,7 @@ export function PatternsPanel({ product }: { product: Product }) {
   const selected =
     area === undefined
       ? undefined
-      : replaceableTile(design, selectedLayerId, area.id)
+      : replaceableLayer(design, selectedLayerId, area.id)
 
   /**
    * Whether the next tap starts a layer rather than changing one. True once
@@ -66,34 +75,51 @@ export function PatternsPanel({ product }: { product: Product }) {
    */
   const addsNext = selected === undefined && design.layers.length > 0
 
-  const add = (pattern: Pattern, printAreaId: string) => {
-    addLayer({
-      type: 'tile',
-      patternId: pattern.id,
-      printAreaId,
-      scale: 1,
-      rotation: 0,
-      offsetX: 0,
-      offsetY: 0,
-      // Copied, so the layer cannot write back into the loaded catalog.
-      colors: [...pattern.defaultColors],
-      opacity: 1,
-    })
+  /**
+   * A leaf lands in the middle of the area at a quarter of its shorter side
+   * (see `motifPlacement`); a tile covers the area and is moved by its own
+   * offsets instead. Colours are copied either way, so the layer cannot write
+   * back into the loaded catalog.
+   */
+  const add = (pattern: Pattern, printArea: PrintArea) => {
+    addLayer(
+      pattern.kind === 'motif'
+        ? newMotifLayer(pattern, printArea)
+        : {
+            type: 'tile',
+            patternId: pattern.id,
+            printAreaId: printArea.id,
+            scale: 1,
+            rotation: 0,
+            offsetX: 0,
+            offsetY: 0,
+            colors: [...pattern.defaultColors],
+            opacity: 1,
+          },
+    )
   }
 
   /**
-   * A tap changes the selected tile rather than stacking another one on top of
-   * it — trying patterns is what this panel is for. How that tile is scaled,
-   * turned and shifted is the visitor's work and survives; the colours belong
-   * to the pattern, so they come from the new one.
+   * A tap changes the selected layer rather than stacking another one on top
+   * of it — trying patterns is what this panel is for. How that layer is
+   * scaled, turned and placed is the visitor's work and survives; the colours
+   * belong to the pattern, so they come from the new one. A tap of the other
+   * kind adds instead, because a tile and a leaf are not interchangeable.
    */
-  const place = (pattern: Pattern, printAreaId: string) => {
-    if (selected === undefined) {
-      add(pattern, printAreaId)
+  const place = (pattern: Pattern, printArea: PrintArea) => {
+    const replaceable = replaceableLayer(
+      design,
+      selectedLayerId,
+      printArea.id,
+      pattern.kind,
+    )
+
+    if (replaceable === undefined) {
+      add(pattern, printArea)
       return
     }
 
-    updateLayer(selected.id, {
+    updateLayer(replaceable.id, {
       patternId: pattern.id,
       colors: [...pattern.defaultColors],
     })
@@ -120,13 +146,11 @@ export function PatternsPanel({ product }: { product: Product }) {
             />
           </label>
 
-          <div className="hidden md:block">
-            <PatternKindFilter
-              kinds={area.allowedKinds}
-              active={kind}
-              onChange={setKind}
-            />
-          </div>
+          <PatternKindFilter
+            kinds={area.allowedKinds}
+            active={kind}
+            onChange={setKind}
+          />
 
           {/* The button only where a tap would change something rather than
               add it; otherwise the line saying the next tap starts a layer.
@@ -169,7 +193,7 @@ export function PatternsPanel({ product }: { product: Product }) {
                   pattern={pattern}
                   current={pattern.id === selected?.patternId}
                   onPick={() => {
-                    place(pattern, area.id)
+                    place(pattern, area)
                   }}
                 />
               ))}

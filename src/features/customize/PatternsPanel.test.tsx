@@ -7,11 +7,17 @@
  * like the real thing: an area that takes tiles and motifs, one that takes
  * motifs only (the handkerchief's corner, the plate's centre), one tile-only
  * (the shirt's sleeves).
+ *
+ * Everything down to the last `describe` is a build with the `motifs` flag
+ * off — production, in other words — so these are also the check that the flag
+ * leaves no trace of leaves in the UI. The last block switches it on.
  */
 import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Pattern, PrintArea } from '@/catalog'
+import { MOTIF_UNIT } from '@/editor/motifBox'
+import { MOTIF_PLACE_RATIO } from '@/editor/motifPlacement'
 import { editorStore } from '@/editor/store'
 import th from '@/i18n/th.json'
 import { catalogFile, makePattern, makeProduct } from '@/test/catalogFixtures'
@@ -98,6 +104,10 @@ const thumb = (pattern: Pattern) =>
 
 beforeEach(() => {
   editorStore.getState().reset()
+})
+
+afterEach(() => {
+  vi.unstubAllEnvs()
 })
 
 describe('the print area selector', () => {
@@ -414,5 +424,143 @@ describe('tapping a pattern with a layer selected', () => {
 
     expect(thumb(seigaiha)).toHaveAttribute('aria-pressed', 'true')
     expect(thumb(gingham)).toHaveAttribute('aria-pressed', 'false')
+  })
+})
+
+describe('with the motifs flag on', () => {
+  /** A build made with `VITE_FLAGS=motifs`, which is Vercel's preview. */
+  beforeEach(() => {
+    vi.stubEnv('VITE_FLAGS', 'motifs')
+  })
+
+  /** The leaf a tap lands, at a quarter of the area's shorter side. */
+  const placedScale = (side: number) => (MOTIF_PLACE_RATIO * side) / MOTIF_UNIT
+
+  it('offers the motif-only area as a target of its own', async () => {
+    openProduct([cloth, corner, band])
+    await findPanel()
+
+    expect(chip(corner.name.th)).toBeInTheDocument()
+  })
+
+  it('offers the leaves, and the kind chip is no longer coming soon', async () => {
+    openProduct([cloth])
+    const panel = await findPanel()
+    const motif = within(panel).getByRole('button', {
+      name: new RegExp(th.customize.kinds.motif),
+    })
+
+    expect(thumb(teak)).toBeInTheDocument()
+    expect(motif).toBeEnabled()
+    expect(motif).not.toHaveTextContent(th.customize.comingSoon)
+  })
+
+  it('shows the leaves alone once the leaf chip is pressed', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    const panel = await findPanel()
+
+    await user.click(
+      within(panel).getByRole('button', {
+        name: new RegExp(th.customize.kinds.motif),
+      }),
+    )
+
+    expect(thumb(teak)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: named(seigaiha) })).toBeNull()
+  })
+
+  it('lays the leaf in the middle of the area at a quarter of its shorter side', async () => {
+    const user = userEvent.setup()
+    openProduct([corner])
+    await findPanel()
+
+    await user.click(thumb(teak))
+
+    const { design, selectedLayerId } = editorStore.getState()
+    expect(design.layers).toHaveLength(1)
+    expect(design.layers[0]).toMatchObject({
+      type: 'motif',
+      patternId: teak.id,
+      printAreaId: corner.id,
+      // The fixture's corner is 400×400 from (0,0).
+      x: 200,
+      y: 200,
+      rotation: 0,
+      opacity: 1,
+      colors: teak.defaultColors,
+    })
+    expect(design.layers[0]).toHaveProperty(
+      'scale',
+      expect.closeTo(placedScale(400), 10),
+    )
+    expect(selectedLayerId).toBe(design.layers[0].id)
+  })
+
+  it('swaps the leaf on the selected motif rather than stacking another', async () => {
+    const user = userEvent.setup()
+    const mango = makePattern({
+      id: 'mango',
+      kind: 'motif',
+      name: { th: 'ใบมะม่วง', en: 'Mango leaf' },
+      defaultColors: ['#6B8E3D'],
+    })
+    openProduct([cloth], [seigaiha, teak, mango])
+    await findPanel()
+
+    await user.click(thumb(teak))
+    const placed = editorStore.getState().design.layers[0]
+    await user.click(thumb(mango))
+
+    const { design } = editorStore.getState()
+    expect(design.layers).toHaveLength(1)
+    expect(design.layers[0]).toMatchObject({
+      id: placed.id,
+      patternId: mango.id,
+      colors: mango.defaultColors,
+      // Where the visitor put it is their work and survives the swap.
+      x: 200,
+      y: 200,
+    })
+  })
+
+  it('starts a tile instead of turning the selected leaf into one', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(thumb(teak))
+    await user.click(thumb(seigaiha))
+
+    expect(
+      editorStore.getState().design.layers.map((layer) => layer.type),
+    ).toEqual(['motif', 'tile'])
+  })
+
+  it('starts a leaf instead of turning the selected tile into one', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(thumb(seigaiha))
+    await user.click(thumb(teak))
+
+    expect(
+      editorStore.getState().design.layers.map((layer) => layer.type),
+    ).toEqual(['tile', 'motif'])
+  })
+
+  it('lays every leaf in the middle, so a tap always adds somewhere visible', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(thumb(teak))
+    await user.click(addLayerButton())
+    await user.click(thumb(teak))
+
+    const { design } = editorStore.getState()
+    expect(design.layers).toHaveLength(2)
+    expect(design.layers[1]).toMatchObject({ x: 200, y: 200 })
   })
 })

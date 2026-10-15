@@ -5,10 +5,11 @@
  * kinds that area allows — the shirt's sleeves take tiles alone, so there is
  * nothing to choose there.
  *
- * A kind the editor cannot place yet is listed but disabled, with "coming
- * soon" written in the chip rather than hidden in a tooltip a phone never
- * shows. That is the whole announcement that leaf motifs are on their way:
- * task 09 adds `'motif'` to `SUPPORTED_LAYER_KINDS` and the chip comes alive.
+ * A kind the editor cannot place is listed but disabled, with "coming soon"
+ * written in the chip rather than hidden in a tooltip a phone never shows.
+ * That is the whole announcement that leaf motifs are on their way: with the
+ * `motifs` flag off `isSupportedKind` says no and the chip waits, and with it
+ * on the same chip comes alive. Nothing here knows about the flag.
  */
 import { useTranslation } from 'react-i18next'
 import type { PatternKind } from '@/catalog'

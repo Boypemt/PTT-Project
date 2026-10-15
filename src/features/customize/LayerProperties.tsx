@@ -41,9 +41,17 @@ export function LayerProperties({ product }: { product: Product }) {
 
   const layer = layers.find((entry) => entry.id === selectedLayerId)
 
-  // Motifs get their own tools in task 09; until then this is tiles only.
-  if (layer === undefined || layer.type !== 'tile') {
+  if (layer === undefined) {
     return <p className="text-sm text-ink-500">{t('customize.layer.none')}</p>
+  }
+
+  // A leaf's own sliders are the next step. Saying so beats the line above,
+  // which would claim nothing is selected while a leaf sits there with its
+  // handles on — and the canvas can already move, scale and turn it.
+  if (layer.type !== 'tile') {
+    return (
+      <p className="text-sm text-ink-500">{t('customize.layer.motifSoon')}</p>
+    )
   }
 
   const pattern =
