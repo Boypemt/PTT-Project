@@ -37,6 +37,17 @@ const ANCHOR_SIZE = 24
 /** Invisible hit area added around each anchor, so the target is ~44px. */
 const ANCHOR_HIT_PADDING = 20
 
+/**
+ * How far the handles stand off the leaf they hold, in stage pixels.
+ *
+ * Without it the anchors sit on the corners of the leaf's own box, and a leaf
+ * laid in a small print area is smaller than the four anchors holding it: on a
+ * Pixel 7 a quarter of the shawl's cloth is about 25px across, which four 24px
+ * anchors cover completely. Standing them off leaves the leaf visible between
+ * them at every size, without shrinking a touch target or growing the leaf.
+ */
+const HANDLE_PADDING = 12
+
 /** Every 45°, which is how a leaf is usually laid. */
 const ROTATION_SNAPS = [0, 45, 90, 135, 180, 225, 270, 315]
 
@@ -98,6 +109,7 @@ export function MotifTransformer({
       keepRatio
       flipEnabled={false}
       enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+      padding={HANDLE_PADDING}
       rotationSnaps={ROTATION_SNAPS}
       rotationSnapTolerance={ROTATION_SNAP_TOLERANCE}
       anchorSize={ANCHOR_SIZE}
