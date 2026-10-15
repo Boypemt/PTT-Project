@@ -15,7 +15,7 @@ real data later **without code changes**.
 - react-router-dom for routing
 - react-i18next (Thai default, English toggle)
 - zod for validating catalog JSON
-- Vitest + Testing Library (unit), Playwright (e2e)
+- Vitest + Testing Library (unit), Playwright + @axe-core/playwright (e2e, chromium only)
 - ESLint + Prettier, Husky + lint-staged + commitlint
 - GitHub Actions CI, Vercel hosting
 - Phase 2 only: @react-three/fiber + drei for 3D preview — **@react-three/fiber must be v9+** (v8 targets React 18)
@@ -41,6 +41,22 @@ real data later **without code changes**.
 - When finished: push the branch and open a PR with `gh pr create` using the PR template. If `gh` is unavailable, push and print the PR title + body for me.
 - Don't merge PRs yourself.
 
+## Release safety — `main` must never break the demo
+`main` is what the demo link is promoted from; the flow, the tags and the rollback are in
+`docs/RELEASING.md`.
+- **A feature that isn't finished goes in behind a flag.** Add it to `src/lib/flags.ts` and gate
+  it with `isEnabled()` from its first commit; deleting the flag is the last commit of that
+  feature. Vercel's Preview environment sets `VITE_FLAGS`, Production leaves it unset — so
+  unfinished work lives in `main` rather than on a branch that rots, and visitors never meet it.
+- **The e2e suite is part of the gate.** `npm run test:e2e` passes before you open a PR, and the
+  `E2E (Playwright, chromium)` check is green before it is merged. The visual tests skip off
+  Linux; that is expected, CI runs them in the container the baselines were made in.
+- **Say when a screenshot baseline changes on purpose.** A UI change that moves
+  `e2e/__screenshots__/` is reported in the PR body, and the baselines are refreshed with the
+  "Visual baselines" workflow — a reviewer cannot tell an intended change from a regression by
+  looking at the diff.
+- Every release goes in `CHANGELOG.md` under the version it shipped in.
+
 ## Code conventions
 - Function components, PascalCase file per component, hooks named `useXxx`. No `any`; prefer discriminated unions.
 - Folder layout:
@@ -65,7 +81,8 @@ real data later **without code changes**.
 - Record every third-party asset in `docs/CREDITS.md` (name, source URL, license).
 
 ## Definition of done for each task
-Lint, typecheck, tests and `npm run build` pass. New logic has tests. UI strings in both languages.
+Lint, typecheck, unit tests, `npm run build` and `npm run test:e2e` pass. New logic has tests.
+UI strings in both languages.
 For any UI change, run `npm run build && npm run shot -- <page>` for desktop and `--mobile`, look at the
 images yourself, and fix what's wrong before opening the PR. List the pages you checked in the PR body.
 Finish by summarizing: what changed, commits made, and what I should test manually.
