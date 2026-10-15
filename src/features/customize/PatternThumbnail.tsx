@@ -70,7 +70,7 @@ export function PatternThumbnail({
         {isPlaceholder ? (
           <span
             aria-hidden="true"
-            className="rounded-full bg-marigold-100 px-1.5 text-[0.625rem] font-semibold text-marigold-700"
+            className="rounded-full bg-marigold-100 px-1.5 text-[0.625rem] font-semibold text-marigold-900"
           >
             {t('common.placeholderLabel')}
           </span>

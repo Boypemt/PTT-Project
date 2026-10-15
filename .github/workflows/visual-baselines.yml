@@ -1,0 +1,56 @@
+name: Visual baselines
+
+# Run from the Actions tab against the branch whose screenshots a UI change
+# has moved on purpose: it rewrites `e2e/__screenshots__` in the same Linux
+# image CI compares against and commits the result to that branch.
+#
+# GitHub only offers workflow_dispatch for workflows that are already on the
+# default branch, so this is available from the moment it lands on `main`.
+# Before that — and on a machine with Docker — the command in the header of
+# e2e/visual.spec.ts does the same thing locally.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: visual-baselines-${{ github.ref }}
+
+jobs:
+  update:
+    name: Update screenshot baselines
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.64.0-noble
+      options: --ipc=host
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+        env:
+          HUSKY: 0
+
+      - name: Rewrite the baselines
+        run: npx playwright test --grep @visual --update-snapshots
+
+      # A push made with GITHUB_TOKEN starts no workflow run, so re-run CI on
+      # the branch afterwards to see the suite green against the new images.
+      - name: Commit them
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add e2e/__screenshots__
+          if git diff --cached --quiet; then
+            echo 'The baselines already match this branch — nothing to commit.'
+            exit 0
+          fi
+          git commit -m 'test(editor): update visual baselines'
+          git push origin HEAD:${{ github.ref_name }}

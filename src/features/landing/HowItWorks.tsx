@@ -113,7 +113,7 @@ export function HowItWorks() {
             <div className="flex items-center gap-3">
               <span
                 aria-hidden="true"
-                className="flex size-7 items-center justify-center rounded-full bg-marigold-100 text-sm font-semibold text-marigold-700"
+                className="flex size-7 items-center justify-center rounded-full bg-marigold-100 text-sm font-semibold text-marigold-900"
               >
                 {index + 1}
               </span>

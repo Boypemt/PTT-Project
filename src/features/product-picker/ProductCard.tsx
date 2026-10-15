@@ -28,7 +28,7 @@ function Badge({
 }) {
   const tones = {
     forest: 'bg-forest-100 text-forest-700',
-    marigold: 'bg-marigold-100 text-marigold-700',
+    marigold: 'bg-marigold-100 text-marigold-900',
   }
 
   return (
