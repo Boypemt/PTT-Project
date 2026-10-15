@@ -10,7 +10,7 @@ export function PlaceholderNote({ children }: { children: ReactNode }) {
 
   return (
     <p className="flex flex-wrap items-center gap-2 rounded-xl border border-dashed border-marigold-500 bg-marigold-100 px-4 py-3 text-sm text-ink-700">
-      <span className="rounded-full bg-marigold-500 px-2 py-0.5 text-xs font-semibold uppercase text-ink-900">
+      <span className="rounded-full bg-marigold-500 px-2 py-0.5 text-xs font-semibold text-ink-900 en:uppercase">
         {t('common.placeholderLabel')}
       </span>
       {children}
