@@ -111,6 +111,18 @@ export function layerRow(page: Page, ui: Messages, name: string): Locator {
 }
 
 /**
+ * Every layer row, whatever it is called — which is what a scatter needs,
+ * since the leaves it throws are chosen at random. Matched on the part of
+ * "Select {{name}}" that is the same for all of them.
+ */
+export function layerRows(page: Page, ui: Messages): Locator {
+  const [prefix] = ui.customize.layers.select.split('{{name}}')
+  const escaped = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+  return page.getByRole('button', { name: new RegExp(`^${escaped}`) })
+}
+
+/**
  * Walks a slider to `value` with the keyboard — Home, then one arrow per step.
  *
  * Not `fill()`: a range input takes no typing, and writing `value` from script

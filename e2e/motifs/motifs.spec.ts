@@ -28,6 +28,7 @@ import {
   canvas,
   drag,
   layerRow,
+  layerRows,
   onMockup,
   openPanel,
 } from '../fixtures/editor'
@@ -139,6 +140,54 @@ test('a tile is not dragged off its area', async ({ page }) => {
   await openPanel(page, th, 'properties')
   await expect(page.getByText(th.customize.layer.none)).toBeVisible()
   await expect(layerRow(page, th, patternName(TILE, 'th'))).toBeVisible()
+})
+
+test('one tap throws a handful of leaves across the cloth', async ({
+  page,
+}) => {
+  await page.goto(`/customize/${PRODUCT}`)
+  await expect(
+    page.getByRole('heading', { level: 1, name: productName(PRODUCT, 'th') }),
+  ).toBeVisible()
+
+  await openPanel(page, th, 'patterns')
+  const before = await canvas(page).screenshot()
+  await page
+    .getByRole('button', { name: th.customize.layers.scatter, exact: true })
+    .click()
+
+  await openPanel(page, th, 'properties')
+  const thrown = await layerRows(page, th).count()
+  expect(thrown).toBeGreaterThanOrEqual(5)
+  expect(thrown).toBeLessThanOrEqual(8)
+
+  // And they are on the cloth, not only in the list.
+  await expect(async () => {
+    const after = await canvas(page).screenshot()
+    expect(after.equals(before)).toBe(false)
+  }).toPass()
+})
+
+test('the keyboard copies and deletes the leaf the canvas holds', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile === true, 'the keyboard shortcuts are a desktop journey')
+
+  await layLeaf(page)
+
+  // Clicking the leaf both selects it and puts the focus on the canvas, which
+  // is the only place these keys do anything.
+  const leaf = await leafAt(page)
+  await page.mouse.click(leaf.x, leaf.y)
+
+  await page.keyboard.press('Control+d')
+  await openPanel(page, th, 'properties')
+  await expect(layerRows(page, th)).toHaveCount(2)
+
+  await page.mouse.click(leaf.x, leaf.y)
+  await page.keyboard.press('Delete')
+  await expect(layerRows(page, th)).toHaveCount(1)
 })
 
 test('no serious accessibility violations with a leaf selected', async ({
