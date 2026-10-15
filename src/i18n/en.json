@@ -90,6 +90,8 @@
     "patterns": "Patterns",
     "properties": "Properties",
     "panelSwitcher": "Editor panels",
+    "canvas": "Design canvas",
+    "canvasKeys": "Click the cloth, then: arrows move · Shift+arrows move further · Delete removes · Ctrl/Cmd+D duplicates",
     "printArea": "Print area",
     "searchPatterns": "Search patterns",
     "kindFilter": "Pattern kind",

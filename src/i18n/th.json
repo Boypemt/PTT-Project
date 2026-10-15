@@ -90,6 +90,8 @@
     "patterns": "ลาย",
     "properties": "ปรับแต่ง",
     "panelSwitcher": "แผงเครื่องมือ",
+    "canvas": "ผ้าสำหรับจัดวางลาย",
+    "canvasKeys": "คลิกที่ผ้าแล้วใช้คีย์บอร์ด: ลูกศร = ขยับ · Shift+ลูกศร = ขยับไกลขึ้น · Delete = ลบ · Ctrl/Cmd+D = ทำซ้ำ",
     "printArea": "พื้นที่วางลาย",
     "searchPatterns": "ค้นหาลาย",
     "kindFilter": "ชนิดของลาย",

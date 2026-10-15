@@ -162,6 +162,12 @@ export function MotifProperties({
           {t('customize.layer.delete')}
         </button>
       </div>
+
+      {/* Only from `md` up: it is about a keyboard, and the phone layout is
+          the one width where there is certainly not one. */}
+      <p className="hidden text-xs text-ink-500 md:block">
+        {t('customize.canvasKeys')}
+      </p>
     </section>
   )
 }
