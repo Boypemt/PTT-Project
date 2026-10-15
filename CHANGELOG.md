@@ -14,10 +14,18 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
   shape and snap to every 45°. It stays inside the area it prints on while you
   drag rather than snapping back afterwards. This also opens the print areas
   that take nothing but motifs — the handkerchief's corner, the wrap cloth's
-  centre, the plate's centre. The leaf's own settings panel, scatter and the
-  keyboard shortcuts are the next step; until then the properties panel says
-  so. Off in production: `VITE_FLAGS=motifs` is set on Vercel's Preview
-  environment only, and the e2e suite runs both states.
+  centre, the plate's centre. A selected leaf has its own panel — size,
+  rotation, strength, leaf dyes, copy, reset, delete — and on a desktop the
+  arrow keys nudge it, Shift+arrows further, Delete removes it and Ctrl/Cmd+D
+  copies it, while the cloth has the focus. Off in production:
+  `VITE_FLAGS=motifs` is set on Vercel's Preview environment only, and the e2e
+  suite runs both states.
+- **"โปรยใบไม้ / Scatter leaves"**, behind the same flag. One tap throws five
+  to eight leaves across the print area at random places, angles and sizes —
+  the look the community's cloth actually has, which laying one leaf at a time
+  takes a dozen taps to reach. Only patterns that name the leaves they are
+  made from are thrown, so the designer's own entries decide what a scatter
+  uses.
 
 ### Fixed
 

@@ -17,8 +17,8 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 08a | done | `feat/tile-rendering` | feat(editor): render tile layers and split the customizer chunk ([#12](https://github.com/Boypemt/PTT-Project/pull/12)) | `prompts/08-pattern-panel.md` | 07b |
 | 08b | done | `feat/pattern-panel` | feat(editor): pattern library and tile layers ([#13](https://github.com/Boypemt/PTT-Project/pull/13)) | `prompts/08-pattern-panel.md` | 08a |
 | 08c | done | `feat/layer-controls` | feat(editor): layer properties and layer list | `prompts/08-pattern-panel.md` | 08b |
-| 09a | in review | `feat/motif-layers` | feat(editor): placeable leaf motifs with transform handles (behind `motifs`) | `prompts/09-motif-transform.md` | 08c |
-| 09b | **todo** | `feat/motif-scatter` | feat(editor): scatter leaves, motif properties and keyboard | `prompts/09-motif-transform.md` | 09a |
+| 09a | done | `feat/motif-layers` | feat(editor): placeable leaf motifs with transform handles (behind `motifs`) | `prompts/09-motif-transform.md` | 08c |
+| 09b | in review | `feat/motif-scatter` | feat(editor): scatter leaves, motif properties and keyboard | `prompts/09-motif-transform.md` | 09a |
 | 09c | **todo** | `chore/drop-motifs-flag` | chore(lib): remove the motifs flag once it is checked on staging | — | 09b |
 | 10 | done | `feat/leaf-dye-colors` | feat(editor): recolour by leaf dye and base colour | `prompts/10-leaf-dye-colors.md` | 08c |
 | 11 | **todo** | `feat/history-persist` | feat(editor): undo/redo, autosave and share link | `prompts/11-history-persist.md` | 09b, 10 |
