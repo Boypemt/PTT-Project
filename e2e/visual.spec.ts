@@ -28,7 +28,7 @@
  */
 import process from 'node:process'
 import { expect, test } from '@playwright/test'
-import { applyTile } from './fixtures/editor'
+import { applyPattern } from './fixtures/editor'
 import { messages } from './fixtures/ui'
 
 const th = messages.th
@@ -50,7 +50,7 @@ test(
   async ({ page }) => {
     await page.goto(`/customize/${PRODUCT}`)
     await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
-    await applyTile(page, th, 'th', PATTERN)
+    await applyPattern(page, th, 'th', PATTERN)
 
     // Text laid out in the fallback font wraps differently, which would read
     // as a layout regression. Better to fail saying the font never arrived.

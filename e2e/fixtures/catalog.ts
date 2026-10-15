@@ -40,6 +40,79 @@ export function productName(id: string, lang: Lang): string {
   return find(products.items, 'products.json', id).name[lang]
 }
 
+/**
+ * A print area as this file reads it. The clip's fields are all optional
+ * because products.json holds both shapes of clip and the JSON import types
+ * them as a union; `printAreaCenter` is where that is narrowed again.
+ */
+type Area = Entry & {
+  clip: {
+    type: string
+    x?: number
+    y?: number
+    width?: number
+    height?: number
+  }
+}
+
+/** One print area of a product, by the ids a spec names. */
+function printArea(productId: string, areaId: string): Area {
+  const product = find(products.items, 'products.json', productId)
+
+  return find(
+    product.printAreas as readonly Area[],
+    `products.json "${productId}"`,
+    areaId,
+  )
+}
+
+export function printAreaName(
+  productId: string,
+  areaId: string,
+  lang: Lang,
+): string {
+  return printArea(productId, areaId).name[lang]
+}
+
+/** The mockup's own coordinate space, which layer positions are written in. */
+export function mockupSize(productId: string): {
+  width: number
+  height: number
+} {
+  const { mockup } = find(products.items, 'products.json', productId)
+
+  return { width: mockup.width, height: mockup.height }
+}
+
+/**
+ * The middle of a print area, in mockup coordinates — where a tapped motif
+ * lands, and therefore where a journey has to reach to take hold of one.
+ *
+ * Rectangles only: the areas the motif journeys use are rectangles, and
+ * measuring a path here would mean a second copy of `areaBounds` in the specs.
+ */
+export function printAreaCenter(
+  productId: string,
+  areaId: string,
+): { x: number; y: number } {
+  const { clip } = printArea(productId, areaId)
+  const { x, y, width, height } = clip
+
+  if (
+    clip.type !== 'rect' ||
+    x === undefined ||
+    y === undefined ||
+    width === undefined ||
+    height === undefined
+  ) {
+    throw new Error(
+      `products.json "${productId}" area "${areaId}" is not a rectangle`,
+    )
+  }
+
+  return { x: x + width / 2, y: y + height / 2 }
+}
+
 /** The cloth colours a product offers, in the order the picker shows them. */
 export function baseColors(id: string): string[] {
   return find(products.items, 'products.json', id).baseColors

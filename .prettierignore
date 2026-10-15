@@ -1,4 +1,5 @@
 dist
+dist-motifs
 coverage
 playwright-report
 test-results

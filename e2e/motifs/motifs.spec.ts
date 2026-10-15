@@ -1,0 +1,154 @@
+/**
+ * Laying leaves on the cloth: the journeys that only exist with `VITE_FLAGS=
+ * motifs`, run against the flagged build on its own port (see
+ * playwright.config.ts).
+ *
+ * The canvas is one bitmap, so there is nothing in the DOM to ask where a leaf
+ * is — and nothing is exported from the app for a test's benefit. So these
+ * check what a visitor can see: the layer list, which panel line the
+ * properties shows, and whether what the canvas paints changed at all. Where
+ * the leaf actually ends up is the visual baselines' job, next door.
+ *
+ * The handkerchief is the product throughout, because its corner takes motifs
+ * and nothing else: with the flag off that area is not offered at all, so
+ * every one of these would fail against the production build — which is the
+ * point of running both.
+ */
+import AxeBuilder from '@axe-core/playwright'
+import { expect, test } from '@playwright/test'
+import {
+  mockupSize,
+  patternName,
+  printAreaCenter,
+  printAreaName,
+  productName,
+} from '../fixtures/catalog'
+import {
+  applyPattern,
+  canvas,
+  drag,
+  layerRow,
+  onMockup,
+  openPanel,
+} from '../fixtures/editor'
+import { messages } from '../fixtures/ui'
+
+const th = messages.th
+
+const PRODUCT = 'handkerchief'
+/** Motifs only, so it exists in the editor only with the flag on. */
+const AREA = 'corner'
+const LEAF = 'teak'
+const TILE = 'gingham'
+
+/** WCAG 2.1 A and AA, as in a11y.spec.ts. */
+const AXE_TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']
+
+const BLOCKING = ['serious', 'critical']
+
+/** Opens the editor and puts one leaf in the motif-only corner. */
+async function layLeaf(page: import('@playwright/test').Page) {
+  await page.goto(`/customize/${PRODUCT}`)
+  await expect(
+    page.getByRole('heading', { level: 1, name: productName(PRODUCT, 'th') }),
+  ).toBeVisible()
+
+  await openPanel(page, th, 'patterns')
+  await page
+    .getByRole('button', {
+      name: printAreaName(PRODUCT, AREA, 'th'),
+      exact: true,
+    })
+    .click()
+  await applyPattern(page, th, 'th', LEAF)
+}
+
+/** The point on screen the leaf was laid at: the middle of its print area. */
+const leafAt = (page: import('@playwright/test').Page) =>
+  onMockup(page, mockupSize(PRODUCT), printAreaCenter(PRODUCT, AREA))
+
+test('the corner takes a leaf, and says which', async ({ page }) => {
+  await layLeaf(page)
+
+  await openPanel(page, th, 'properties')
+  await expect(layerRow(page, th, patternName(LEAF, 'th'))).toBeVisible()
+  await expect(page.getByText(th.customize.layer.motifSoon)).toBeVisible()
+})
+
+test('a tap on the empty cloth lets the leaf go', async ({ page }) => {
+  await layLeaf(page)
+  await openPanel(page, th, 'properties')
+  await expect(page.getByText(th.customize.layer.motifSoon)).toBeVisible()
+
+  // The top-left of the mockup is cloth with nothing on it: every node but a
+  // motif is deaf, so this tap reaches the stage itself.
+  const empty = await onMockup(page, mockupSize(PRODUCT), { x: 260, y: 260 })
+  await page.mouse.click(empty.x, empty.y)
+
+  await expect(page.getByText(th.customize.layer.none)).toBeVisible()
+  // Let go of, not thrown away.
+  await expect(layerRow(page, th, patternName(LEAF, 'th'))).toBeVisible()
+})
+
+test('the leaf follows a drag', async ({ page }) => {
+  await layLeaf(page)
+
+  // Deselected first, so the drag starts on the leaf rather than on one of the
+  // transform handles sitting over it.
+  const empty = await onMockup(page, mockupSize(PRODUCT), { x: 260, y: 260 })
+  await page.mouse.click(empty.x, empty.y)
+
+  const before = await canvas(page).screenshot()
+  const from = await leafAt(page)
+  await drag(page, from, { x: from.x - 40, y: from.y - 40 })
+
+  await expect(async () => {
+    const after = await canvas(page).screenshot()
+    expect(after.equals(before)).toBe(false)
+  }).toPass()
+
+  // And it is the same single leaf that moved.
+  await openPanel(page, th, 'properties')
+  await expect(layerRow(page, th, patternName(LEAF, 'th'))).toHaveCount(1)
+})
+
+test('a tile is not dragged off its area', async ({ page }) => {
+  await page.goto(`/customize/${PRODUCT}`)
+  await expect(
+    page.getByRole('heading', { level: 1, name: productName(PRODUCT, 'th') }),
+  ).toBeVisible()
+  await applyPattern(page, th, 'th', TILE)
+
+  await openPanel(page, th, 'properties')
+  await expect(page.getByText(th.customize.layer.scale)).toBeVisible()
+
+  // Dragging across the cloth the tile prints on. A tile has no place of its
+  // own to move, so the drag reaches the stage — which lets the selection go,
+  // and that is the proof the tile never took hold of the pointer.
+  const from = await onMockup(page, mockupSize(PRODUCT), { x: 300, y: 300 })
+  await drag(page, from, { x: from.x + 90, y: from.y + 60 })
+
+  await openPanel(page, th, 'properties')
+  await expect(page.getByText(th.customize.layer.none)).toBeVisible()
+  await expect(layerRow(page, th, patternName(TILE, 'th'))).toBeVisible()
+})
+
+test('no serious accessibility violations with a leaf selected', async ({
+  page,
+}) => {
+  await layLeaf(page)
+  await openPanel(page, th, 'properties')
+
+  const { violations } = await new AxeBuilder({ page })
+    .withTags(AXE_TAGS)
+    .analyze()
+
+  expect(
+    violations
+      .filter((violation) => BLOCKING.includes(violation.impact ?? ''))
+      .map((violation) => ({
+        rule: violation.id,
+        elements: violation.nodes.map((node) => node.target.join(' ')),
+      })),
+  ).toEqual([])
+})
