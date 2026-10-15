@@ -17,9 +17,11 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 08a | done | `feat/tile-rendering` | feat(editor): render tile layers and split the customizer chunk ([#12](https://github.com/Boypemt/PTT-Project/pull/12)) | `prompts/08-pattern-panel.md` | 07b |
 | 08b | done | `feat/pattern-panel` | feat(editor): pattern library and tile layers ([#13](https://github.com/Boypemt/PTT-Project/pull/13)) | `prompts/08-pattern-panel.md` | 08a |
 | 08c | done | `feat/layer-controls` | feat(editor): layer properties and layer list | `prompts/08-pattern-panel.md` | 08b |
-| 09 | **todo** | `feat/motif-transform` | feat(editor): placeable leaf motifs with transform handles | `prompts/09-motif-transform.md` | 08c |
+| 09a | in review | `feat/motif-layers` | feat(editor): placeable leaf motifs with transform handles (behind `motifs`) | `prompts/09-motif-transform.md` | 08c |
+| 09b | **todo** | `feat/motif-scatter` | feat(editor): scatter leaves, motif properties and keyboard | `prompts/09-motif-transform.md` | 09a |
+| 09c | **todo** | `chore/drop-motifs-flag` | chore(lib): remove the motifs flag once it is checked on staging | — | 09b |
 | 10 | done | `feat/leaf-dye-colors` | feat(editor): recolour by leaf dye and base colour | `prompts/10-leaf-dye-colors.md` | 08c |
-| 11 | **todo** | `feat/history-persist` | feat(editor): undo/redo, autosave and share link | `prompts/11-history-persist.md` | 09, 10 |
+| 11 | **todo** | `feat/history-persist` | feat(editor): undo/redo, autosave and share link | `prompts/11-history-persist.md` | 09b, 10 |
 | 12 | **todo** | `feat/export-request` | feat(export): PNG export and order request summary | `prompts/12-export-request.md` | 11 |
 | 13 | done | `feat/landing-story` | feat(app): landing page with community story | `prompts/13-landing-story.md` | 05 |
 | 14 | partly | `test/e2e-polish` | test: Playwright happy path, a11y and mobile polish | `prompts/14-e2e-polish.md` | 12 |
@@ -37,8 +39,8 @@ the happy path — plus the bundle-size check and preloading pattern thumbnails.
 - **M1 (after 06):** live site with product catalogue in TH/EN. ✅
 - **M2 (after 10):** working customizer — the demo moment. ✅ tiles, leaf dyes and the base
   cloth are in; motifs (09) are not.
-- **M3 (after 15):** prototype complete + designer can drop in real patterns. Remaining: 09, 11,
-  12, 15, and what is left of 14.
+- **M3 (after 15):** prototype complete + designer can drop in real patterns. Remaining: 09b, 09c,
+  11, 12, 15, and what is left of 14.
 
 Promoting a milestone to the demo link is `docs/RELEASING.md`; what each one contained is
 `CHANGELOG.md`.

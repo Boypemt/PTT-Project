@@ -6,6 +6,19 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
+### Added
+
+- **Leaf motifs, behind the `motifs` flag.** Single leaves can be laid on the
+  cloth the way eco-printing does it: tap a leaf and it lands in the middle of
+  the print area, drag it, and scale or turn it with handles that keep its
+  shape and snap to every 45°. It stays inside the area it prints on while you
+  drag rather than snapping back afterwards. This also opens the print areas
+  that take nothing but motifs — the handkerchief's corner, the wrap cloth's
+  centre, the plate's centre. The leaf's own settings panel, scatter and the
+  keyboard shortcuts are the next step; until then the properties panel says
+  so. Off in production: `VITE_FLAGS=motifs` is set on Vercel's Preview
+  environment only, and the e2e suite runs both states.
+
 ### Fixed
 
 - **Thai typography.** Wide letter-spacing and `uppercase` now apply only when
