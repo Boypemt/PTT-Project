@@ -4,10 +4,21 @@ import { makePattern } from '@/test/catalogFixtures'
 import { MOTIF_UNIT } from './motifBox'
 import {
   clampMotifCenter,
+  MOTIF_MAX_RATIO,
+  MOTIF_MIN_SIZE,
   MOTIF_PLACE_RATIO,
   motifPlacement,
+  motifSizeBounds,
   newMotifLayer,
 } from './motifPlacement'
+
+/** The drawn length of a placed leaf's longer edge, in mockup units. */
+const placedSize = (bounds: {
+  x: number
+  y: number
+  width: number
+  height: number
+}) => motifPlacement(bounds).scale * MOTIF_UNIT
 
 /** The handkerchief's corner: the smallest motif-only area in the catalog. */
 const cornerBounds = { x: 556, y: 556, width: 234, height: 234 }
@@ -35,18 +46,75 @@ describe('motifPlacement', () => {
     expect([x, y]).toEqual([673, 673])
   })
 
-  it('is a quarter of the shorter side, so a narrow area is not overflowed', () => {
-    const { scale } = motifPlacement(band)
+  it('is a quarter of the shorter side where that clears the floor', () => {
+    // The shawl's whole cloth: a quarter of 464 is 116, which stands.
+    const cloth = { x: 170, y: 268, width: 660, height: 464 }
 
-    expect(scale).toBeCloseTo((MOTIF_PLACE_RATIO * band.width) / MOTIF_UNIT, 10)
-    // The leaf comes out 45 units across on a band 180 wide.
-    expect(scale * MOTIF_UNIT).toBeCloseTo(45, 10)
+    expect(placedSize(cloth)).toBeCloseTo(MOTIF_PLACE_RATIO * 464, 10)
+    expect(placedSize(cloth)).toBeGreaterThan(MOTIF_MIN_SIZE)
+  })
+
+  it('holds a small area at the floor, so a leaf is not a speck', () => {
+    // The handkerchief's corner: a quarter of 234 is 58, which on a Pixel 7 is
+    // smaller than the handles that hold it. The floor is what this is for.
+    expect(placedSize(cornerBounds)).toBeCloseTo(MOTIF_MIN_SIZE, 10)
+  })
+
+  it('also holds the shawl narrow end band at the floor', () => {
+    expect(placedSize(band)).toBeCloseTo(MOTIF_MIN_SIZE, 10)
+  })
+
+  it('gives the floor up where the area cannot hold it', () => {
+    // 0.6 of 120 is 72, under the floor: a leaf that fits beats a leaf that
+    // is never smaller than 100 units.
+    const small = { x: 0, y: 0, width: 120, height: 120 }
+
+    expect(placedSize(small)).toBeCloseTo(MOTIF_MAX_RATIO * 120, 10)
+    expect(placedSize(small)).toBeLessThan(MOTIF_MIN_SIZE)
   })
 
   it('leaves a tiny area a motif that can still be grabbed', () => {
     const { scale } = motifPlacement({ x: 0, y: 0, width: 8, height: 8 })
 
     expect(scale).toBeGreaterThan(0)
+  })
+})
+
+describe('motifSizeBounds', () => {
+  it('runs from the floor to a share of the shorter side', () => {
+    expect(motifSizeBounds(cornerBounds)).toEqual({
+      min: MOTIF_MIN_SIZE,
+      max: MOTIF_MAX_RATIO * 234,
+    })
+  })
+
+  it('measures against the shorter side of an oblong area', () => {
+    expect(motifSizeBounds(band).max).toBeCloseTo(MOTIF_MAX_RATIO * 180, 10)
+  })
+
+  it('drops the floor to the ceiling where an area is smaller than both', () => {
+    const { min, max } = motifSizeBounds({
+      x: 0,
+      y: 0,
+      width: 120,
+      height: 120,
+    })
+
+    expect(min).toBe(max)
+    expect(max).toBeCloseTo(MOTIF_MAX_RATIO * 120, 10)
+  })
+
+  it('never answers with a floor above its ceiling', () => {
+    for (const side of [10, 80, 150, 166, 400, 900]) {
+      const { min, max } = motifSizeBounds({
+        x: 0,
+        y: 0,
+        width: side,
+        height: side,
+      })
+
+      expect(min).toBeLessThanOrEqual(max)
+    }
   })
 })
 

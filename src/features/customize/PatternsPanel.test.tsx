@@ -16,8 +16,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Pattern, PrintArea } from '@/catalog'
-import { MOTIF_UNIT } from '@/editor/motifBox'
-import { MOTIF_PLACE_RATIO } from '@/editor/motifPlacement'
+import { motifPlacement } from '@/editor/motifPlacement'
 import { editorStore } from '@/editor/store'
 import th from '@/i18n/th.json'
 import { catalogFile, makePattern, makeProduct } from '@/test/catalogFixtures'
@@ -433,8 +432,13 @@ describe('with the motifs flag on', () => {
     vi.stubEnv('VITE_FLAGS', 'motifs')
   })
 
-  /** The leaf a tap lands, at a quarter of the area's shorter side. */
-  const placedScale = (side: number) => (MOTIF_PLACE_RATIO * side) / MOTIF_UNIT
+  /**
+   * The scale a tap lands a leaf at, taken from the rule itself: what is
+   * checked here is that the panel uses it, and `motifPlacement.test.ts` is
+   * where the rule's own floor and ceiling are pinned.
+   */
+  const placedScale = (side: number) =>
+    motifPlacement({ x: 0, y: 0, width: side, height: side }).scale
 
   it('offers the motif-only area as a target of its own', async () => {
     openProduct([cloth, corner, band])
