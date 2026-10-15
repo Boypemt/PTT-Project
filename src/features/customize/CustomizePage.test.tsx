@@ -78,7 +78,15 @@ describe('the editor page', () => {
 
     expect(await findSwatch(PAPER)).toHaveAttribute('aria-pressed', 'true')
     expect(swatch(MANGO)).toHaveAttribute('aria-pressed', 'false')
-    expect(editorStore.getState().design.baseColor).toBe(PAPER)
+
+    // As in the print-area test below: the swatch is pressed from the design
+    // the page draws on its first paint, while the store is written by an
+    // effect that runs after it. Reading the store at once passes only
+    // because the effect usually wins the race, and under a loaded CI
+    // machine it sometimes does not.
+    await waitFor(() => {
+      expect(editorStore.getState().design.baseColor).toBe(PAPER)
+    })
   })
 
   it('moves the cloth to a base colour the visitor picks', async () => {
