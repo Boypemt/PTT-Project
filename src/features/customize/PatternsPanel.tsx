@@ -33,6 +33,7 @@ import {
 import { targetPrintArea, usableKinds } from '@/editor/layerKinds'
 import { newMotifLayer } from '@/editor/motifPlacement'
 import { filterPatterns } from '@/editor/patternFilter'
+import { leafPatterns, scatterMotifs, scatterSeed } from '@/editor/scatter'
 import { replaceableLayer } from '@/editor/selection'
 import { useDesignStore } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
@@ -50,6 +51,7 @@ export function PatternsPanel({ product }: { product: Product }) {
     (state) => state.selectedPrintAreaId,
   )
   const addLayer = useDesignStore((state) => state.addLayer)
+  const addLayers = useDesignStore((state) => state.addLayers)
   const updateLayer = useDesignStore((state) => state.updateLayer)
   const selectLayer = useDesignStore((state) => state.selectLayer)
   const design = useDesignStore((state) => state.design)
@@ -67,6 +69,11 @@ export function PatternsPanel({ product }: { product: Product }) {
     area === undefined
       ? undefined
       : replaceableLayer(design, selectedLayerId, area.id)
+
+  const canScatter =
+    area !== undefined &&
+    placeable.includes('motif') &&
+    leafPatterns(all).length > 0
 
   /**
    * Whether the next tap starts a layer rather than changing one. True once
@@ -159,6 +166,23 @@ export function PatternsPanel({ product }: { product: Product }) {
               onChange={setKind}
             />
           </div>
+
+          {/* Above the library rather than in it: it is not a pattern you
+              pick, it is the whole cloth in one tap. Only where leaves can be
+              placed at all, and only where the catalog has leaves to throw. */}
+          {canScatter ? (
+            <button
+              type="button"
+              onClick={() => {
+                // Seeded from the clock, so each tap throws a different
+                // handful and any one of them could be reproduced.
+                addLayers(scatterMotifs(all, area, scatterSeed()))
+              }}
+              className="min-h-touch self-start rounded-xl border border-forest-600 bg-forest-50 px-3 text-sm font-medium text-forest-700 transition-colors hover:bg-forest-100"
+            >
+              {t('customize.layers.scatter')}
+            </button>
+          ) : null}
 
           {/* The button only where a tap would change something rather than
               add it; otherwise the line saying the next tap starts a layer.

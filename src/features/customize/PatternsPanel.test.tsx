@@ -191,6 +191,15 @@ describe('the pattern library', () => {
     expect(motif).toHaveTextContent(th.customize.comingSoon)
   })
 
+  it('offers no way to scatter leaves that cannot be placed', async () => {
+    openProduct([cloth])
+    await findPanel()
+
+    expect(
+      screen.queryByRole('button', { name: th.customize.layers.scatter }),
+    ).toBeNull()
+  })
+
   it('says nothing about kinds where the area takes only one', async () => {
     // The shirt's sleeves take tiles alone: a chip with no alternative is noise.
     openProduct([band])
@@ -552,6 +561,54 @@ describe('with the motifs flag on', () => {
     expect(
       editorStore.getState().design.layers.map((layer) => layer.type),
     ).toEqual(['tile', 'motif'])
+  })
+
+  it('throws a handful of leaves across the area in one tap', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(
+      screen.getByRole('button', { name: th.customize.layers.scatter }),
+    )
+
+    const { design, selectedLayerId } = editorStore.getState()
+    expect(design.layers.length).toBeGreaterThanOrEqual(5)
+    expect(design.layers.length).toBeLessThanOrEqual(8)
+    for (const layer of design.layers) {
+      expect(layer.type).toBe('motif')
+      expect(layer.printAreaId).toBe(cloth.id)
+      // Only leaves: the tiles in this catalog are not thrown.
+      expect(layer.patternId).toBe(teak.id)
+    }
+    // Eight leaves arrive together; singling one out would be a choice the
+    // visitor did not make.
+    expect(selectedLayerId).toBeNull()
+  })
+
+  it('scatters onto the area the chips point at', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth, corner])
+    await findPanel()
+
+    await user.click(chip(corner.name.th))
+    await user.click(
+      screen.getByRole('button', { name: th.customize.layers.scatter }),
+    )
+
+    const areas = new Set(
+      editorStore.getState().design.layers.map((layer) => layer.printAreaId),
+    )
+    expect([...areas]).toEqual([corner.id])
+  })
+
+  it('offers no scatter where the area takes tiles alone', async () => {
+    openProduct([band])
+    await findPanel()
+
+    expect(
+      screen.queryByRole('button', { name: th.customize.layers.scatter }),
+    ).toBeNull()
   })
 
   it('lays every leaf in the middle, so a tap always adds somewhere visible', async () => {

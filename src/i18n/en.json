@@ -104,6 +104,7 @@
       "tapReplaces": "Tapping a pattern changes the selected layer.",
       "tapAdds": "Tap a pattern to add a new layer",
       "add": "+ Add layer",
+      "scatter": "Scatter leaves",
       "title": "Layers",
       "select": "Select {{name}}",
       "empty": "Nothing on the product yet. Pick a pattern on the Patterns tab to start.",

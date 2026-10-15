@@ -56,6 +56,15 @@ export type EditorActions = {
   setBaseColor: (color: string) => void
   /** Appends the layer on top of the others, selects it, returns its new id. */
   addLayer: (layer: NewLayer) => string
+  /**
+   * Appends several at once — one scatter of leaves — and returns their ids.
+   *
+   * One write rather than one per leaf, so undo in task 11 takes the whole
+   * scatter back the way the button put it there. Nothing is left selected:
+   * eight leaves arrive together, and singling one of them out would be an
+   * arbitrary choice the visitor did not make.
+   */
+  addLayers: (layers: NewLayer[]) => string[]
   /** Merges `patch` into the layer; an unknown id leaves the design alone. */
   updateLayer: (id: string, patch: LayerPatch) => void
   removeLayer: (id: string) => void
@@ -170,6 +179,19 @@ export const createEditorStore = () =>
       }))
 
       return id
+    },
+
+    addLayers: (layers) => {
+      if (layers.length === 0) return []
+
+      const added = layers.map((layer) => ({ ...layer, id: createLayerId() }))
+
+      set(({ design }) => ({
+        design: { ...design, layers: [...design.layers, ...added] },
+        selectedLayerId: null,
+      }))
+
+      return added.map((layer) => layer.id)
     },
 
     updateLayer: (id, patch) =>
