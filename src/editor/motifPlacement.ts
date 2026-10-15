@@ -90,6 +90,43 @@ export function clampMotifCenter(center: Point, bounds: Rect): Point {
 }
 
 /**
+ * How far a duplicate sits from the leaf it was copied from, as a fraction of
+ * that leaf's own longer edge. Relative rather than fixed, so the copy is
+ * visibly beside the original whether the leaf is small or large.
+ */
+export const MOTIF_DUPLICATE_OFFSET = 0.25
+
+/**
+ * A copy of `layer`, laid a little down and to the right of it.
+ *
+ * On top of the original it would look like nothing had happened, so the copy
+ * is nudged — and clamped, because the original may already be in the corner
+ * of its area. Colours are copied rather than shared, so changing the dye on
+ * one leaf cannot reach the other.
+ */
+export function duplicateMotif(
+  layer: MotifLayer,
+  bounds: Rect,
+): Omit<MotifLayer, 'id'> {
+  const step = MOTIF_DUPLICATE_OFFSET * layer.scale * MOTIF_UNIT
+  const center = clampMotifCenter(
+    { x: layer.x + step, y: layer.y + step },
+    bounds,
+  )
+
+  return {
+    type: 'motif',
+    patternId: layer.patternId,
+    printAreaId: layer.printAreaId,
+    ...center,
+    scale: layer.scale,
+    rotation: layer.rotation,
+    colors: [...layer.colors],
+    opacity: layer.opacity,
+  }
+}
+
+/**
  * The motif layer a tap on `pattern` adds to `area`.
  *
  * Colours are copied out of the catalog entry, as a tile's are, so the layer

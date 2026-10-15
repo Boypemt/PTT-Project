@@ -18,6 +18,7 @@ import type { LayerPatch } from '@/editor/store'
 import { useDesignStore } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
 import { LeafDyePicker } from './LeafDyePicker'
+import { MotifProperties } from './MotifProperties'
 import { SliderField } from './SliderField'
 
 /** Both ends of each slider, with the step a visitor can feel. */
@@ -45,13 +46,11 @@ export function LayerProperties({ product }: { product: Product }) {
     return <p className="text-sm text-ink-500">{t('customize.layer.none')}</p>
   }
 
-  // A leaf's own sliders are the next step. Saying so beats the line above,
-  // which would claim nothing is selected while a leaf sits there with its
-  // handles on — and the canvas can already move, scale and turn it.
-  if (layer.type !== 'tile') {
-    return (
-      <p className="text-sm text-ink-500">{t('customize.layer.motifSoon')}</p>
-    )
+  // A leaf is moved by dragging it rather than by two offset sliders, so it
+  // gets a panel of its own; everything the two have in common is the same
+  // component and the same label either way.
+  if (layer.type === 'motif') {
+    return <MotifProperties layer={layer} product={product} />
   }
 
   const pattern =

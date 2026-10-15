@@ -72,13 +72,21 @@ test('the corner takes a leaf, and says which', async ({ page }) => {
 
   await openPanel(page, th, 'properties')
   await expect(layerRow(page, th, patternName(LEAF, 'th'))).toBeVisible()
-  await expect(page.getByText(th.customize.layer.motifSoon)).toBeVisible()
+  // The leaf's own panel, not the tile one: it has no offset sliders.
+  await expect(
+    page.getByRole('slider', { name: th.customize.layer.scale }),
+  ).toBeVisible()
+  await expect(
+    page.getByRole('slider', { name: th.customize.layer.offsetX }),
+  ).toHaveCount(0)
 })
 
 test('a tap on the empty cloth lets the leaf go', async ({ page }) => {
   await layLeaf(page)
   await openPanel(page, th, 'properties')
-  await expect(page.getByText(th.customize.layer.motifSoon)).toBeVisible()
+  await expect(
+    page.getByRole('button', { name: th.customize.layer.duplicate }),
+  ).toBeVisible()
 
   // The top-left of the mockup is cloth with nothing on it: every node but a
   // motif is deaf, so this tap reaches the stage itself.

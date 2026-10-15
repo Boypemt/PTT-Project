@@ -114,12 +114,12 @@
     "layer": {
       "title": "Selected layer",
       "none": "No layer selected. Pick a pattern on the Patterns tab to start one.",
-      "motifSoon": "Leaf settings arrive in the next step. Meanwhile, drag the leaf on the cloth to move, resize and turn it.",
       "scale": "Pattern size",
       "rotation": "Rotation",
       "offsetX": "Shift across",
       "offsetY": "Shift down",
       "opacity": "Strength",
+      "duplicate": "Duplicate",
       "reset": "Reset",
       "delete": "Delete layer"
     },
