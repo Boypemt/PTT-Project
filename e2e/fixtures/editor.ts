@@ -37,13 +37,14 @@ export function patternButton(page: Page, name: string): Locator {
 }
 
 /**
- * Prints one tile on the product and waits until the library says so.
+ * Puts one pattern on the product and waits until the library says so. A tile
+ * or a leaf: the library marks whichever the selected layer is wearing.
  *
  * The editor is mostly invisible until something is on the cloth — the layer
  * list, the sliders and the leaf dyes all belong to a selected layer — so this
  * is the setup every spec that looks at the editor needs.
  */
-export async function applyTile(
+export async function applyPattern(
   page: Page,
   ui: Messages,
   lang: Lang,
@@ -57,6 +58,48 @@ export async function applyTile(
   )
   await button.click()
   await expect(button).toHaveAttribute('aria-pressed', 'true')
+}
+
+/** The Konva stage: one canvas element, filling the editor's middle column. */
+export function canvas(page: Page): Locator {
+  return page.locator('canvas').first()
+}
+
+/**
+ * Where a point in the mockup's own coordinates lands on screen.
+ *
+ * The app centres the mockup inside the canvas as large as it goes
+ * (`fitContain` in src/lib/geometry.ts); this is that arithmetic again, from
+ * the measured canvas, so a journey can put the mouse on a leaf without the
+ * app having to expose anything for the test's benefit.
+ */
+export async function onMockup(
+  page: Page,
+  mockup: { width: number; height: number },
+  point: { x: number; y: number },
+): Promise<{ x: number; y: number }> {
+  const box = await canvas(page).boundingBox()
+
+  if (box === null) throw new Error('the canvas has no box to measure')
+
+  const scale = Math.min(box.width / mockup.width, box.height / mockup.height)
+
+  return {
+    x: box.x + (box.width - mockup.width * scale) / 2 + point.x * scale,
+    y: box.y + (box.height - mockup.height * scale) / 2 + point.y * scale,
+  }
+}
+
+/** Drags from one screen point to another, slowly enough for Konva. */
+export async function drag(
+  page: Page,
+  from: { x: number; y: number },
+  to: { x: number; y: number },
+): Promise<void> {
+  await page.mouse.move(from.x, from.y)
+  await page.mouse.down()
+  await page.mouse.move(to.x, to.y, { steps: 12 })
+  await page.mouse.up()
 }
 
 /** A layer's own row in the layer list, which is where its name is written. */

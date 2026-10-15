@@ -1,24 +1,33 @@
 /**
- * Which kinds of pattern the editor can place today, and what that means for a
+ * Which kinds of pattern the editor can place, and what that means for a
  * product's print areas.
  *
- * `tile` is the whole list for now. Placeable leaf motifs arrive with their
- * transform handles in task 09, and adding `'motif'` below is the one edit
- * that turns them on everywhere this is read: the library's kind chips, and
- * the print areas that accept nothing else.
+ * This is the one gate motifs come through. `motifs` off, it answers `['tile']`
+ * and the app is exactly what it was: the library's kind chip for leaves is
+ * disabled and says so, and a print area that takes nothing else is not
+ * offered at all. `motifs` on, leaves are placeable everywhere this is read —
+ * the chips, the print-area selector, the library's own filter — without any
+ * of those files knowing a flag exists.
  *
- * The gate matters because the catalog already describes areas the editor
- * cannot serve yet — the handkerchief's corner, the wrap cloth's centre, the
+ * The gate matters because the catalog describes areas the editor could not
+ * serve before motifs: the handkerchief's corner, the wrap cloth's centre, the
  * plate's centre all take motifs only. Offering them would open an empty
  * library with nothing to say for itself, which reads as a bug rather than as
  * a step that has not been built.
+ *
+ * A list rather than a constant because the flag is read per call (see
+ * `src/lib/flags.ts`): it is a split of a short string, and this is never
+ * called in a loop.
  */
 import type { PatternKind, PrintArea, Product } from '@/catalog'
+import { isEnabled } from '@/lib/flags'
 
-export const SUPPORTED_LAYER_KINDS: readonly PatternKind[] = ['tile']
+export function supportedLayerKinds(): readonly PatternKind[] {
+  return isEnabled('motifs') ? ['tile', 'motif'] : ['tile']
+}
 
 export function isSupportedKind(kind: PatternKind): boolean {
-  return SUPPORTED_LAYER_KINDS.includes(kind)
+  return supportedLayerKinds().includes(kind)
 }
 
 /** The kinds an area accepts that the editor can also place. */

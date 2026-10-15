@@ -95,6 +95,13 @@ type Layer =
 type Design = { version: 1; productId: string; baseColor: string; layers: Layer[]; note?: string };
 ```
 
+**Motif scale.** For a `motif` layer, `scale` 1 = `MOTIF_UNIT` mockup units on the motif's longer edge
+(`MOTIF_UNIT` = 220, in `src/editor/motifBox.ts`); the shorter edge follows from the asset's aspect ratio.
+Deliberately *not* a multiple of the asset's own pixel size, so redrawing a leaf larger does not resize it in
+designs people have already saved. `x`/`y` is the motif's centre, and it rotates about that centre.
+Because `scale` travels in the saved design, `MOTIF_UNIT` is part of that format: a test pins its value, and
+changing it is a migration rather than an edit.
+
 ## Placeholder patterns (until the designer delivers)
 Hand-written SVG, nothing downloaded, every file CC0-1.0 and listed in `docs/CREDITS.md`:
 - Tiles: seigaiha (waves), asanoha (hemp leaf), gingham check, polka, ikat stripes, vine scroll

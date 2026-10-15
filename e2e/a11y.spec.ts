@@ -14,7 +14,7 @@
  */
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
-import { applyTile } from './fixtures/editor'
+import { applyPattern } from './fixtures/editor'
 import { messages } from './fixtures/ui'
 
 const th = messages.th
@@ -38,7 +38,7 @@ for (const path of PAGES) {
     // rows — only exist once something is being designed, so scanning the
     // page as it opens would scan the half of it with nothing in it.
     if (path.startsWith('/customize/')) {
-      await applyTile(page, th, 'th', PATTERN)
+      await applyPattern(page, th, 'th', PATTERN)
     }
 
     const { violations } = await new AxeBuilder({ page })

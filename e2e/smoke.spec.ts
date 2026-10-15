@@ -20,7 +20,7 @@ import {
   productName,
 } from './fixtures/catalog'
 import {
-  applyTile,
+  applyPattern,
   layerRow,
   openPanel,
   patternButton,
@@ -71,7 +71,7 @@ test('the demo journey: landing, a two-pattern shawl, then English', async ({
   await expect(heading(product)).toBeVisible()
 
   // The first pattern on the cloth.
-  await applyTile(page, th, 'th', FIRST_PATTERN)
+  await applyPattern(page, th, 'th', FIRST_PATTERN)
 
   await openPanel(page, th, 'properties')
   await expect(

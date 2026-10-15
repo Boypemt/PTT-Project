@@ -7,7 +7,15 @@ import globals from 'globals'
 import tseslint from 'typescript-eslint'
 
 export default tseslint.config(
-  { ignores: ['dist', 'coverage', 'playwright-report', 'test-results'] },
+  {
+    ignores: [
+      'dist',
+      'dist-motifs',
+      'coverage',
+      'playwright-report',
+      'test-results',
+    ],
+  },
 
   // Type-aware linting for everything TypeScript.
   {
