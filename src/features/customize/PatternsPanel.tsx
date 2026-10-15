@@ -13,12 +13,13 @@
  * becomes a strip that scrolls sideways: the sheet stays short enough to see
  * what you are designing.
  *
- * The kind chips stay at every width, because they are what keeps tiles and
- * leaves apart. One strip holding both would be fourteen thumbnails to scroll
- * sideways through, and at that size a leaf silhouette and a tile swatch are
- * not tellable apart — while someone laying leaves wants the leaves and
- * nothing else. They cost one row of the sheet, and only appear where the
- * print area takes more than one kind.
+ * The kind chips stay at every width once both kinds can be placed, because
+ * they are what keeps tiles and leaves apart. One strip holding both would be
+ * fourteen thumbnails to scroll sideways through, and at that size a leaf
+ * silhouette and a tile swatch are not tellable apart — while someone laying
+ * leaves wants the leaves and nothing else. They cost one row of the sheet, so
+ * they appear there only where there is a real choice to make: on a phone a
+ * live chip beside one marked "coming soon" is not one.
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -146,11 +147,18 @@ export function PatternsPanel({ product }: { product: Product }) {
             />
           </label>
 
-          <PatternKindFilter
-            kinds={area.allowedKinds}
-            active={kind}
-            onChange={setKind}
-          />
+          {/* On a phone the chips only earn their row when both kinds can
+              actually be placed. A chip beside one marked "coming soon" is
+              not a choice, so below `md` it stays out of a sheet that has the
+              canvas to share — which is also what keeps this panel exactly as
+              it is today wherever the kind is not placeable yet. */}
+          <div className={placeable.length > 1 ? undefined : 'hidden md:block'}>
+            <PatternKindFilter
+              kinds={area.allowedKinds}
+              active={kind}
+              onChange={setKind}
+            />
+          </div>
 
           {/* The button only where a tap would change something rather than
               add it; otherwise the line saying the next tap starts a layer.
