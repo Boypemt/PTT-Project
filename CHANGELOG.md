@@ -6,8 +6,12 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
-Nothing yet — everything in `main` is part of `0.1.0-demo` until that tag is
-pushed.
+### Fixed
+
+- **Thai typography.** Wide letter-spacing and `uppercase` now apply only when
+  the page is in English. Tracking pushed Thai vowel and tone marks off the
+  consonant they belong to, which showed on the landing eyebrow
+  (วิสาหกิจชุมชนป่าต้นผึ้ง) and the placeholder badge.
 
 ## [0.1.0-demo] — not yet tagged
 
