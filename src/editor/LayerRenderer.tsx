@@ -7,7 +7,8 @@
  * repeating surface pattern, so it becomes the *fill* of a rectangle covering
  * the whole mockup and the clip decides how much shows (`tileFill.ts`). A
  * motif is one leaf laid on the cloth, so it is a single image centred on the
- * layer's own point and turned around it (`motifBox.ts`).
+ * layer's own point, turned around it, and the one thing on the stage a tap
+ * can take hold of (`MotifImage.tsx`).
  *
  * The pattern a layer names is looked up in the catalog here rather than
  * passed in, so nothing above this file has to know that a layer needs an
@@ -17,16 +18,15 @@
  *
  * Coordinates are mockup coordinates: the group above applies the fit.
  */
-import { Image as KonvaImage, Rect } from 'react-konva'
+import { Rect } from 'react-konva'
 import {
   useCatalog,
   type Layer,
-  type MotifLayer,
   type Pattern,
   type ProductMockup,
   type TileLayer,
 } from '@/catalog'
-import { motifBox } from './motifBox'
+import { MotifImage, type MotifTools } from './MotifImage'
 import { tileFill } from './tileFill'
 import { usePaintedPattern } from './usePaintedPattern'
 
@@ -48,36 +48,23 @@ function TileLayerView({
     <Rect
       {...tileFill(layer, mockup, painted.ratio)}
       fillPatternImage={painted.image}
+      // A tile has no position of its own to drag, and this rectangle covers
+      // the whole mockup: left listening it would swallow every tap meant for
+      // a leaf underneath or for the empty cloth.
+      listening={false}
     />
-  )
-}
-
-/** One leaf, centred on the layer's point and turned around it. */
-function MotifLayerView({
-  layer,
-  pattern,
-}: {
-  layer: MotifLayer
-  pattern: Pattern
-}) {
-  const painted = usePaintedPattern(pattern.src, layer.colors)
-
-  if (painted === null) return null
-
-  // The box is in mockup units and the image may have been rasterised at
-  // several times its natural size; Konva scales the bitmap into the box, so
-  // the extra pixels come out as sharpness rather than as a bigger leaf.
-  return (
-    <KonvaImage image={painted.image} {...motifBox(layer, painted.aspect)} />
   )
 }
 
 export function LayerRenderer({
   layer,
   mockup,
+  motif,
 }: {
   layer: Layer
   mockup: ProductMockup
+  /** How a motif may be handled. Absent, it is drawn and nothing more. */
+  motif?: MotifTools
 }) {
   const { status, catalog } = useCatalog()
 
@@ -92,6 +79,6 @@ export function LayerRenderer({
   return layer.type === 'tile' ? (
     <TileLayerView layer={layer} pattern={pattern} mockup={mockup} />
   ) : (
-    <MotifLayerView layer={layer} pattern={pattern} />
+    <MotifImage layer={layer} pattern={pattern} tools={motif} />
   )
 }

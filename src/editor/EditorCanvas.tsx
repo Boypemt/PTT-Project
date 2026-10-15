@@ -14,6 +14,13 @@
  *
  * `ProductMockup` stays in use on /products and /dev/catalog, where a still
  * picture is all those pages need.
+ *
+ * The stage listens for taps only where there is something to take hold of,
+ * which is leaf motifs and therefore the `motifs` flag: with it off this is
+ * the picture it has always been, with nothing on it that answers a pointer.
+ * With it on, every node but the motifs is still deaf — so a tap that reaches
+ * the stage itself is a tap on empty cloth, and that is what clears the
+ * selection.
  */
 import { useEffect, useRef, type ReactNode } from 'react'
 import Konva from 'konva'
@@ -25,10 +32,15 @@ import {
   Rect,
   Stage,
 } from 'react-konva'
+import type { Layer as DesignLayer, PrintArea } from '@/catalog'
 import type { PrintAreaClip, Product } from '@/catalog'
+import { isEnabled } from '@/lib/flags'
 import { fitContain, pixelRatio, type Fit } from '@/lib/geometry'
+import { areaBounds } from './areaBounds'
 import { clipFunc } from './clip'
 import { LayerRenderer } from './LayerRenderer'
+import type { MotifTools } from './MotifImage'
+import { MotifTransformer } from './MotifTransformer'
 import { buildScene } from './scene'
 import { useDesignFor, useDesignStore } from './useDesignStore'
 import { useImage } from './useImage'
@@ -81,7 +93,7 @@ function TintedBase({
   if (status !== 'loaded') return null
 
   return (
-    <Group ref={group} x={fit.offsetX} y={fit.offsetY}>
+    <Group ref={group} x={fit.offsetX} y={fit.offsetY} listening={false}>
       <KonvaImage image={image} width={fit.width} height={fit.height} />
       <Rect
         width={fit.width}
@@ -107,6 +119,7 @@ function Shading({ src, fit }: { src: string; fit: Fit }) {
       width={fit.width}
       height={fit.height}
       globalCompositeOperation="multiply"
+      listening={false}
     />
   )
 }
@@ -137,6 +150,8 @@ function PrintAreaOutline({ clip }: { clip: PrintAreaClip }) {
     stroke: PRINT_AREA_INK,
     strokeWidth: 4,
     dash: [16, 12],
+    // An annotation, so it never stands between a tap and a leaf.
+    listening: false,
   }
 
   return clip.type === 'rect' ? (
@@ -156,17 +171,53 @@ export function EditorCanvas({ product }: { product: Product }) {
   const [containerRef, size] = useMeasuredSize<HTMLDivElement>()
   const design = useDesignFor(product)
   const showPrintAreas = useDesignStore((state) => state.showPrintAreas)
+  const selectedLayerId = useDesignStore((state) => state.selectedLayerId)
+  const selectLayer = useDesignStore((state) => state.selectLayer)
+  const updateLayer = useDesignStore((state) => state.updateLayer)
   const { mockup } = product
   const fit = fitContain(mockup, size)
   const scene = buildScene(product, design)
+  const handles = isEnabled('motifs')
+
+  /** What one motif layer may do to itself; see `MotifImage`. */
+  const motifTools = (area: PrintArea, layer: DesignLayer): MotifTools => ({
+    bounds: areaBounds(area.clip),
+    fit,
+    onSelect: () => {
+      selectLayer(layer.id)
+    },
+    onCommit: (transform) => {
+      updateLayer(layer.id, transform)
+    },
+  })
+
+  /**
+   * A tap that reached the stage itself touched nothing: every node but the
+   * motifs is `listening={false}`, so this is empty cloth and the selection
+   * goes. Taken on the way down, as selecting a leaf is, so the two cannot
+   * disagree about which came first.
+   */
+  const clearSelection = (
+    event: Konva.KonvaEventObject<MouseEvent | TouchEvent>,
+  ) => {
+    if (event.target === event.target.getStage()) selectLayer(null)
+  }
 
   return (
     <div ref={containerRef} className="min-h-0 min-w-0 flex-1">
       {/* Nothing to draw until the box has been measured, and a zero-sized
           stage is an error in Konva rather than an empty picture. */}
       {fit.scale > 0 ? (
-        <Stage width={size.width} height={size.height} listening={false}>
-          <Layer listening={false}>
+        <Stage
+          width={size.width}
+          height={size.height}
+          // Both handlers are attached either way; with nothing to take hold
+          // of, `listening` is what stops Konva dispatching to them at all.
+          listening={handles}
+          onMouseDown={clearSelection}
+          onTouchStart={clearSelection}
+        >
+          <Layer listening={handles}>
             {/* The paper the DOM mockup sat on. `multiply` needs something
                 opaque underneath, or the shading would darken transparency
                 and come out heavier than it does on /products. */}
@@ -176,6 +227,7 @@ export function EditorCanvas({ product }: { product: Product }) {
               width={fit.width}
               height={fit.height}
               fill={PAPER}
+              listening={false}
             />
 
             <TintedBase src={mockup.base} color={design.baseColor} fit={fit} />
@@ -188,6 +240,7 @@ export function EditorCanvas({ product }: { product: Product }) {
                       key={layer.id}
                       layer={layer}
                       mockup={mockup}
+                      motif={handles ? motifTools(area, layer) : undefined}
                     />
                   ))}
                 </Group>
@@ -205,6 +258,10 @@ export function EditorCanvas({ product }: { product: Product }) {
                 ))}
               </MockupSpace>
             ) : null}
+
+            {/* Last, so the handles are drawn over the design, and outside
+                `MockupSpace`, so they are sized in screen pixels. */}
+            {handles ? <MotifTransformer selectedId={selectedLayerId} /> : null}
           </Layer>
         </Stage>
       ) : null}
