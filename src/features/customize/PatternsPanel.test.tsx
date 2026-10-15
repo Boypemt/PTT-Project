@@ -16,8 +16,7 @@ import { screen, waitFor, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import type { Pattern, PrintArea } from '@/catalog'
-import { MOTIF_UNIT } from '@/editor/motifBox'
-import { MOTIF_PLACE_RATIO } from '@/editor/motifPlacement'
+import { motifPlacement } from '@/editor/motifPlacement'
 import { editorStore } from '@/editor/store'
 import th from '@/i18n/th.json'
 import { catalogFile, makePattern, makeProduct } from '@/test/catalogFixtures'
@@ -190,6 +189,15 @@ describe('the pattern library', () => {
 
     expect(motif).toBeDisabled()
     expect(motif).toHaveTextContent(th.customize.comingSoon)
+  })
+
+  it('offers no way to scatter leaves that cannot be placed', async () => {
+    openProduct([cloth])
+    await findPanel()
+
+    expect(
+      screen.queryByRole('button', { name: th.customize.layers.scatter }),
+    ).toBeNull()
   })
 
   it('says nothing about kinds where the area takes only one', async () => {
@@ -433,8 +441,13 @@ describe('with the motifs flag on', () => {
     vi.stubEnv('VITE_FLAGS', 'motifs')
   })
 
-  /** The leaf a tap lands, at a quarter of the area's shorter side. */
-  const placedScale = (side: number) => (MOTIF_PLACE_RATIO * side) / MOTIF_UNIT
+  /**
+   * The scale a tap lands a leaf at, taken from the rule itself: what is
+   * checked here is that the panel uses it, and `motifPlacement.test.ts` is
+   * where the rule's own floor and ceiling are pinned.
+   */
+  const placedScale = (side: number) =>
+    motifPlacement({ x: 0, y: 0, width: side, height: side }).scale
 
   it('offers the motif-only area as a target of its own', async () => {
     openProduct([cloth, corner, band])
@@ -548,6 +561,54 @@ describe('with the motifs flag on', () => {
     expect(
       editorStore.getState().design.layers.map((layer) => layer.type),
     ).toEqual(['tile', 'motif'])
+  })
+
+  it('throws a handful of leaves across the area in one tap', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth])
+    await findPanel()
+
+    await user.click(
+      screen.getByRole('button', { name: th.customize.layers.scatter }),
+    )
+
+    const { design, selectedLayerId } = editorStore.getState()
+    expect(design.layers.length).toBeGreaterThanOrEqual(5)
+    expect(design.layers.length).toBeLessThanOrEqual(8)
+    for (const layer of design.layers) {
+      expect(layer.type).toBe('motif')
+      expect(layer.printAreaId).toBe(cloth.id)
+      // Only leaves: the tiles in this catalog are not thrown.
+      expect(layer.patternId).toBe(teak.id)
+    }
+    // Eight leaves arrive together; singling one out would be a choice the
+    // visitor did not make.
+    expect(selectedLayerId).toBeNull()
+  })
+
+  it('scatters onto the area the chips point at', async () => {
+    const user = userEvent.setup()
+    openProduct([cloth, corner])
+    await findPanel()
+
+    await user.click(chip(corner.name.th))
+    await user.click(
+      screen.getByRole('button', { name: th.customize.layers.scatter }),
+    )
+
+    const areas = new Set(
+      editorStore.getState().design.layers.map((layer) => layer.printAreaId),
+    )
+    expect([...areas]).toEqual([corner.id])
+  })
+
+  it('offers no scatter where the area takes tiles alone', async () => {
+    openProduct([band])
+    await findPanel()
+
+    expect(
+      screen.queryByRole('button', { name: th.customize.layers.scatter }),
+    ).toBeNull()
   })
 
   it('lays every leaf in the middle, so a tap always adds somewhere visible', async () => {

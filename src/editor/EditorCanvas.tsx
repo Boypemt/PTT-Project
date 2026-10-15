@@ -24,6 +24,7 @@
  */
 import { useEffect, useRef, type ReactNode } from 'react'
 import Konva from 'konva'
+import { useTranslation } from 'react-i18next'
 import {
   Group,
   Image as KonvaImage,
@@ -43,6 +44,7 @@ import type { MotifTools } from './MotifImage'
 import { MotifTransformer } from './MotifTransformer'
 import { buildScene } from './scene'
 import { useDesignFor, useDesignStore } from './useDesignStore'
+import { useMotifKeyboard } from './useMotifKeyboard'
 import { useImage } from './useImage'
 import { useMeasuredSize } from './useMeasuredSize'
 
@@ -168,7 +170,9 @@ function PrintAreaOutline({ clip }: { clip: PrintAreaClip }) {
 }
 
 export function EditorCanvas({ product }: { product: Product }) {
+  const { t } = useTranslation()
   const [containerRef, size] = useMeasuredSize<HTMLDivElement>()
+  const onKeyDown = useMotifKeyboard(product)
   const design = useDesignFor(product)
   const showPrintAreas = useDesignStore((state) => state.showPrintAreas)
   const selectedLayerId = useDesignStore((state) => state.selectedLayerId)
@@ -204,7 +208,22 @@ export function EditorCanvas({ product }: { product: Product }) {
   }
 
   return (
-    <div ref={containerRef} className="min-h-0 min-w-0 flex-1">
+    <div
+      ref={containerRef}
+      className="min-h-0 min-w-0 flex-1 outline-forest-600 focus-visible:outline-2"
+      // Focusable only where there is something to handle, so a build without
+      // motifs has the same tab order it has always had. `application` is what
+      // tells a screen reader to pass the arrow keys through to the editor
+      // rather than move its own cursor with them.
+      {...(handles
+        ? {
+            role: 'application',
+            tabIndex: 0,
+            'aria-label': t('customize.canvas'),
+            onKeyDown,
+          }
+        : {})}
+    >
       {/* Nothing to draw until the box has been measured, and a zero-sized
           stage is an error in Konva rather than an empty picture. */}
       {fit.scale > 0 ? (

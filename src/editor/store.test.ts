@@ -148,6 +148,54 @@ describe('addLayer', () => {
   })
 })
 
+describe('addLayers', () => {
+  it('appends them all, in the order given, each with an id', () => {
+    const { store } = openedStore()
+
+    const ids = store
+      .getState()
+      .addLayers([motif({ x: 10 }), motif({ x: 20 }), motif({ x: 30 })])
+    const added = store.getState().design.layers
+
+    expect(ids).toHaveLength(3)
+    expect(new Set(ids).size).toBe(3)
+    expect(added.map((layer) => layer.id)).toEqual(ids)
+    expect(
+      added.map((layer) => (layer.type === 'motif' ? layer.x : null)),
+    ).toEqual([10, 20, 30])
+  })
+
+  it('leaves them on top of what was already there', () => {
+    const { store, ids } = openedStore(2)
+
+    store.getState().addLayers([motif({ x: 1 })])
+
+    expect(
+      store
+        .getState()
+        .design.layers.slice(0, 2)
+        .map((l) => l.id),
+    ).toEqual(ids)
+  })
+
+  it('selects none of them, because the visitor singled none out', () => {
+    const { store } = openedStore(1)
+
+    store.getState().addLayers([motif(), motif()])
+
+    expect(store.getState().selectedLayerId).toBeNull()
+  })
+
+  it('does nothing at all for an empty scatter', () => {
+    const { store, ids } = openedStore(1)
+    const before = store.getState().design
+
+    expect(store.getState().addLayers([])).toEqual([])
+    expect(store.getState().design).toBe(before)
+    expect(store.getState().selectedLayerId).toBe(ids[0])
+  })
+})
+
 describe('updateLayer', () => {
   it('merges the patch into that layer only', () => {
     const { store, ids } = openedStore(2)
