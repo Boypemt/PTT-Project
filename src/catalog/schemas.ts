@@ -13,6 +13,7 @@ import type {
   LeafDye,
   Localized,
   Pattern,
+  PatternRestriction,
   PrintArea,
   Product,
 } from './types'
@@ -70,6 +71,21 @@ export const leafDyeSchema = z.strictObject({
 
 export const patternKindSchema = z.enum(['tile', 'motif'])
 
+export const productLineSchema = z.enum(['fabric', 'leaf', 'gift', 'drinkware'])
+
+export const patternFitSchema = z.enum(['repeat', 'area'])
+
+export const patternRestrictionSchema = z
+  .strictObject({
+    lines: z.array(productLineSchema).min(1).optional(),
+    productIds: z.array(idSchema).min(1).optional(),
+  })
+  // An empty restriction would read as "nowhere" and mean "everywhere"; the
+  // way to say everywhere is to leave the field out.
+  .refine((r) => r.lines !== undefined || r.productIds !== undefined, {
+    message: 'name at least one of lines or productIds, or omit restrictTo',
+  })
+
 export const patternSchema = z
   .strictObject({
     id: idSchema,
@@ -78,6 +94,9 @@ export const patternSchema = z
     src: catalogAssetPathSchema,
     thumbnail: catalogAssetPathSchema.optional(),
     recolorable: z.boolean(),
+    repeatUnits: z.number().positive().optional(),
+    fit: patternFitSchema.optional(),
+    restrictTo: patternRestrictionSchema.optional(),
     defaultColors: z.array(hexColorSchema),
     leafIds: z.array(idSchema).optional(),
     tags: z.array(z.string().min(1)),
@@ -87,6 +106,21 @@ export const patternSchema = z
     message: 'a recolorable pattern needs at least one entry in defaultColors',
     path: ['defaultColors'],
   })
+  // A motif is placed by hand and sized against MOTIF_UNIT, so neither of the
+  // tile fields means anything on one.
+  .refine((p) => p.kind === 'tile' || p.fit === undefined, {
+    message: 'only a tile has a fit; a motif is placed one at a time',
+    path: ['fit'],
+  })
+  .refine(
+    (p) =>
+      p.repeatUnits === undefined || (p.kind === 'tile' && p.fit !== 'area'),
+    {
+      message:
+        'only a repeating tile has a repeat size: a placement pattern is sized by the print area, and a motif by MOTIF_UNIT',
+      path: ['repeatUnits'],
+    },
+  )
 
 export const printAreaClipSchema = z.discriminatedUnion('type', [
   z.strictObject({
@@ -120,7 +154,7 @@ export const priceSchema = z
 export const productSchema = z.strictObject({
   id: idSchema,
   name: localizedSchema,
-  line: z.enum(['fabric', 'leaf', 'gift', 'drinkware']),
+  line: productLineSchema,
   price: priceSchema.nullable(),
   status: z.enum(['available', 'planned']),
   mockup: z.strictObject({
@@ -199,6 +233,9 @@ export type SchemaTypeChecks = {
   assetSource: Expect<Matches<z.infer<typeof assetSourceSchema>, AssetSource>>
   leafDye: Expect<Matches<z.infer<typeof leafDyeSchema>, LeafDye>>
   pattern: Expect<Matches<z.infer<typeof patternSchema>, Pattern>>
+  patternRestriction: Expect<
+    Matches<z.infer<typeof patternRestrictionSchema>, PatternRestriction>
+  >
   printArea: Expect<Matches<z.infer<typeof printAreaSchema>, PrintArea>>
   product: Expect<Matches<z.infer<typeof productSchema>, Product>>
   layer: Expect<Matches<z.infer<typeof layerSchema>, Layer>>

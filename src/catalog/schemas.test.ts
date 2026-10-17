@@ -75,6 +75,72 @@ describe('patternSchema', () => {
 
     expect(result.success).toBe(true)
   })
+
+  it('accepts a tile with a repeat size in mockup units', () => {
+    const result = patternSchema.safeParse(
+      makePattern({ kind: 'tile', repeatUnits: 500 }),
+    )
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a repeat size of zero or less', () => {
+    const result = patternSchema.safeParse(makePattern({ repeatUnits: 0 }))
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['repeatUnits'])
+  })
+
+  it('accepts a tile that fills the print area once', () => {
+    const result = patternSchema.safeParse(
+      makePattern({ kind: 'tile', fit: 'area' }),
+    )
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a repeat size on a pattern that fills the area once', () => {
+    const result = patternSchema.safeParse(
+      makePattern({ kind: 'tile', fit: 'area', repeatUnits: 500 }),
+    )
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['repeatUnits'])
+  })
+
+  it('rejects a fit on a motif, which is placed one at a time', () => {
+    const result = patternSchema.safeParse(
+      makePattern({ kind: 'motif', fit: 'area' }),
+    )
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['fit'])
+  })
+
+  it('accepts a restriction to a product line', () => {
+    const result = patternSchema.safeParse(
+      makePattern({ restrictTo: { lines: ['fabric'] } }),
+    )
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a restriction that names nothing', () => {
+    const result = patternSchema.safeParse(makePattern({ restrictTo: {} }))
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.message).toContain('omit restrictTo')
+  })
+
+  it('rejects a product line it has never heard of', () => {
+    const result = patternSchema.safeParse({
+      ...makePattern(),
+      restrictTo: { lines: ['ceramics'] },
+    })
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['restrictTo', 'lines', 0])
+  })
 })
 
 describe('productSchema', () => {

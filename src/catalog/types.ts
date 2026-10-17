@@ -31,6 +31,23 @@ export type LeafDye = {
 /** `tile` repeats across a surface; `motif` is a single placeable element. */
 export type PatternKind = 'tile' | 'motif'
 
+/**
+ * What a tile does with the print area: `repeat` tiles across it, `area` lays
+ * the picture into it once — a drawing that is the whole print rather than a
+ * surface pattern. Not a third `PatternKind`, because it changes how the same
+ * tile layer is drawn and nothing about what a design records.
+ */
+export type PatternFit = 'repeat' | 'area'
+
+/**
+ * Where a pattern may be printed. Absent means everywhere; present, a product
+ * qualifies when its line or its id is named.
+ */
+export type PatternRestriction = {
+  lines?: ProductLine[]
+  productIds?: string[]
+}
+
 export type Pattern = {
   id: string
   name: Localized
@@ -40,6 +57,19 @@ export type Pattern = {
   thumbnail?: string
   /** SVG whose fills follow currentColor/CSS vars, so leaf-dye colours can tint it. */
   recolorable: boolean
+  /**
+   * Mockup units one repeat of the tile covers across its *width*; its height
+   * follows from the asset's aspect ratio, so nothing is stretched. This is
+   * what `scale` 1 means for the pattern, as `MOTIF_UNIT` is for a motif.
+   * Omitted, `scale` 1 is the asset's own pixel size — which is right for a
+   * drawn SVG and meaningless for a photograph the designer exported at
+   * whatever size their canvas was.
+   */
+  repeatUnits?: number
+  /** How a tile covers the area. Omitted is `repeat`. */
+  fit?: PatternFit
+  /** Which products it may be printed on. Omitted is all of them. */
+  restrictTo?: PatternRestriction
   /** Hex colours. */
   defaultColors: string[]
   /** Which leaf dyes the pattern is made from (community patterns). */
