@@ -61,7 +61,7 @@ export function MotifImage({
   tools?: MotifTools
 }) {
   const node = useRef<Konva.Image>(null)
-  const painted = usePaintedPattern(pattern.src, layer.colors)
+  const painted = usePaintedPattern(pattern, layer.colors)
 
   if (painted === null) return null
 

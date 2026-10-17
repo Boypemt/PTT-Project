@@ -14,6 +14,7 @@
  * raster scale is one question with one answer.
  */
 import { useState } from 'react'
+import type { Pattern } from '@/catalog'
 import { usePatternImage } from './usePatternImage'
 
 export type PaintedPattern = {
@@ -32,12 +33,22 @@ function aspectOf(image: HTMLImageElement): number {
     : 1
 }
 
-/** The image to paint, or `null` until the first one has decoded. */
+/**
+ * The image to paint, or `null` until the first one has decoded.
+ *
+ * It takes the pattern rather than its file because which file to fetch is
+ * only half the question: how it is tinted — its own fills rewritten, or a
+ * colour flooded through an ink mask — is the catalog's to answer too.
+ */
 export function usePaintedPattern(
-  src: string,
+  pattern: Pick<Pattern, 'src' | 'recolor'>,
   colors: readonly string[],
 ): PaintedPattern | null {
-  const { status, image, ratio } = usePatternImage(src, colors)
+  const { status, image, ratio } = usePatternImage(
+    pattern.src,
+    colors,
+    pattern.recolor,
+  )
   const [painted, setPainted] = useState<PaintedPattern | null>(null)
 
   // Adjusted during render rather than in an effect, so the new image is on

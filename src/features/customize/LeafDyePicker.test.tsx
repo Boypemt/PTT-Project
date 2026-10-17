@@ -65,6 +65,18 @@ const oneColor = makePattern({
   leafIds: ['teak'],
 })
 
+/** The designer's line art: one ink, painted in whichever dye is tapped. */
+const inkMask = makePattern({
+  id: 'celestial-star',
+  name: { th: 'ดารานิรมิต', en: 'Celestial Star' },
+  src: '/catalog/patterns/community/celestial-star.webp',
+  recolorable: true,
+  recolor: 'mask',
+  defaultColors: ['#4B2A4F'],
+  leafIds: undefined,
+  source: { type: 'community', credit: 'Designer TBC', license: 'TBC' },
+})
+
 /** A photographed pattern: its colours are printed into the file. */
 const photographed = makePattern({
   id: 'lemons',
@@ -133,6 +145,25 @@ describe('the leaf dye colours', () => {
     expect(properties()).toHaveTextContent(teak.name.th)
     expect(properties()).toHaveTextContent(mango.name.th)
     expect(dyeSwatch(teak, 1)[0]).toBeInTheDocument()
+  })
+
+  it("offers the dyes for the designer's ink masks", async () => {
+    const user = userEvent.setup()
+    openEditor([inkMask, oneColor])
+    await place(user, inkMask)
+
+    // A photograph keeps its colours; line art is a stencil, and the whole
+    // point of importing it as one is that a leaf dye can be poured into it.
+    expect(properties()).toHaveTextContent(th.customize.leafDyes.title)
+    expect(properties()).toHaveTextContent(teak.name.th)
+
+    await user.click(dyeSwatch(mango)[0])
+
+    expect(layer().colors[0]).toBe(mango.colors[0].hex)
+
+    // One ink, so one slot: nothing offers a second colour that would have
+    // nowhere to go.
+    expect(properties()).not.toHaveTextContent(th.customize.leafDyes.second)
   })
 
   it('offers no dyes for a pattern that cannot be recoloured', async () => {

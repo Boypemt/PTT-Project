@@ -46,7 +46,7 @@ function TileLayerView({
   pattern: Pattern
   mockup: ProductMockup
 }) {
-  const painted = usePaintedPattern(pattern.src, layer.colors)
+  const painted = usePaintedPattern(pattern, layer.colors)
 
   if (painted === null) return null
 
@@ -81,7 +81,7 @@ function AreaLayerView({
   pattern: Pattern
   bounds: Box
 }) {
-  const painted = usePaintedPattern(pattern.src, layer.colors)
+  const painted = usePaintedPattern(pattern, layer.colors)
 
   if (painted === null) return null
 
