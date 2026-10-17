@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react'
+import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it } from 'vitest'
 import en from '@/i18n/en.json'
@@ -82,8 +82,16 @@ describe('/dev/catalog', () => {
     expect(
       await screen.findByRole('heading', { level: 1, name: /Catalog preview/ }),
     ).toBeInTheDocument()
-    expect(robotsMeta()).toHaveAttribute('content', 'noindex')
 
+    // `useNoIndex` adds the tag from an effect, which runs after the paint the
+    // heading was found on. Reading it at once passes only while the effect
+    // wins that race, and on a loaded machine it sometimes does not.
+    await waitFor(() => {
+      expect(robotsMeta()).toHaveAttribute('content', 'noindex')
+    })
+
+    // Taken away synchronously as the component unmounts, so this needs no
+    // wait of its own.
     unmount()
     expect(robotsMeta()).toBeNull()
   })
