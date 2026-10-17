@@ -6,6 +6,33 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
+### Added
+
+- **The designer's first seven patterns.** ลายหินอ่อน, ลายมัดย้อมคราม,
+  ลายมะนาว, ลายดาว and ลายทางพาสเทล print as repeating cloth; ลายหัวใจ and
+  ลายวงกลม are laid into the print area once, which is what they are — one
+  drawing filling the cloth rather than a surface that repeats. They are listed
+  before the drawn placeholders in the library, and only the placeholders carry
+  the "ตัวอย่าง / placeholder" badge. Names and credits are provisional.
+- **A pattern can say how big its repeat is**, in the mockup's own units
+  (`repeatUnits`), so "one repeat across half the shawl" is a decision in the
+  catalog rather than an accident of what the artwork was exported at.
+- **`npm run catalog:import -- <dir>`** converts the designer's artwork into
+  catalog assets — a WebP under 600 KB plus a thumbnail per pattern — and
+  scores each tile's seams, warning where a tile will not meet itself when it
+  repeats. The originals stay with the designer.
+- **[`docs/ADDING_PATTERNS.md`](docs/ADDING_PATTERNS.md)**, Thai and English:
+  everything needed to send a pattern and add it, without reading any code.
+
+### Changed
+
+- **The leaf dyes are hidden for a pattern that cannot be recoloured.** A
+  photographed pattern carries its colours in the file, so the picker is gone
+  rather than refusing every tap. The cloth itself still takes a leaf dye.
+- Photographed patterns are drawn straight from their file instead of being
+  redrawn at twice their size, which is what keeps a hand-drawn SVG sharp and
+  does nothing at all for a bitmap.
+
 ## [0.2.0] — 2026-10-17
 
 M2 finished: the customizer a visitor can design on. Tiles, leaf dyes and the
