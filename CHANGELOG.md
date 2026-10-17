@@ -6,6 +6,29 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
+### Changed
+
+- **The designer's v2 patterns replace v1.** Eight drawings — รังนิรมิต,
+  เขาสลับลาย, ดารานิรมิต, กล่องมายา, เกลียวอนันต์, ประกายเพชร, สุขเส้นสาน and
+  มิติวงกต — arrive as black line art and are **recolourable with the leaf
+  dyes**: the import reads each drawing's ink into an alpha channel, so the
+  colour is the visitor's to choose and the cloth shows between the lines.
+  Each says which products it was drawn for, so the library a product offers
+  is the patterns that suit it. The seven v1 patterns and their assets are
+  gone, and a saved design that used one loses that layer.
+
+### Added
+
+- **`recolor: "mask"` in the pattern manifest**, with `defaultColors` for the
+  dye a pattern is listed in and `maskLevels` for a drawing the import reads
+  wrong. The levels it read are printed for every mask it converts. See
+  `docs/ADDING_PATTERNS.md`.
+
+### Removed
+
+- The screenshot test of a placement pattern, with the pattern it photographed.
+  The next `fit: "area"` pattern added has to bring it back.
+
 ## [0.3.0] — 2026-10-17
 
 The first patterns that are actually the community's, and the one command that
