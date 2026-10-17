@@ -252,6 +252,7 @@ export function EditorCanvas({ product }: { product: Product }) {
                       key={layer.id}
                       layer={layer}
                       mockup={mockup}
+                      bounds={areaBounds(area.clip)}
                       motif={motifTools(area, layer)}
                     />
                   ))}
