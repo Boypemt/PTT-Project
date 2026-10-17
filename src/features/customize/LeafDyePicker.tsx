@@ -11,6 +11,14 @@
  * A pattern drawn in two colours gets a second group for its second colour.
  * How many it uses is the pattern's own business (`defaultColors`), so a
  * one-colour tile shows one group and nothing has to be told which is which.
+ *
+ * A pattern that cannot be recoloured — the designer's photographed patterns,
+ * whose colours are printed into the file — has no picker at all rather than a
+ * greyed-out one. A disabled row of swatches invites a visitor to work out why
+ * the colours are refused; nothing there says the same thing in one glance,
+ * and on a phone the panel is short enough that the row is worth the space it
+ * would take. The leaf dyes are still what colours the cloth itself, through
+ * the base colour picker.
  */
 import { useTranslation } from 'react-i18next'
 import type { LeafDye, Pattern } from '@/catalog'
@@ -107,6 +115,11 @@ export function LeafDyePicker({
   const { t } = useTranslation()
 
   if (dyes.length === 0) return null
+
+  // A pattern the catalog has not loaded keeps its picker: the layer's colours
+  // are still its own, and this is a pattern that was renamed rather than one
+  // that cannot take a dye.
+  if (pattern !== undefined && !pattern.recolorable) return null
 
   const slots = Math.max(pattern?.defaultColors.length ?? 1, 1)
 

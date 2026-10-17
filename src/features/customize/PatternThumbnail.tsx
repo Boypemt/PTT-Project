@@ -4,9 +4,11 @@
  *
  * The swatch is the pattern's own file repeated as a background rather than a
  * single stretched copy, so what the visitor sees in the panel is what will
- * land on the cloth. `thumbnail` wins when the catalog gives one — a
- * photographed pattern will need one; a drawn SVG is small enough to be its
- * own swatch.
+ * land on the cloth — and for a placement pattern, which lands once, it is the
+ * whole picture instead. `thumbnail` wins when the catalog gives one — a
+ * photographed pattern needs one, or the library would fetch seven full-size
+ * images to draw them an inch wide; a drawn SVG is small enough to be its own
+ * swatch.
  *
  * The placeholder badge comes from `source.type`, so an entry the designer
  * replaces loses it by an edit to patterns.json. It is written on the button
@@ -42,6 +44,7 @@ export function PatternThumbnail({
 
   const name = localized(pattern.name)
   const isPlaceholder = pattern.source.type === 'placeholder'
+  const isPlacement = pattern.fit === 'area'
 
   return (
     <li className="w-24 shrink-0 md:w-auto">
@@ -64,7 +67,15 @@ export function PatternThumbnail({
           style={{
             backgroundImage: `url("${pattern.thumbnail ?? pattern.src}")`,
           }}
-          className="block h-14 w-full rounded-lg border border-border-soft bg-paper-50 bg-[length:60%] bg-repeat md:aspect-square md:h-auto"
+          className={`block h-14 w-full rounded-lg border border-border-soft bg-paper-50 md:aspect-square md:h-auto ${
+            // A placement pattern is one picture rather than a surface, so the
+            // swatch shows the whole of it. Repeated, the only pattern in the
+            // library that never repeats would be the one advertising that it
+            // does.
+            isPlacement
+              ? 'bg-contain bg-center bg-no-repeat'
+              : 'bg-[length:60%] bg-repeat'
+          }`}
         />
         {/* Already in the button's own label, so not read out twice. */}
         <span

@@ -64,6 +64,9 @@ type Pattern = {
   src: string;                      // SVG or PNG under /catalog/patterns/
   thumbnail?: string;
   recolorable: boolean;             // SVG with fill="currentColor"/CSS vars can be tinted with leaf-dye colours
+  repeatUnits?: number;             // mockup units one repeat covers across the tile's width; omitted = the asset's pixel size
+  fit?: 'repeat' | 'area';          // 'area' = one picture laid into the print area once; omitted = 'repeat'
+  restrictTo?: { lines?: ProductLine[]; productIds?: string[] };  // omitted = printable on everything
   defaultColors: string[];          // hex
   leafIds?: string[];               // which leaves it is made from (community patterns)
   tags: string[];
@@ -101,6 +104,12 @@ Deliberately *not* a multiple of the asset's own pixel size, so redrawing a leaf
 designs people have already saved. `x`/`y` is the motif's centre, and it rotates about that centre.
 Because `scale` travels in the saved design, `MOTIF_UNIT` is part of that format: a test pins its value, and
 changing it is a migration rather than an edit.
+
+**Tile scale.** For a `tile` layer, `scale` 1 = one repeat across `repeatUnits` mockup units, with the height
+following the asset's aspect ratio. A pattern with no `repeatUnits` falls back to the asset's own pixel size,
+which is what the drawn placeholder SVGs rely on. `repeatUnits` travels in saved designs the same way
+`MOTIF_UNIT` does: editing it on a pattern people have already used resizes their designs, so it is a decision
+to make once, when the pattern is added.
 
 ## Placeholder patterns (until the designer delivers)
 Hand-written SVG, nothing downloaded, every file CC0-1.0 and listed in `docs/CREDITS.md`:

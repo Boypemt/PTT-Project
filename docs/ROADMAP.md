@@ -29,11 +29,17 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 16 | **todo** | `feat/3d-preview` *(phase 2)* | feat(editor): 3D preview tab | `prompts/16-3d-preview.md` | 12 |
 | 17 | done | `chore/release-safety` | test: Playwright e2e suite and the CI job that guards the demo ([#17](https://github.com/Boypemt/PTT-Project/pull/17)) | — (ad-hoc) | 13 |
 | 18 | in review | `chore/flags-and-release-docs` | feat(lib): feature flags, releasing guide and changelog | — (ad-hoc) | 17 |
+| 19 | in review | `feat/community-patterns` | feat(catalog): the designer's first community patterns ([#28](https://github.com/Boypemt/PTT-Project/pull/28)) | — (ad-hoc) | 10 |
 
 **Where 14 stands.** 17 took most of it: the Playwright setup and CI job, the demo journey at
 both widths, the axe pass, and the editor route was already lazy-loaded in 08a. What is left for
 14 is the part that needs features that do not exist yet — the motif, undo and export steps of
 the happy path — plus the bundle-size check and preloading pattern thumbnails.
+
+**Where 15 stands.** 19 took the pattern half of it: `docs/ADDING_PATTERNS.md`, the import
+script and the schema the real patterns needed. What is left for 15 is
+`docs/ADDING_PRODUCTS.md`, the `npm run catalog:check` script and its CI step, and the
+`hidePlaceholders` flag — which now has real patterns to hide the placeholders behind.
 
 ## Milestones to show the team
 - **M1 (after 06):** live site with product catalogue in TH/EN. ✅

@@ -65,6 +65,17 @@ const oneColor = makePattern({
   leafIds: ['teak'],
 })
 
+/** A photographed pattern: its colours are printed into the file. */
+const photographed = makePattern({
+  id: 'lemons',
+  name: { th: 'ลายมะนาว', en: 'Lemons' },
+  src: '/catalog/patterns/community/lemons.webp',
+  recolorable: false,
+  defaultColors: [],
+  leafIds: undefined,
+  source: { type: 'community', credit: 'Designer TBC', license: 'TBC' },
+})
+
 const product = makeProduct({ id: 'shawl-cotton' })
 
 const openEditor = (patterns: Pattern[] = [twoColors, oneColor]) =>
@@ -122,6 +133,22 @@ describe('the leaf dye colours', () => {
     expect(properties()).toHaveTextContent(teak.name.th)
     expect(properties()).toHaveTextContent(mango.name.th)
     expect(dyeSwatch(teak, 1)[0]).toBeInTheDocument()
+  })
+
+  it('offers no dyes for a pattern that cannot be recoloured', async () => {
+    const user = userEvent.setup()
+    openEditor([photographed, oneColor])
+    await place(user, photographed)
+
+    // Hidden rather than disabled: a row of swatches that refuses every tap
+    // reads as something broken.
+    expect(properties()).not.toHaveTextContent(th.customize.leafDyes.title)
+    expect(properties()).not.toHaveTextContent(teak.name.th)
+
+    // The rest of the layer's settings are untouched — it is the colours that
+    // do not apply to it, not the layer.
+    expect(properties()).toHaveTextContent(th.customize.layer.scale)
+    expect(properties()).toHaveTextContent(th.customize.layer.opacity)
   })
 
   it('shows nothing to colour until a layer is selected', async () => {

@@ -1,14 +1,16 @@
 # Credits
 
-Every image in this repository was drawn for this project as hand-written SVG.
-**No third-party assets, photographs or brand-owned patterns are used.** Each
-file is released as CC0-1.0, and each catalog entry repeats that in its
-`source` field so placeholders can be filtered or replaced as data.
+Every image in this repository was either drawn for this project as
+hand-written SVG or delivered by the project's own designer.
+**No third-party assets, stock photographs or brand-owned patterns are used.**
+Each drawn file is released as CC0-1.0, and each catalog entry repeats its
+licence in its `source` field so stand-ins can be filtered or replaced as data.
 
 CLAUDE.md requires a row here for every third-party asset (name, source URL,
-license). There are none yet — when the designer's real patterns or real
-product photography land, add them below with their credit and license and
-drop the matching placeholder rows.
+license). There are none. The community patterns below are the designer's own
+work, delivered for this project; their credit line and licence wording are
+still to be settled with the community, which is what `"Designer TBC"` and
+`"Community-owned — terms TBC"` say in the catalog.
 
 ## Product mockups — `public/catalog/products/`
 
@@ -47,6 +49,27 @@ the public domain** — the geometry here was constructed from their description
 not traced from anyone's artwork. `vine-scroll.svg` is an original drawing of a
 plain vine scroll; it makes no claim to be Thai lai and is not a copy of any
 existing scroll.
+
+## Community patterns — `public/catalog/patterns/community/`
+
+The designer's first delivery. Each arrived as a 2480×3508 PNG and was
+converted by `npm run catalog:import` into a WebP with a long edge of 1600 px
+plus a 240 px thumbnail; the originals are the designer's masters and are not
+kept in this repository.
+
+| Files | Pattern | Author | License |
+| --- | --- | --- | --- |
+| `marble-swirl.webp`, `marble-swirl-thumb.webp` | ลายหินอ่อน / Marble swirl | Designer TBC | Community-owned — terms TBC |
+| `indigo-tie-dye.webp`, `indigo-tie-dye-thumb.webp` | ลายมัดย้อมคราม / Indigo tie-dye | Designer TBC | Community-owned — terms TBC |
+| `lemons.webp`, `lemons-thumb.webp` | ลายมะนาว / Lemons | Designer TBC | Community-owned — terms TBC |
+| `stars.webp`, `stars-thumb.webp` | ลายดาว / Stars | Designer TBC | Community-owned — terms TBC |
+| `pastel-stripes.webp`, `pastel-stripes-thumb.webp` | ลายทางพาสเทล / Pastel stripes | Designer TBC | Community-owned — terms TBC |
+| `hearts.webp`, `hearts-thumb.webp` | ลายหัวใจ / Hearts (placement) | Designer TBC | Community-owned — terms TBC |
+| `bubbles.webp`, `bubbles-thumb.webp` | ลายวงกลม / Bubbles (placement) | Designer TBC | Community-owned — terms TBC |
+
+Replace the author and licence columns — and the `source` block of each entry
+in `public/catalog/patterns.json` — once the community has agreed how these
+should be credited.
 
 ## Leaf motifs — `public/catalog/patterns/`
 

@@ -2,9 +2,10 @@
  * The left panel: the library a visitor picks patterns from.
  *
  * What it offers follows the selected print area, not the other way round: the
- * area decides which kinds of pattern are allowed, and only then is the catalog
- * filtered. No pattern or product is named here — the panel would show the
- * designer's real patterns the day patterns.json changes.
+ * area decides which kinds of pattern are allowed, the product decides which
+ * patterns may print on it at all, and only then is the catalog filtered. No
+ * pattern or product is named here — the panel shows the designer's real
+ * patterns the day patterns.json changes.
  *
  * Two shapes, one DOM. From `md` up it is a column with a search box, kind
  * chips and a grid. Below `md` the panel is a sheet along the bottom edge
@@ -82,7 +83,7 @@ export function PatternsPanel({ product }: { product: Product }) {
   const allowed = area?.allowedKinds ?? []
   const kinds = kind === null ? allowed : allowed.filter((k) => k === kind)
   const all = status === 'ready' ? catalog.patterns : []
-  const patterns = filterPatterns(all, { query, kinds }, (pattern) =>
+  const patterns = filterPatterns(all, { query, kinds, product }, (pattern) =>
     localized(pattern.name),
   )
 

@@ -109,13 +109,40 @@ describe('the seeded catalog in public/catalog', () => {
     expect(paths.filter((path) => !existsSync(`public${path}`))).toEqual([])
   })
 
-  it('marks every pattern as a placeholder until the designer delivers', () => {
+  it('says of every pattern whether it is the community’s or a stand-in', () => {
     const { patterns } = loadSeedCatalog()
+    const community = patterns.filter(
+      (pattern) => pattern.source.type === 'community',
+    )
 
     expect(patterns.length).toBeGreaterThan(0)
+    expect(community.length).toBeGreaterThan(0)
     expect(
-      patterns.every((pattern) => pattern.source.type === 'placeholder'),
+      community.every((pattern) => pattern.tags.includes('community')),
     ).toBe(true)
+
+    // The ones still standing in are the drawn SVGs, and they say so.
+    expect(
+      patterns
+        .filter((pattern) => pattern.source.type === 'placeholder')
+        .every((pattern) => pattern.src.endsWith('.svg')),
+    ).toBe(true)
+  })
+
+  it('gives every photographed pattern a thumbnail and no dye', () => {
+    const { patterns } = loadSeedCatalog()
+    const photographed = patterns.filter(
+      (pattern) => !pattern.src.endsWith('.svg'),
+    )
+
+    expect(photographed.length).toBeGreaterThan(0)
+
+    // Without a thumbnail the library would fetch every full-size pattern to
+    // draw it an inch wide; and a photograph has no fills to tint.
+    expect(
+      photographed.every((pattern) => pattern.thumbnail !== undefined),
+    ).toBe(true)
+    expect(photographed.every((pattern) => !pattern.recolorable)).toBe(true)
   })
 
   it('marks the approximate leaf-dye hexes and drawn mockups as placeholders', () => {

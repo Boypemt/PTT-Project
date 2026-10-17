@@ -8,7 +8,11 @@
  * the whole mockup and the clip decides how much shows (`tileFill.ts`). A
  * motif is one leaf laid on the cloth, so it is a single image centred on the
  * layer's own point, turned around it, and the one thing on the stage a tap
- * can take hold of (`MotifImage.tsx`).
+ * can take hold of (`MotifImage.tsx`). A tile the catalog marks `fit: "area"`
+ * is a third thing: one picture covering the print area once, sized to the
+ * area rather than to the mockup (`areaFill.ts`). It is still a tile layer —
+ * the catalog decides how it is drawn, and a design records the same fields
+ * either way.
  *
  * The pattern a layer names is looked up in the catalog here rather than
  * passed in, so nothing above this file has to know that a layer needs an
@@ -18,7 +22,7 @@
  *
  * Coordinates are mockup coordinates: the group above applies the fit.
  */
-import { Rect } from 'react-konva'
+import { Image as KonvaImage, Rect } from 'react-konva'
 import {
   useCatalog,
   type Layer,
@@ -26,8 +30,10 @@ import {
   type ProductMockup,
   type TileLayer,
 } from '@/catalog'
+import type { Rect as Box } from '@/lib/geometry'
+import { areaFill } from './areaFill'
 import { MotifImage, type MotifTools } from './MotifImage'
-import { tileFill } from './tileFill'
+import { tileFill, tileUnitScale } from './tileFill'
 import { usePaintedPattern } from './usePaintedPattern'
 
 /** The still rectangle whose *fill* carries the tile. */
@@ -44,9 +50,16 @@ function TileLayerView({
 
   if (painted === null) return null
 
+  // The asset's own width, the raster divided back out, is what the pattern's
+  // repeat size is measured against.
+  const units = tileUnitScale(
+    pattern.repeatUnits,
+    painted.image.naturalWidth / painted.ratio,
+  )
+
   return (
     <Rect
-      {...tileFill(layer, mockup, painted.ratio)}
+      {...tileFill(layer, mockup, painted.ratio, units)}
       fillPatternImage={painted.image}
       // A tile has no position of its own to drag, and this rectangle covers
       // the whole mockup: left listening it would swallow every tap meant for
@@ -56,13 +69,41 @@ function TileLayerView({
   )
 }
 
+/** One picture laid into the print area, for a pattern the catalog marks
+ * `fit: "area"`. Deaf like the tile above it: there is nothing to take hold
+ * of, because it has no position of its own that a drag could change. */
+function AreaLayerView({
+  layer,
+  pattern,
+  bounds,
+}: {
+  layer: TileLayer
+  pattern: Pattern
+  bounds: Box
+}) {
+  const painted = usePaintedPattern(pattern.src, layer.colors)
+
+  if (painted === null) return null
+
+  return (
+    <KonvaImage
+      {...areaFill(layer, bounds, painted.aspect)}
+      image={painted.image}
+      listening={false}
+    />
+  )
+}
+
 export function LayerRenderer({
   layer,
   mockup,
+  bounds,
   motif,
 }: {
   layer: Layer
   mockup: ProductMockup
+  /** The print area's box, which is what a placement pattern is sized to. */
+  bounds: Box
   /** How a motif may be handled. Absent, it is drawn and nothing more. */
   motif?: MotifTools
 }) {
@@ -76,9 +117,13 @@ export function LayerRenderer({
 
   if (pattern === undefined) return null
 
-  return layer.type === 'tile' ? (
-    <TileLayerView layer={layer} pattern={pattern} mockup={mockup} />
+  if (layer.type === 'motif') {
+    return <MotifImage layer={layer} pattern={pattern} tools={motif} />
+  }
+
+  return pattern.fit === 'area' ? (
+    <AreaLayerView layer={layer} pattern={pattern} bounds={bounds} />
   ) : (
-    <MotifImage layer={layer} pattern={pattern} tools={motif} />
+    <TileLayerView layer={layer} pattern={pattern} mockup={mockup} />
   )
 }

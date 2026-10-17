@@ -34,6 +34,31 @@ import type { ProductMockup, TileLayer } from '@/catalog'
  */
 const MIN_SCALE = 0.01
 
+/**
+ * Mockup units per natural pixel of the tile: what turns the asset's own size
+ * into the size the pattern is printed at.
+ *
+ * A pattern with a `repeatUnits` is measured in the mockup's units — one
+ * repeat across that many of them, whatever the file's pixel size — so a
+ * photograph exported at 1600 px and the same pattern re-exported at 2400 px
+ * print identically, and a designer picks the size by what it should look like
+ * on cloth rather than by a number in an export dialog. Without one the tile
+ * prints at its own pixel size, which is what the drawn SVGs were made for and
+ * what every design saved so far means by `scale` 1.
+ *
+ * @param naturalWidth the asset's width in natural pixels. Zero — an image
+ * that has not decoded — leaves the pattern at its own size rather than
+ * collapsing it.
+ */
+export function tileUnitScale(
+  repeatUnits: number | undefined,
+  naturalWidth: number,
+): number {
+  if (repeatUnits === undefined || naturalWidth <= 0) return 1
+
+  return repeatUnits / naturalWidth
+}
+
 export type TileFillProps = {
   x: number
   y: number
@@ -51,14 +76,19 @@ export type TileFillProps = {
 /**
  * @param ratio image pixels per natural pixel of the tile, from
  * `usePatternImage`. Dividing the pattern scale by it keeps `layer.scale` 1
- * meaning the tile's natural size, however many pixels it was rasterised at.
+ * meaning one repeat, however many pixels it was rasterised at.
+ * @param units mockup units per natural pixel, from `tileUnitScale`. One — the
+ * default — is a tile printed at its own pixel size.
  */
 export function tileFill(
   layer: TileLayer,
   mockup: ProductMockup,
   ratio: number,
+  units = 1,
 ): TileFillProps {
-  const scale = Math.max(layer.scale, MIN_SCALE) / Math.max(ratio, MIN_SCALE)
+  const scale =
+    (Math.max(layer.scale, MIN_SCALE) * Math.max(units, MIN_SCALE)) /
+    Math.max(ratio, MIN_SCALE)
 
   return {
     x: 0,

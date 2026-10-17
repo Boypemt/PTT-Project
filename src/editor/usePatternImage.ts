@@ -20,6 +20,9 @@
  * browser refusing a canvas — it falls back to the SVG element itself at
  * `ratio` 1. Konva can still fill with that; only the sharpness is lost.
  *
+ * None of this applies to a photographed pattern: it is already a bitmap, so
+ * it is loaded as it is at `ratio` 1 and `isVector` is what decides.
+ *
  * Colours arrive through `useTintedSvg`, which hands over the same file with
  * the design's colours written into it. The raster cache is keyed on them too,
  * so one tile in two colourways is two bitmaps and going back to the first
@@ -33,6 +36,19 @@ import { useTintedSvg } from './useTintedSvg'
 
 /** Image pixels per natural pixel of a tile. Two is enough for any screen. */
 export const RASTER_SCALE = 2
+
+/**
+ * Whether the pattern is drawn rather than photographed.
+ *
+ * Only a vector goes through any of the work below. A photographed pattern
+ * arrives as a bitmap already — the import script gives it a long edge of
+ * 1600 px, which is more than a phone draws it at — so redrawing it at
+ * `RASTER_SCALE` would encode a 3200 px PNG data URL per colourway to gain
+ * nothing, and there are no fills in it to tint either.
+ */
+function isVector(src: string): boolean {
+  return src.toLowerCase().endsWith('.svg')
+}
 
 export type PatternImage = {
   status: ImageStatus
@@ -85,13 +101,21 @@ function rasterUrl(key: string, image: HTMLImageElement): string | null {
   return url
 }
 
+/** Nothing to tint with: one array, so the hook below stays stable. */
+const NO_COLORS: readonly string[] = []
+
 export function usePatternImage(
   src: string,
   colors: readonly string[] = [],
 ): PatternImage {
+  const vector = isVector(src)
+
   // The file with the design's colours in it, or nothing while that is being
-  // fetched — and then the pattern as it is on disk, in its own defaults.
-  const tinted = useTintedSvg(src, colors)
+  // fetched — and then the pattern as it is on disk, in its own defaults. A
+  // bitmap is loaded as it is: colours on such a layer are a share link that
+  // has been edited by hand, and fetching a WebP as text to search it for
+  // fills would find none.
+  const tinted = useTintedSvg(src, vector ? colors : NO_COLORS)
   const url = tinted.url ?? src
   const source = useImage(url)
 
@@ -100,8 +124,11 @@ export function usePatternImage(
   const key = `${src}|${colors.join(',')}@${String(RASTER_SCALE)}x`
 
   const raster = useMemo(
-    () => (source.status === 'loaded' ? rasterUrl(key, source.image) : null),
-    [key, source.status, source.image],
+    () =>
+      vector && source.status === 'loaded'
+        ? rasterUrl(key, source.image)
+        : null,
+    [vector, key, source.status, source.image],
   )
 
   // One `useImage` call either way, so the hook order never changes. Before a

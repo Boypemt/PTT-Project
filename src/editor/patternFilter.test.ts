@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { Pattern } from '@/catalog'
-import { makePattern } from '@/test/catalogFixtures'
-import { filterPatterns } from './patternFilter'
+import { makePattern, makeProduct } from '@/test/catalogFixtures'
+import { allowsProduct, filterPatterns } from './patternFilter'
+
+const community = {
+  type: 'community',
+  credit: 'Designer TBC',
+  license: 'Community-owned — terms TBC',
+} as const
 
 const seigaiha = makePattern({
   id: 'seigaiha',
@@ -88,7 +94,7 @@ describe('filterPatterns', () => {
     expect(found).toEqual([])
   })
 
-  it('keeps the catalog order', () => {
+  it('keeps the catalog order within a group', () => {
     const found = filterPatterns(
       [gingham, seigaiha],
       { query: '', kinds: ['tile'] },
@@ -96,5 +102,62 @@ describe('filterPatterns', () => {
     )
 
     expect(ids(found)).toEqual(['gingham', 'seigaiha'])
+  })
+
+  it('lists the community patterns before the placeholders', () => {
+    const lemons = makePattern({ id: 'lemons', source: community })
+    const stars = makePattern({ id: 'stars', source: community })
+    const found = filterPatterns(
+      [seigaiha, lemons, gingham, stars],
+      { query: '', kinds: ['tile'] },
+      inEnglish,
+    )
+
+    expect(ids(found)).toEqual(['lemons', 'stars', 'seigaiha', 'gingham'])
+  })
+
+  it('leaves out a pattern this product may not be printed with', () => {
+    const plateOnly = makePattern({
+      id: 'plate-rim',
+      restrictTo: { lines: ['leaf'] },
+    })
+    const found = filterPatterns(
+      [seigaiha, plateOnly],
+      { query: '', kinds: ['tile'], product: makeProduct({ line: 'fabric' }) },
+      inEnglish,
+    )
+
+    expect(ids(found)).toEqual(['seigaiha'])
+  })
+})
+
+describe('allowsProduct', () => {
+  const shawl = makeProduct({ id: 'shawl-cotton', line: 'fabric' })
+  const plate = makeProduct({ id: 'leaf-plate', line: 'leaf' })
+
+  it('prints a pattern with no restriction on anything', () => {
+    expect(allowsProduct(makePattern(), shawl)).toBe(true)
+    expect(allowsProduct(makePattern(), plate)).toBe(true)
+  })
+
+  it('allows a whole product line', () => {
+    const pattern = makePattern({ restrictTo: { lines: ['fabric'] } })
+
+    expect(allowsProduct(pattern, shawl)).toBe(true)
+    expect(allowsProduct(pattern, plate)).toBe(false)
+  })
+
+  it('allows a named product even outside the lines it names', () => {
+    const pattern = makePattern({
+      restrictTo: { lines: ['fabric'], productIds: ['leaf-plate'] },
+    })
+
+    expect(allowsProduct(pattern, plate)).toBe(true)
+  })
+
+  it('offers the pattern where there is no product to judge it against', () => {
+    const pattern = makePattern({ restrictTo: { lines: ['leaf'] } })
+
+    expect(allowsProduct(pattern, undefined)).toBe(true)
   })
 })

@@ -210,6 +210,118 @@
         "credit": "Generated placeholder",
         "license": "CC0-1.0"
       }
+    },
+    {
+      "id": "marble-swirl",
+      "name": { "th": "ลายหินอ่อน", "en": "Marble swirl" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/marble-swirl.webp",
+      "thumbnail": "/catalog/patterns/community/marble-swirl-thumb.webp",
+      "recolorable": false,
+      "repeatUnits": 500,
+      "defaultColors": [],
+      "tags": ["community", "abstract", "marble"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
+    },
+    {
+      "id": "indigo-tie-dye",
+      "name": { "th": "ลายมัดย้อมคราม", "en": "Indigo tie-dye" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/indigo-tie-dye.webp",
+      "thumbnail": "/catalog/patterns/community/indigo-tie-dye-thumb.webp",
+      "recolorable": false,
+      "repeatUnits": 500,
+      "defaultColors": [],
+      "tags": ["community", "tie-dye", "indigo"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
+    },
+    {
+      "id": "lemons",
+      "name": { "th": "ลายมะนาว", "en": "Lemons" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/lemons.webp",
+      "thumbnail": "/catalog/patterns/community/lemons-thumb.webp",
+      "recolorable": false,
+      "repeatUnits": 500,
+      "defaultColors": [],
+      "tags": ["community", "fruit", "lemons"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
+    },
+    {
+      "id": "stars",
+      "name": { "th": "ลายดาว", "en": "Stars" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/stars.webp",
+      "thumbnail": "/catalog/patterns/community/stars-thumb.webp",
+      "recolorable": false,
+      "repeatUnits": 500,
+      "defaultColors": [],
+      "tags": ["community", "stars"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
+    },
+    {
+      "id": "pastel-stripes",
+      "name": { "th": "ลายทางพาสเทล", "en": "Pastel stripes" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/pastel-stripes.webp",
+      "thumbnail": "/catalog/patterns/community/pastel-stripes-thumb.webp",
+      "recolorable": false,
+      "repeatUnits": 500,
+      "defaultColors": [],
+      "tags": ["community", "stripes"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
+    },
+    {
+      "id": "hearts",
+      "name": { "th": "ลายหัวใจ", "en": "Hearts" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/hearts.webp",
+      "thumbnail": "/catalog/patterns/community/hearts-thumb.webp",
+      "recolorable": false,
+      "fit": "area",
+      "defaultColors": [],
+      "tags": ["community", "hearts", "placement"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
+    },
+    {
+      "id": "bubbles",
+      "name": { "th": "ลายวงกลม", "en": "Bubbles" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/bubbles.webp",
+      "thumbnail": "/catalog/patterns/community/bubbles-thumb.webp",
+      "recolorable": false,
+      "fit": "area",
+      "defaultColors": [],
+      "tags": ["community", "circles", "placement"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
     }
   ]
 }
