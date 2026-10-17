@@ -3,11 +3,33 @@
 สำหรับนักออกแบบลายของวิสาหกิจชุมชนป่าต้นผึ้ง · For the designer sending patterns
 to the Pa Ton Phueng customizer.
 
+> **สามขั้นตอน · Three steps**
+>
+> 1. วางไฟล์ไว้ในโฟลเดอร์ลาย · put the file in the artwork folder
+> 2. เพิ่ม/แก้รายการใน `patterns.manifest.json` · add or edit its manifest entry
+> 3. `npm run catalog:import -- "../Design Pattern"` แล้วเปิด PR · run it, open a PR
+
 ---
 
 ## ภาษาไทย
 
-### 1. ส่งไฟล์มาแบบไหน
+### โฟลเดอร์ลายหน้าตาเป็นแบบนี้
+
+```
+Design Pattern/
+  patterns.manifest.json     ← รายการลายทั้งหมด (แก้ไฟล์นี้)
+  Untitled_Artwork 2.png     ← ไฟล์ต้นฉบับ ชื่ออะไรก็ได้
+  Untitled_Artwork 6.png
+  …
+```
+
+โฟลเดอร์นี้ **ไม่ได้อยู่ในโปรเจกต์** ไฟล์ต้นฉบับความละเอียดสูงเก็บไว้กับนักออกแบบ
+เว็บจะใช้เฉพาะไฟล์ที่ย่อแล้วเท่านั้น
+
+ยังไม่มี `patterns.manifest.json` ให้คัดลอก
+[`docs/patterns.manifest.example.json`](patterns.manifest.example.json) ไปวางไว้แล้วเปลี่ยนชื่อ
+
+### 1. วางไฟล์
 
 | หัวข้อ | ค่าที่ต้องการ |
 | --- | --- |
@@ -15,30 +37,63 @@ to the Pa Ton Phueng customizer.
 | ขนาด | ด้านยาวอย่างน้อย 1600 px — ส่งใหญ่กว่านี้ได้ เช่น 2480×3508 |
 | สี | sRGB |
 | พื้นหลัง | ทึบ ไม่ต้องโปร่งใส (ยกเว้นลายใบไม้เดี่ยว ๆ ที่ต้องตัดพื้นหลังออก) |
-| ชื่อไฟล์ | ชื่อลายเป็นภาษาอังกฤษตัวเล็ก เช่น `lemons.png`, `pastel stripes.png` |
+| ชื่อไฟล์ | ตั้งชื่ออะไรก็ได้ — ชื่อไฟล์ไม่มีผลกับระบบแล้ว |
 
-**ชื่อไฟล์สำคัญ** เพราะสคริปต์จะใช้ชื่อไฟล์เป็น id ของลายในระบบ
-(`Pastel stripes.png` → `pastel-stripes`) ไม่ต้องใส่วันที่หรือเลขเวอร์ชัน
+### 2. แก้ manifest
 
-ไฟล์ต้นฉบับความละเอียดสูง **ไม่ต้องเก็บเข้าโปรเจกต์** เก็บไว้กับนักออกแบบ
-ระบบจะใช้ไฟล์ที่ย่อแล้วเท่านั้น
+หนึ่งลาย = หนึ่งรายการ
 
-### 2. ลายต่อเนื่อง หรือ ลายวางครั้งเดียว
+```json
+{
+  "file": "Untitled_Artwork 2.png",
+  "id": "lemons",
+  "name": { "th": "ลายมะนาว", "en": "Lemons" },
+  "repeatUnits": 500,
+  "tags": ["fruit"],
+  "credit": "ชื่อผู้ออกแบบ"
+}
+```
 
-มีสองแบบ และต้องบอกให้ชัดว่าลายที่ส่งมาเป็นแบบไหน
+| คีย์ | ความหมาย |
+| --- | --- |
+| `file` | ชื่อไฟล์ในโฟลเดอร์นี้ |
+| `id` | **ชื่อเฉพาะของลาย** ตัวเล็ก-ขีดกลาง เช่น `pastel-stripes` |
+| `name` | ชื่อที่แสดงบนเว็บ ไทย + อังกฤษ |
+| `fit` | ใส่ `"area"` ถ้าเป็นลายวางครั้งเดียว ไม่ใส่ = ลายต่อเนื่อง |
+| `repeatUnits` | ขนาดลาย 1 รอบ (ดูข้อ 4) ลายวางครั้งเดียวไม่ต้องใส่ |
+| `restrictTo` | จำกัดสินค้าที่ใช้ลายนี้ได้ ไม่ใส่ = ใช้ได้ทุกชิ้น |
+| `tags` | คำค้น ระบบเติม `community` ให้เอง |
+| `credit` | ชื่อผู้ออกแบบที่จะใช้เครดิต |
 
-- **ลายต่อเนื่อง (repeat)** — ลายที่ปูซ้ำไปทั้งผืนผ้า เช่น ลายทาง ลายมะนาว ลายดาว
-  ขอบซ้ายต้องต่อกับขอบขวา และขอบบนต้องต่อกับขอบล่างได้พอดี
-- **ลายวางครั้งเดียว (placement)** — ภาพเดียวที่เต็มพื้นที่พิมพ์ เช่น ลายหัวใจ ลายวงกลม
-  ไม่มีการปูซ้ำ ไม่ต้องสนใจเรื่องขอบ ระบบจะย่อ/ขยายให้เต็มพื้นที่เองและตัดส่วนที่เกินออก
+**`id` คือชื่อตัวจริงของลาย** ถ้าส่งไฟล์เดิมที่แก้แล้วมาใหม่ ให้ใช้ `id` เดิม — งานออกแบบ
+ที่ลูกค้าบันทึกไว้จะยังเป็นลายเดิม เปลี่ยน `id` หรือ **ลบรายการออก = ลบลายนั้นทิ้ง**
+และงานออกแบบที่เคยใช้ลายนั้นจะเสียเลเยอร์ไป (สคริปต์จะเตือนตอนรัน)
 
-### 3. เช็กลิสต์ลายต่อเนื่อง
+ไฟล์ JSON เขียนคอมเมนต์ไม่ได้ แต่คีย์ที่ขึ้นต้นด้วย `_` ระบบจะข้ามให้ เช่น `"_note": "…"`
 
-- [ ] ขอบซ้าย–ขวา ลายวิ่งต่อกันสนิท
-- [ ] ขอบบน–ล่าง ลายวิ่งต่อกันสนิท
-- [ ] ไม่มีเส้นขอบ กรอบ หรือแถบสีที่ขอบภาพ (เช่น แถบสีน้ำตาลบนล่างของลายดาว —
-      แบบนั้นจะเห็นเป็นเส้นเมื่อปูซ้ำ)
-- [ ] ลวดลายกระจายทั่วทั้งภาพ ไม่กองอยู่กลางภาพ
+### 3. รันคำสั่งเดียว
+
+```bash
+npm run catalog:import -- "../Design Pattern"
+```
+
+สคริปต์จะย่อภาพ → แปลงเป็น WebP (ไม่เกิน 600 KB) → สร้างภาพตัวอย่าง 240 px →
+อัปเดต `public/catalog/patterns.json` ให้เอง แล้วสรุปว่าอะไรเปลี่ยนบ้าง
+
+```
+  + lemons  added
+  ~ stars  updated (image)
+  = marble-swirl  unchanged
+  - old-pattern  removed
+```
+
+เสร็จแล้ว `git add -A`, commit, เปิด PR ตามปกติ
+
+- รันซ้ำโดยไม่เปลี่ยนอะไร = ไม่มีอะไรเปลี่ยน ปลอดภัยเสมอ
+- ชื่อไฟล์ที่เว็บใช้จะมีรหัสของภาพต่อท้าย (`lemons.a271f856.webp`) แก้ภาพแล้วรหัสเปลี่ยน
+  เบราว์เซอร์จึงไม่เอาภาพเก่าใน cache มาแสดง
+- ลายที่เป็นภาพถ่าย/ภาพวาด จะ **เลือกสีจากใบไม้ไม่ได้** (สีฝังอยู่ในภาพแล้ว)
+  เว็บจะซ่อนตัวเลือกสีให้เอง
 
 ### 4. ขนาดลาย (repeatUnits)
 
@@ -50,34 +105,30 @@ to the Pa Ton Phueng customizer.
 | ผ้าเช็ดหน้า (ทั้งผืน) | 580 × 580 หน่วย |
 | แก้ว / กระบอกน้ำ | ~260 × 290 หน่วย |
 
-`repeatUnits` คือ **ความกว้างของลาย 1 รอบ** คิดเป็นหน่วย ส่วนความสูงระบบคำนวณ
-ตามสัดส่วนภาพให้เอง
+`repeatUnits` คือ **ความกว้างของลาย 1 รอบ** ส่วนความสูงระบบคำนวณตามสัดส่วนภาพให้เอง
 
 - `500` = ลายใหญ่ ปูได้ประมาณ 1.3 รอบบนผ้าคลุมไหล่ (ค่าที่ลายชุดแรกใช้)
 - `250` = ลายเล็กลงครึ่งหนึ่ง ปูได้ประมาณ 2.6 รอบ
-- ลายวางครั้งเดียวไม่ต้องใส่ค่านี้
 
 > ค่านี้เปลี่ยนทีหลังได้ **แต่** งานออกแบบที่ลูกค้าบันทึกไว้แล้วจะขนาดเปลี่ยนตามไปด้วย
-> จึงควรตัดสินใจตอนเพิ่มลายครั้งแรก
 
-### 5. รันสคริปต์แปลงไฟล์
+### 5. ลายต่อเนื่อง vs ลายวางครั้งเดียว
 
-วางไฟล์ทั้งหมดไว้ในโฟลเดอร์เดียว แล้วรัน
+- **ลายต่อเนื่อง** — ปูซ้ำทั้งผืน เช่น ลายทาง ลายมะนาว ขอบซ้ายต้องต่อกับขอบขวา
+  และขอบบนต้องต่อกับขอบล่าง
+- **ลายวางครั้งเดียว** (`"fit": "area"`) — ภาพเดียวเต็มพื้นที่พิมพ์ เช่น ลายหัวใจ ลายวงกลม
+  ไม่ต้องสนใจเรื่องขอบ ระบบจะขยายให้เต็มพื้นที่และตัดส่วนเกินออก
 
-```bash
-npm run catalog:import -- "../Design Pattern"
+**เช็กลิสต์ลายต่อเนื่อง**
+
+- [ ] ขอบซ้าย–ขวา ลายวิ่งต่อกันสนิท
+- [ ] ขอบบน–ล่าง ลายวิ่งต่อกันสนิท
+- [ ] ไม่มีเส้นขอบ กรอบ หรือแถบสีที่ขอบภาพ (เช่น แถบสีน้ำตาลบนล่างของลายดาว)
+- [ ] ลวดลายกระจายทั่วทั้งภาพ ไม่กองอยู่กลางภาพ
+
+สคริปต์จะให้ **คะแนนรอยต่อ** ของทุกลาย
+
 ```
-
-สคริปต์จะ
-
-1. ย่อภาพให้ด้านยาว 1600 px แปลงเป็น WebP ขนาดไม่เกิน 600 KB
-2. สร้างภาพตัวอย่างเล็ก (240 px) สำหรับหน้าเลือกลาย
-3. เขียนไฟล์ลง `public/catalog/patterns/community/`
-4. พิมพ์ขนาดไฟล์ และ **คะแนนรอยต่อ** ของแต่ละลาย
-
-```
-lemons.png  →  lemons
-    2480×3508 2625 KB  →  1131×1600 45 KB at q82, thumb 170×240 2 KB
     seam  left|right 3.9 (grain 0.2)   top|bottom 5.7 (grain 0.2)
     WARNING: the left|right and top|bottom edges do not meet …
 ```
@@ -86,48 +137,40 @@ lemons.png  →  lemons
 - `grain` = ความต่างของเส้นข้าง ๆ กันภายในภาพ ใช้เทียบว่าตัวเลขแรกมากผิดปกติไหม
 - คำเตือนนี้ **ไม่ใช่ error** ลายวางครั้งเดียวมีคำเตือนได้เป็นปกติ
   แต่ถ้าเป็นลายที่ตั้งใจให้ปูซ้ำ แปลว่าต้อง export ใหม่ให้ขอบต่อกัน
+- คะแนนจะขึ้นเฉพาะลายที่เพิ่งเพิ่มหรือเพิ่งแก้ภาพ (ลายเดิมไม่ต้องแปลงใหม่)
 
-### 6. เพิ่มลายลงแคตตาล็อก
+### ถ้าสคริปต์ฟ้อง
 
-สคริปต์จะพิมพ์ร่าง JSON ให้ เอาไปวางต่อใน `public/catalog/patterns.json` แล้วแก้ชื่อ
-กับเครดิต
+ข้อความจะบอกว่าผิดที่รายการไหน
 
-```json
-{
-  "id": "lemons",
-  "name": { "th": "ลายมะนาว", "en": "Lemons" },
-  "kind": "tile",
-  "src": "/catalog/patterns/community/lemons.webp",
-  "thumbnail": "/catalog/patterns/community/lemons-thumb.webp",
-  "recolorable": false,
-  "repeatUnits": 500,
-  "defaultColors": [],
-  "tags": ["community", "fruit"],
-  "source": {
-    "type": "community",
-    "credit": "ชื่อผู้ออกแบบ",
-    "license": "Community-owned — terms TBC"
-  }
-}
+```
+patterns.manifest.json: 1 problem
+  - entry "lemons" (index 2) repeatUnits: Too small: expected number to be >0
 ```
 
-- ลายวางครั้งเดียว: ตัด `repeatUnits` ออก แล้วใส่ `"fit": "area"` แทน
-- `recolorable: false` เสมอสำหรับลายที่เป็นภาพ (สีฝังอยู่ในภาพแล้ว ระบบจึง
-  ไม่แสดงตัวเลือกสีจากใบไม้ให้)
-- อยากจำกัดว่าลายนี้ใช้กับสินค้าไหนได้บ้าง ใส่
-  `"restrictTo": { "lines": ["fabric"] }` หรือ `"restrictTo": { "productIds": ["leaf-plate"] }`
-  ถ้าไม่ใส่ = ใช้ได้กับทุกสินค้า
-
-ถ้ากรอกผิด เว็บจะขึ้นข้อความบอกชื่อไฟล์และ id ของรายการที่ผิด เช่น
-`patterns.json: 1 problem — item "lemons" repeatUnits: …` แก้ตรงนั้นแล้วรีเฟรช
-
-ดูลายทั้งหมดได้ที่ `npm run dev` แล้วเปิด `/dev/catalog`
+แก้ในไฟล์ manifest แล้วรันใหม่ · ดูลายทั้งหมดได้ที่ `npm run dev` แล้วเปิด `/dev/catalog`
 
 ---
 
 ## English
 
-### 1. What to send
+### What the artwork folder looks like
+
+```
+Design Pattern/
+  patterns.manifest.json     ← the list of patterns (this is what you edit)
+  Untitled_Artwork 2.png     ← the originals; any file name will do
+  Untitled_Artwork 6.png
+  …
+```
+
+The folder is **not** in the repository: the full-resolution originals stay
+with the designer, and the site only ever serves the converted files. Starting
+from scratch? Copy
+[`docs/patterns.manifest.example.json`](patterns.manifest.example.json) into
+the folder and rename it.
+
+### 1. Put the file in the folder
 
 | | |
 | --- | --- |
@@ -135,30 +178,65 @@ lemons.png  →  lemons
 | Size | long edge at least 1600 px — larger is fine, e.g. 2480×3508 |
 | Colour | sRGB |
 | Background | opaque; only a single cut-out leaf motif needs transparency |
-| File name | the pattern's name in lowercase English: `lemons.png` |
+| File name | anything — the name no longer decides anything |
 
-**The file name matters**: it becomes the pattern's id (`Pastel stripes.png` →
-`pastel-stripes`). No dates or version numbers.
+### 2. Edit the manifest
 
-The full-resolution originals are **not** kept in the repository. They stay
-with the designer; the site only ever serves the converted files.
+One pattern, one entry:
 
-### 2. Repeat or placement
+```json
+{
+  "file": "Untitled_Artwork 2.png",
+  "id": "lemons",
+  "name": { "th": "ลายมะนาว", "en": "Lemons" },
+  "repeatUnits": 500,
+  "tags": ["fruit"],
+  "credit": "Designer's name"
+}
+```
 
-- **Repeat** — a surface pattern tiled across the cloth (stripes, lemons,
-  stars). Its left edge has to continue into its right edge, and its top into
-  its bottom.
-- **Placement** — one picture that fills the print area once (hearts,
-  bubbles). No tiling, so the edges do not matter: the site scales it to cover
-  the area and trims the overflow.
+| Key | Meaning |
+| --- | --- |
+| `file` | the file in this folder |
+| `id` | **the pattern's identity**, lowercase kebab-case, e.g. `pastel-stripes` |
+| `name` | what the site shows, Thai and English |
+| `fit` | `"area"` for a pattern placed once; leave it out for a repeating tile |
+| `repeatUnits` | the size of one repeat (step 4); omit for a placement pattern |
+| `restrictTo` | keeps it off products it was not drawn for; omit for all of them |
+| `tags` | search words; `community` is added for you |
+| `credit` | who to credit |
 
-### 3. Seamless checklist
+**The id is the identity.** Re-export a revised drawing and keep its id: the
+designs people have already made keep their pattern. Change the id — or
+**remove the entry — and the pattern is deleted**, and a saved design that used
+it loses that layer. The script warns when that happens.
 
-- [ ] the drawing continues across the left/right join
-- [ ] it continues across the top/bottom join
-- [ ] no border, frame or band of colour at the edge (the brown bands above and
-      below the stars pattern are exactly what shows up as a line)
-- [ ] the motifs are spread over the whole sheet, not gathered in the middle
+JSON has no comments, so any key starting with `_` is ignored: `"_note": "…"`.
+
+### 3. Run one command
+
+```bash
+npm run catalog:import -- "../Design Pattern"
+```
+
+It resizes, converts to WebP under 600 KB, writes a 240 px thumbnail, updates
+`public/catalog/patterns.json` and says what changed:
+
+```
+  + lemons  added
+  ~ stars  updated (image)
+  = marble-swirl  unchanged
+  - old-pattern  removed
+```
+
+Then `git add -A`, commit and open a PR as usual.
+
+- Running it again with nothing changed changes nothing. It is always safe.
+- The served file names carry a hash of the artwork
+  (`lemons.a271f856.webp`), so a revision can never be served from a browser's
+  cache.
+- A photographed or painted pattern **cannot be recoloured** — its colours are
+  in the file — so the site hides the leaf-dye picker for it.
 
 ### 4. Repeat size (`repeatUnits`)
 
@@ -171,32 +249,35 @@ units across.
 | Handkerchief (whole cloth) | 580 × 580 units |
 | Mug / tumbler wrap | ~260 × 290 units |
 
-`repeatUnits` is **the width of one repeat** in those units; the height follows
-from the file's proportions.
+`repeatUnits` is **the width of one repeat**; the height follows from the
+file's proportions.
 
 - `500` — a large print, about 1.3 repeats across a shawl. What the first seven
   patterns use.
 - `250` — half the size, about 2.6 repeats across.
-- A placement pattern has no repeat size.
 
 > It can be changed later, **but** designs people have already saved will
-> change size with it, so it is worth deciding when the pattern is added.
+> change size with it.
 
-### 5. Run the import
+### 5. Repeat or placement
 
-Put the files in one folder and run:
+- **Repeat** — a surface pattern tiled across the cloth (stripes, lemons). Its
+  left edge has to continue into its right edge, and its top into its bottom.
+- **Placement** (`"fit": "area"`) — one picture filling the print area once
+  (hearts, bubbles). The edges do not matter: the site scales it to cover the
+  area and trims the overflow.
 
-```bash
-npm run catalog:import -- "../Design Pattern"
+**Seamless checklist**
+
+- [ ] the drawing continues across the left/right join
+- [ ] it continues across the top/bottom join
+- [ ] no border, frame or band of colour at the edge (the brown bands above and
+      below the stars pattern are exactly what shows up as a line)
+- [ ] the motifs are spread over the whole sheet, not gathered in the middle
+
+The script scores every tile's seams:
+
 ```
-
-It resizes each one to a 1600 px long edge, writes a WebP under 600 KB and a
-240 px thumbnail into `public/catalog/patterns/community/`, and prints the
-sizes and a **seam score**:
-
-```
-lemons.png  →  lemons
-    2480×3508 2625 KB  →  1131×1600 45 KB at q82, thumb 170×240 2 KB
     seam  left|right 3.9 (grain 0.2)   top|bottom 5.7 (grain 0.2)
     WARNING: the left|right and top|bottom edges do not meet …
 ```
@@ -207,39 +288,17 @@ lemons.png  →  lemons
   yardstick the first number is read against
 - it is **never an error**. A placement pattern is expected to warn; a pattern
   meant to repeat needs a seamless export instead.
+- scores are printed for patterns that are new or whose picture changed;
+  an unchanged pattern is not converted again.
 
-### 6. Add it to the catalog
+### When the script complains
 
-The script prints an entry to paste into `public/catalog/patterns.json`:
+It names the entry:
 
-```json
-{
-  "id": "lemons",
-  "name": { "th": "ลายมะนาว", "en": "Lemons" },
-  "kind": "tile",
-  "src": "/catalog/patterns/community/lemons.webp",
-  "thumbnail": "/catalog/patterns/community/lemons-thumb.webp",
-  "recolorable": false,
-  "repeatUnits": 500,
-  "defaultColors": [],
-  "tags": ["community", "fruit"],
-  "source": {
-    "type": "community",
-    "credit": "Designer's name",
-    "license": "Community-owned — terms TBC"
-  }
-}
+```
+patterns.manifest.json: 1 problem
+  - entry "lemons" (index 2) repeatUnits: Too small: expected number to be >0
 ```
 
-- placement pattern: drop `repeatUnits` and add `"fit": "area"`
-- `recolorable` is always `false` for a photographed pattern — its colours are
-  printed into the file, so the leaf-dye picker hides itself for it
-- to keep a pattern off some products, add
-  `"restrictTo": { "lines": ["fabric"] }` or
-  `"restrictTo": { "productIds": ["leaf-plate"] }`. Leave it out and the
-  pattern prints on everything.
-
-A mistake in the JSON shows as an error naming the file and the entry, e.g.
-`patterns.json: 1 problem — item "lemons" repeatUnits: …`. Fix it and reload.
-
-`npm run dev`, then `/dev/catalog`, shows every entry at once.
+Fix the manifest and run it again. `npm run dev`, then `/dev/catalog`, shows
+every entry at once.

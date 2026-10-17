@@ -1,115 +1,292 @@
 /**
- * The two pieces of the import script that are decisions rather than plumbing:
- * the id a file name turns into, and the seam score.
+ * The import, run for real against a folder of generated artwork and a
+ * throwaway catalog file.
  *
- * The score is measured on hand-built pictures a few pixels wide, where what
- * the answer should be is obvious — a picture whose edges match exactly, one
- * where black meets white, one that is nothing but grain. Converting the real
- * patterns is what tests sharp.
+ * sharp and the file system are the point here rather than things to stub: the
+ * promises being tested are that a second run changes nothing, that a revised
+ * drawing lands under a new name, that dropping an entry takes its files with
+ * it, and that the hand-written placeholders come out of all of it untouched.
+ * Each picture is a few hundred pixels of flat colour, so the whole file is
+ * about as fast as a unit test.
  */
-import { describe, expect, it } from 'vitest'
-import { idFromFile, seamsOfRaw, seamWarns } from './importPatterns.ts'
+import {
+  mkdir,
+  mkdtemp,
+  readdir,
+  readFile,
+  rm,
+  writeFile,
+} from 'node:fs/promises'
+import { tmpdir } from 'node:os'
+import path from 'node:path'
+import sharp from 'sharp'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
+import { MANIFEST_NAME } from './catalog/manifest.ts'
+import { communityItems } from './catalog/patternsFile.ts'
+import { importPatterns } from './importPatterns.ts'
 
-/**
- * A picture from rows of greys, 0–255, as raw single-channel pixels — the
- * shape `sharp(…).raw()` hands over.
- */
-function picture(rows: number[][]) {
-  const height = rows.length
-  const width = rows[0].length
+/** A hand-written entry, which the import must never touch. */
+const PLACEHOLDER = `    {
+      "id": "seigaiha",
+      "name": { "th": "ลายคลื่น", "en": "Seigaiha waves" },
+      "kind": "tile",
+      "src": "/catalog/patterns/seigaiha.svg",
+      "recolorable": true,
+      "defaultColors": ["#4B2A4F"],
+      "tags": ["geometric", "placeholder"],
+      "source": {
+        "type": "placeholder",
+        "credit": "Generated placeholder",
+        "license": "CC0-1.0"
+      }
+    }`
 
-  return {
-    data: Buffer.from(rows.flat()),
-    info: { width, height, channels: 1 },
-  }
+const CATALOG = `{\n  "catalogVersion": 1,\n  "items": [\n${PLACEHOLDER}\n  ]\n}\n`
+
+let dir = ''
+let sourceDir = ''
+let outDir = ''
+let catalogPath = ''
+
+/** A plain rectangle of one colour, in the shape artwork arrives in. */
+async function artwork(
+  file: string,
+  color: string,
+  width = 240,
+): Promise<void> {
+  const image = sharp({
+    create: {
+      width,
+      height: Math.round(width * 1.4),
+      channels: 3,
+      background: color,
+    },
+  })
+
+  await image.png().toFile(path.join(sourceDir, file))
 }
 
-const seamsOf = (rows: number[][]) => {
-  const { data, info } = picture(rows)
-
-  return seamsOfRaw(data, info)
+async function manifest(...patterns: unknown[]): Promise<void> {
+  await writeFile(
+    path.join(sourceDir, MANIFEST_NAME),
+    JSON.stringify({ manifestVersion: 1, patterns }, null, 2),
+  )
 }
 
-describe('idFromFile', () => {
-  it('makes a kebab-case id out of the file name', () => {
-    expect(idFromFile('Pastel stripes.png')).toBe('pastel-stripes')
-    expect(idFromFile('/tmp/patterns/Untitled_Artwork 3.png')).toBe(
-      'untitled-artwork-3',
+const lemons = (overrides: Record<string, unknown> = {}) => ({
+  file: 'lemons.png',
+  id: 'lemons',
+  name: { th: 'ลายมะนาว', en: 'Lemons' },
+  repeatUnits: 500,
+  credit: 'Designer TBC',
+  ...overrides,
+})
+
+const stars = (overrides: Record<string, unknown> = {}) => ({
+  file: 'stars.png',
+  id: 'stars',
+  name: { th: 'ลายดาว', en: 'Stars' },
+  repeatUnits: 500,
+  credit: 'Designer TBC',
+  ...overrides,
+})
+
+/** Nothing is printed while the tests run; the output has its own tests. */
+const quiet = () => undefined
+
+const run = () =>
+  importPatterns({ sourceDir, catalogPath, outDir, log: quiet, warn: quiet })
+
+const catalogText = () => readFile(catalogPath, 'utf8')
+
+beforeEach(async () => {
+  dir = await mkdtemp(path.join(tmpdir(), 'ptt-import-'))
+  sourceDir = path.join(dir, 'Design Pattern')
+  outDir = path.join(dir, 'community')
+  catalogPath = path.join(dir, 'patterns.json')
+
+  await mkdir(sourceDir, { recursive: true })
+  await writeFile(catalogPath, CATALOG)
+})
+
+afterEach(async () => {
+  await rm(dir, { recursive: true, force: true })
+})
+
+describe('importPatterns', () => {
+  it('adds a pattern, its two files and its catalog entry', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await manifest(lemons())
+
+    const result = await run()
+
+    expect(result.changes).toEqual([
+      {
+        id: 'lemons',
+        status: 'added',
+        imageChanged: false,
+        detailsChanged: false,
+      },
+    ])
+    expect(result.written).toHaveLength(2)
+    expect(result.catalogChanged).toBe(true)
+
+    const [entry] = communityItems(await catalogText())
+    expect(entry).toMatchObject({
+      id: 'lemons',
+      kind: 'tile',
+      recolorable: false,
+      repeatUnits: 500,
+      tags: ['community'],
+      source: { type: 'community', credit: 'Designer TBC' },
+    })
+
+    // The file name carries a hash of the artwork, so a revision cannot be
+    // served from a cache.
+    expect((entry as { src: string }).src).toMatch(
+      /^\/catalog\/patterns\/community\/lemons\.[0-9a-f]{8}\.webp$/,
     )
   })
 
-  it('drops the punctuation an export dialog adds', () => {
-    expect(idFromFile('lemons (final) v2.png')).toBe('lemons-final-v2')
-    expect(idFromFile('  hearts .webp')).toBe('hearts')
-  })
-})
+  it('changes nothing at all when it is run again', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await artwork('stars.png', '#c3c9f5')
+    await manifest(lemons(), stars())
+    await run()
 
-describe('seamsOfRaw', () => {
-  it('scores a tile whose edges continue as no seam at all', () => {
-    // Every row starts and ends on the same grey, and the top row repeats at
-    // the bottom: the drawing carries on across both joins.
-    const seams = seamsOf([
-      [10, 200, 90, 10],
-      [10, 40, 150, 10],
-      [10, 90, 20, 10],
-      [10, 200, 90, 10],
+    const text = await catalogText()
+    const files = await readdir(outDir)
+
+    const again = await run()
+
+    expect(again.changes.map((change) => change.status)).toEqual([
+      'unchanged',
+      'unchanged',
     ])
-
-    expect(seams.horizontal.score).toBe(0)
-    // Top and bottom rows are the same here too.
-    expect(seams.vertical.score).toBe(0)
+    expect(again).toMatchObject({
+      written: [],
+      deleted: [],
+      removed: [],
+      catalogChanged: false,
+    })
+    expect(await catalogText()).toBe(text)
+    expect(await readdir(outDir)).toEqual(files)
   })
 
-  it('scores black meeting white as the worst there is', () => {
-    const seams = seamsOf([
-      [0, 128, 128, 255],
-      [0, 128, 128, 255],
-      [0, 128, 128, 255],
-      [0, 128, 128, 255],
-    ])
+  it('leaves the hand-written entries exactly as they were', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await manifest(lemons())
+    await run()
 
-    expect(seams.horizontal.score).toBe(100)
-    expect(seams.vertical.score).toBe(0)
+    expect(await catalogText()).toContain(PLACEHOLDER)
   })
 
-  it('finds the seam in the axis it is actually in', () => {
-    const seams = seamsOf([
-      [0, 0, 0, 0],
-      [90, 90, 90, 90],
-      [90, 90, 90, 90],
-      [255, 255, 255, 255],
-    ])
+  it('keeps the id but renames the files when the artwork is revised', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await manifest(lemons())
+    await run()
 
-    expect(seams.horizontal.score).toBe(0)
-    expect(seams.vertical.score).toBe(100)
+    const before = communityItems(await catalogText())[0] as { src: string }
+
+    // The designer re-exports the same pattern, in a different colour.
+    await artwork('lemons.png', '#ffd43b')
+    const result = await run()
+
+    const after = communityItems(await catalogText())[0] as {
+      id: string
+      src: string
+    }
+
+    expect(result.changes[0]).toMatchObject({
+      id: 'lemons',
+      status: 'updated',
+      imageChanged: true,
+      // Only the picture: the manifest said the same things about it.
+      detailsChanged: false,
+    })
+    expect(after.id).toBe('lemons')
+    expect(after.src).not.toBe(before.src)
+
+    // The old pair is gone and the new pair is there: two files, not four.
+    expect(await readdir(outDir)).toHaveLength(2)
+    expect(result.deleted).toHaveLength(2)
   })
 
-  it('measures the picture own grain beside the seam', () => {
-    // Columns alternate black and white: neighbours are as different as
-    // neighbours get, so a seam of the same size says nothing.
-    const seams = seamsOf([
-      [0, 255, 0, 255],
-      [0, 255, 0, 255],
-      [0, 255, 0, 255],
-      [0, 255, 0, 255],
-    ])
+  it('follows a file being renamed, as long as the id stays', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await manifest(lemons())
+    await run()
 
-    expect(seams.horizontal.noise).toBe(100)
-    expect(seams.horizontal.score).toBe(100)
-  })
-})
+    await artwork('Untitled_Artwork 2.png', '#ffe066')
+    await manifest(lemons({ file: 'Untitled_Artwork 2.png' }))
+    const result = await run()
 
-describe('seamWarns', () => {
-  it('says nothing about edges that nearly meet', () => {
-    expect(seamWarns({ score: 1.4, noise: 0.1 })).toBe(false)
+    expect(result.changes[0]?.status).toBe('unchanged')
+    expect(result.written).toEqual([])
   })
 
-  it('warns where the drawing plainly stops at the edge', () => {
-    expect(seamWarns({ score: 9.3, noise: 0.3 })).toBe(true)
+  it('rewrites the entry alone when only the manifest changed', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await manifest(lemons())
+    await run()
+
+    await manifest(lemons({ name: { th: 'ลายมะนาว', en: 'Lemon slices' } }))
+    const result = await run()
+
+    expect(result.changes[0]).toMatchObject({
+      status: 'updated',
+      imageChanged: false,
+      detailsChanged: true,
+    })
+    // The picture is the same picture, so nothing was converted or deleted.
+    expect(result).toMatchObject({ written: [], deleted: [] })
+    expect(await catalogText()).toContain('Lemon slices')
   })
 
-  it('stays quiet where the whole picture is that noisy', () => {
-    // A grainy wash: the edges differ by as much as any two columns inside it.
-    expect(seamWarns({ score: 8, noise: 7.6 })).toBe(false)
+  it('removes a pattern the manifest has dropped, files and all', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await artwork('stars.png', '#c3c9f5')
+    await manifest(lemons(), stars())
+    await run()
+
+    const warnings: string[] = []
+    const result = await importPatterns({
+      sourceDir,
+      catalogPath,
+      outDir,
+      log: quiet,
+      warn: (line) => warnings.push(line),
+    })
+
+    expect(result.removed).toEqual([])
+
+    await manifest(lemons())
+    const dropped = await importPatterns({
+      sourceDir,
+      catalogPath,
+      outDir,
+      log: quiet,
+      warn: (line) => warnings.push(line),
+    })
+
+    expect(dropped.removed).toEqual(['stars'])
+    expect(dropped.deleted).toHaveLength(2)
+    expect(communityItems(await catalogText())).toHaveLength(1)
+
+    // Saying so matters: a design that used it loses that layer.
+    expect(warnings.join('\n')).toContain('loses that layer')
+  })
+
+  it('names the entry when its file is not in the folder', async () => {
+    await manifest(lemons({ file: 'nowhere.png' }))
+
+    await expect(run()).rejects.toThrow('entry "lemons"')
+  })
+
+  it('refuses a manifest two entries share an id in', async () => {
+    await artwork('lemons.png', '#ffe066')
+    await manifest(lemons(), lemons({ file: 'lemons.png' }))
+
+    await expect(run()).rejects.toThrow('already used')
   })
 })
