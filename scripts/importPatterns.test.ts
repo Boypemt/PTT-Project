@@ -201,6 +201,8 @@ describe('importPatterns', () => {
       id: 'lemons',
       status: 'updated',
       imageChanged: true,
+      // Only the picture: the manifest said the same things about it.
+      detailsChanged: false,
     })
     expect(after.id).toBe('lemons')
     expect(after.src).not.toBe(before.src)

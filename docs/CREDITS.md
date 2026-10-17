@@ -57,15 +57,19 @@ converted by `npm run catalog:import` into a WebP with a long edge of 1600 px
 plus a 240 px thumbnail; the originals are the designer's masters and are not
 kept in this repository.
 
-| Files | Pattern | Author | License |
+The files are named `<id>.<hash>.webp` and `<id>.<hash>-thumb.webp`, where the
+hash is taken from the artwork — a revision lands under a new name, so the rows
+below are listed by id rather than by file name.
+
+| Id | Pattern | Author | License |
 | --- | --- | --- | --- |
-| `marble-swirl.webp`, `marble-swirl-thumb.webp` | ลายหินอ่อน / Marble swirl | Designer TBC | Community-owned — terms TBC |
-| `indigo-tie-dye.webp`, `indigo-tie-dye-thumb.webp` | ลายมัดย้อมคราม / Indigo tie-dye | Designer TBC | Community-owned — terms TBC |
-| `lemons.webp`, `lemons-thumb.webp` | ลายมะนาว / Lemons | Designer TBC | Community-owned — terms TBC |
-| `stars.webp`, `stars-thumb.webp` | ลายดาว / Stars | Designer TBC | Community-owned — terms TBC |
-| `pastel-stripes.webp`, `pastel-stripes-thumb.webp` | ลายทางพาสเทล / Pastel stripes | Designer TBC | Community-owned — terms TBC |
-| `hearts.webp`, `hearts-thumb.webp` | ลายหัวใจ / Hearts (placement) | Designer TBC | Community-owned — terms TBC |
-| `bubbles.webp`, `bubbles-thumb.webp` | ลายวงกลม / Bubbles (placement) | Designer TBC | Community-owned — terms TBC |
+| `marble-swirl` | ลายหินอ่อน / Marble swirl | Designer TBC | Community-owned — terms TBC |
+| `indigo-tie-dye` | ลายมัดย้อมคราม / Indigo tie-dye | Designer TBC | Community-owned — terms TBC |
+| `lemons` | ลายมะนาว / Lemons | Designer TBC | Community-owned — terms TBC |
+| `stars` | ลายดาว / Stars | Designer TBC | Community-owned — terms TBC |
+| `pastel-stripes` | ลายทางพาสเทล / Pastel stripes | Designer TBC | Community-owned — terms TBC |
+| `hearts` | ลายหัวใจ / Hearts (placement) | Designer TBC | Community-owned — terms TBC |
+| `bubbles` | ลายวงกลม / Bubbles (placement) | Designer TBC | Community-owned — terms TBC |
 
 Replace the author and licence columns — and the `source` block of each entry
 in `public/catalog/patterns.json` — once the community has agreed how these

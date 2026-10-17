@@ -1,0 +1,86 @@
+{
+  "_README": [
+    "An example of the manifest that lives NEXT TO the artwork, not in this",
+    "repository: copy it to the folder holding the original files, rename it to",
+    "patterns.manifest.json, and list what the folder holds. Then run",
+    "npm run catalog:import -- \"<that folder>\". docs/ADDING_PATTERNS.md has the",
+    "whole flow in Thai and English.",
+    "",
+    "Keys underscored like this one are ignored. Every other key is checked, and",
+    "a mistake is reported with the id of the entry it is in.",
+    "",
+    "THE ID IS THE IDENTITY. It names the files the site serves and the entry in",
+    "the catalog. Re-export a drawing under any file name, keep its id, and the",
+    "designs people have already made keep their pattern. Change an id and it is",
+    "a different pattern: the old one is deleted, and a saved design that used it",
+    "loses that layer. Remove an entry and the same happens.",
+    "",
+    "The import never touches the originals and never copies them into the repo."
+  ],
+
+  "manifestVersion": 1,
+
+  "patterns": [
+    {
+      "_comment": "A repeating tile: the ordinary case.",
+
+      "file": "Untitled_Artwork 2.png",
+      "id": "lemons",
+      "name": { "th": "ลายมะนาว", "en": "Lemons" },
+
+      "_repeatUnits": [
+        "How wide one repeat prints, in the units every product mockup is",
+        "measured in: a whole product is 1000 across, a cotton shawl's cloth is",
+        "660 x 464, a handkerchief 580 x 580. 500 is a large print, about 1.3",
+        "repeats across a shawl. The height follows the picture's proportions.",
+        "Changing it later resizes designs people have already saved, so it is",
+        "worth deciding once, here."
+      ],
+      "repeatUnits": 500,
+
+      "_tags": "Searchable words. \"community\" is added for you.",
+      "tags": ["fruit", "lemons"],
+
+      "credit": "Designer TBC"
+    },
+
+    {
+      "_comment": [
+        "A placement pattern: one drawing that fills the print area once,",
+        "instead of a surface that repeats. It has no repeat size — the print",
+        "area decides how big it is — and its edges never have to meet, so the",
+        "import's seam warnings mean nothing for it."
+      ],
+
+      "file": "Untitled_Artwork 6.png",
+      "id": "hearts",
+      "name": { "th": "ลายหัวใจ", "en": "Hearts" },
+      "fit": "area",
+      "tags": ["hearts", "placement"],
+      "credit": "Designer TBC"
+    },
+
+    {
+      "_comment": [
+        "Everything an entry may carry, in one place.",
+        "restrictTo keeps a pattern off products it was not drawn for: name",
+        "product lines (fabric, leaf, gift, drinkware), or single products by",
+        "id (shawl-cotton, handkerchief, leaf-plate, ...), or both — a product",
+        "qualifies on either. Leave it out and the pattern prints on",
+        "everything, which is what all seven do today.",
+        "license is only needed while the wording is unsettled; left out, an",
+        "entry says \"Community-owned — terms TBC\"."
+      ],
+
+      "file": "plate rim 2026.png",
+      "id": "plate-rim",
+      "name": { "th": "ลายขอบจาน", "en": "Plate rim" },
+      "fit": "repeat",
+      "repeatUnits": 250,
+      "restrictTo": { "lines": ["leaf"], "productIds": ["fan"] },
+      "tags": ["border"],
+      "credit": "ชื่อผู้ออกแบบ",
+      "license": "CC0-1.0"
+    }
+  ]
+}

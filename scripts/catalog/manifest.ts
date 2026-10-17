@@ -172,8 +172,30 @@ function duplicates(entries: ManifestEntry[]): string[] {
   return problems
 }
 
+/**
+ * JSON has no comments, and this is a file somebody keeps by hand for months
+ * — so a key beginning with `_` is a note to the next person and is dropped
+ * before validation. Everything else is checked strictly, because a key the
+ * schema does not know is a typo, and a silently ignored `repeatunits` is a
+ * pattern that comes out the wrong size with nothing to say why.
+ */
+export function stripComments(value: unknown): unknown {
+  if (Array.isArray(value)) return value.map(stripComments)
+
+  if (typeof value === 'object' && value !== null) {
+    return Object.fromEntries(
+      Object.entries(value)
+        .filter(([key]) => !key.startsWith('_'))
+        .map(([key, inner]) => [key, stripComments(inner)]),
+    )
+  }
+
+  return value
+}
+
 /** Validates an already-parsed manifest. Exported for the tests. */
-export function parseManifest(value: unknown, file = MANIFEST_NAME): Manifest {
+export function parseManifest(source: unknown, file = MANIFEST_NAME): Manifest {
+  const value = stripComments(source)
   const result = manifestSchema.safeParse(value)
 
   if (!result.success) {

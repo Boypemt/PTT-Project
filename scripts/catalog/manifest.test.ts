@@ -3,6 +3,7 @@
  * what is tested here is mostly the *message*: a problem has to name the entry
  * it is in, not a path like `patterns.3.name.th`.
  */
+import { readFile } from 'node:fs/promises'
 import { describe, expect, it } from 'vitest'
 import {
   DEFAULT_LICENSE,
@@ -74,6 +75,26 @@ describe('parseManifest', () => {
     const problems = problemsOf(manifest(entry({ repeatunits: 500 })))
 
     expect(problems[0]).toContain('entry "lemons"')
+  })
+
+  it('ignores a key beginning with _, which is how a manifest is annotated', () => {
+    const parsed = parseManifest({
+      _README: 'JSON has no comments, so this is one.',
+      manifestVersion: 1,
+      patterns: [entry({ _comment: ['a note', 'over two lines'] })],
+    })
+
+    expect(parsed.patterns[0]?.id).toBe('lemons')
+  })
+
+  it('accepts the example that ships with the docs', async () => {
+    // The example is what a designer copies, so it has to be a manifest that
+    // would actually pass — comments, every optional field and all.
+    const example: unknown = JSON.parse(
+      await readFile('docs/patterns.manifest.example.json', 'utf8'),
+    )
+
+    expect(parseManifest(example).patterns).toHaveLength(3)
   })
 
   it('rejects a repeat size on a pattern that is placed once', () => {

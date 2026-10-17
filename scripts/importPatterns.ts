@@ -109,6 +109,27 @@ function canonical(value: unknown): string {
   return JSON.stringify(value) ?? 'null'
 }
 
+/** The `src` an entry in the catalog already holds, if it reads as one. */
+function srcOf(value: unknown): string | undefined {
+  return typeof value === 'object' &&
+    value !== null &&
+    'src' in value &&
+    typeof value.src === 'string'
+    ? value.src
+    : undefined
+}
+
+/** An entry with its two file names dropped, for comparing the rest. */
+function withoutAssets(value: unknown): unknown {
+  if (typeof value !== 'object' || value === null) return value
+
+  const copy: Record<string, unknown> = { ...value }
+  delete copy.src
+  delete copy.thumbnail
+
+  return copy
+}
+
 /** The catalog entry a manifest entry becomes, once its files are named. */
 function catalogEntry(entry: ManifestEntry, hash: string): CommunityEntry {
   const stem = `${entry.id}.${hash}`
@@ -200,10 +221,14 @@ export async function importPatterns({
 
     const next = catalogEntry(entry, assetHash(source))
     const before = existing.get(entry.id)
-    const imageChanged =
-      before !== undefined && (before as { src?: unknown }).src !== next.src
+    const imageChanged = before !== undefined && srcOf(before) !== next.src
+    // Everything but the two file names, which the image already accounts
+    // for: this is a name edited in the manifest, a repeat size reconsidered,
+    // a credit filled in.
     const detailsChanged =
-      before !== undefined && canonical(before) !== canonical(entryValue(next))
+      before !== undefined &&
+      canonical(withoutAssets(before)) !==
+        canonical(withoutAssets(entryValue(next)))
 
     const status: Status =
       before === undefined
