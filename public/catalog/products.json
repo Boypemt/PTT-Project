@@ -127,7 +127,7 @@
         },
         {
           "id": "corner",
-          "name": { "th": "มุมผ้า", "en": "Corner" },
+          "name": { "th": "มุมขวาล่าง", "en": "Bottom-right corner" },
           "clip": {
             "type": "rect",
             "x": 556,
