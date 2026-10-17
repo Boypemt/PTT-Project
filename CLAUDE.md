@@ -27,6 +27,8 @@ real data later **without code changes**.
 - Placeholder entries carry `"source": { "type": "placeholder", ... }` so they can be filtered or replaced later.
 
 ## Git workflow (mandatory)
+- **Before ANY commit, run `git branch --show-current`; if it prints `main` or `release`, stop and create a branch.**
+  A merge leaves the checkout on `main`, so the branch you are on is not the branch you last chose.
 - Never commit to `main`. One branch per task: `feat/…`, `fix/…`, `chore/…`, `docs/…`, `test/…`.
 - **Atomic commits** — each commit is ONE logical change that you can describe in one Conventional Commit line,
   and the project builds and passes tests at every commit. Never dump the whole task into a single commit at the end,
