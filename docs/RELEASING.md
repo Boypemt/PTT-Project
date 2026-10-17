@@ -41,6 +41,15 @@ promotion:
    was refreshed and explained by that PR. An image that moves here is one the
    gate let drift, so read it before you read anything else — and if nothing
    moves, that branch is thrown away and costs a minute.
+
+   One image moving by a handful of pixels is not drift. Text rendering in the
+   container is not bit-for-bit repeatable, so a shot can alternate between two
+   renderings that differ by a channel step or two on the edges of a few
+   glyphs — far below the per-pixel `threshold`, so it fails nothing, but
+   enough for `all` mode to write different PNG bytes. Measure before you
+   worry: a diff of a few dozen pixels at a delta of 1–2 is the font edge, and
+   the commit is kept rather than chased. Hundreds of pixels, or a delta you
+   can see, is a real change and belongs to whichever PR caused it.
 3. Walk the demo journey by hand on `main`'s preview link, at phone width —
    the e2e suite checks that the editor agrees with itself, not that the demo
    feels right.
