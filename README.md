@@ -15,6 +15,10 @@ Full context and the domain model: [`docs/PROJECT_BRIEF.md`](docs/PROJECT_BRIEF.
 The PR-by-PR plan: [`docs/ROADMAP.md`](docs/ROADMAP.md). Working rules for
 contributors (and for Claude Code): [`CLAUDE.md`](CLAUDE.md).
 
+**Sending patterns?** [`docs/ADDING_PATTERNS.md`](docs/ADDING_PATTERNS.md) —
+Thai and English — covers the export settings, the seamless checklist, the
+repeat size and `npm run catalog:import`.
+
 ## Stack
 
 | Area      | Choice                                                             |

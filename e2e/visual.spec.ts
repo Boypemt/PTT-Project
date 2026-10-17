@@ -43,6 +43,9 @@ const HANDKERCHIEF = 'handkerchief'
 const CORNER = 'corner'
 const LEAF = 'teak'
 
+/** A pattern laid into the print area once instead of repeated. */
+const PLACEMENT = 'hearts'
+
 /** The webfont every line break on the page depends on. */
 const FONT = '1rem "IBM Plex Sans Thai"'
 
@@ -115,6 +118,28 @@ test(
     })
     await page.mouse.click(empty.x, empty.y)
     await expect(page).toHaveScreenshot('motif-on-cloth.png')
+  },
+)
+
+test(
+  'a placement pattern filling the handkerchief',
+  { tag: '@visual' },
+  async ({ page }) => {
+    await page.goto(`/customize/${HANDKERCHIEF}`)
+    await expect(
+      page.getByRole('heading', {
+        level: 1,
+        name: productName(HANDKERCHIEF, 'th'),
+      }),
+    ).toBeVisible()
+
+    await applyPattern(page, th, 'th', PLACEMENT)
+    await waitForFont(page)
+
+    // The one thing no assertion can check: that the picture covers the cloth
+    // once, keeps its proportions, and is trimmed by the area rather than
+    // repeated across it.
+    await expect(page).toHaveScreenshot('placement-on-cloth.png')
   },
 )
 
