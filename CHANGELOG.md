@@ -6,6 +6,14 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
+## [0.3.0] — 2026-10-17
+
+The first patterns that are actually the community's, and the one command that
+keeps the next ones coming. Until now every pattern on the cloth was a drawing
+made to stand in for one; seven of them are now the designer's own work, and
+adding or revising a pattern is a folder, a manifest entry and
+`npm run catalog:import`.
+
 ### Added
 
 - **The designer's first seven patterns.** ลายหินอ่อน, ลายมัดย้อมคราม,
@@ -41,6 +49,41 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 - Photographed patterns are drawn straight from their file instead of being
   redrawn at twice their size, which is what keeps a hand-drawn SVG sharp and
   does nothing at all for a bitmap.
+- **The visual gate actually bites now.** `maxDiffPixelRatio: 0.01` sounds
+  strict and is not: one percent of a 1280×800 shot is 10,240 pixels, enough
+  for a whole panel of Thai to change inside the budget. It did, twice — a
+  renamed chip never failed, and one baseline sat three PRs out of date showing
+  a panel the app had stopped drawing. The budget is an absolute 100 pixels
+  now, about one glyph, with the per-pixel threshold back to Playwright's
+  default. Nothing is lost to cross-platform font rendering, because the
+  baselines are photographed in the container they are compared in.
+- **The "Visual baselines" workflow can rewrite every image**, not only the
+  ones whose comparison fails — which is the mode a change that lands _under_
+  the tolerance needs, and the one the release checklist now calls for.
+- **A pre-push hook refuses `main`.** A merge leaves the checkout sitting on
+  `main` and the next commit goes there without anyone deciding to; that is how
+  the corner rename below reached `main` instead of a PR. `release` stays open,
+  because promoting a release is a fast-forward push to it, and branch
+  protection on GitHub is still the real gate — still in the one-time setup
+  list in [`docs/RELEASING.md`](docs/RELEASING.md).
+
+### Fixed
+
+- **"มุมขวาล่าง / Bottom-right corner".** The handkerchief's second print area
+  said only "corner", and the clip is a particular one — the bottom right of
+  the cloth. Picking it meant tapping it and watching the dashed outline to
+  find out which. The id is unchanged, so saved designs and every test that
+  names the area are untouched.
+
+### Not in it yet
+
+Undo/redo, autosave and the share link (roadmap 11), PNG export and the order
+request (12), and the rest of the designer handoff (15): the products guide,
+`npm run catalog:check` in CI, and the flag that hides the placeholder patterns
+now that there are real ones to hide them behind. The 3D preview (16) is still
+phase two. Pattern names, credits and the licence wording are provisional, and
+the leaf-dye hexes are still approximations until the community colour-matches
+them against real cloth.
 
 ## [0.2.0] — 2026-10-17
 
