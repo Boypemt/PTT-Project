@@ -8,8 +8,22 @@ name: Visual baselines
 # default branch, so this is available from the moment it lands on `main`.
 # Before that — and on a machine with Docker — the command in the header of
 # e2e/visual.spec.ts does the same thing locally.
+#
+# `changed` rewrites the baselines whose comparison fails, which is what an
+# ordinary UI change needs. It is not enough for a change that lands *under*
+# the tolerance in playwright.config.ts — a renamed chip, a colour a shade
+# over — because nothing fails and the stale image stays. `all` rewrites every
+# baseline regardless, which is the one to pick then.
 on:
   workflow_dispatch:
+    inputs:
+      mode:
+        description: 'Which baselines to rewrite'
+        type: choice
+        default: changed
+        options:
+          - changed
+          - all
 
 permissions:
   contents: write
@@ -38,7 +52,7 @@ jobs:
           HUSKY: 0
 
       - name: Rewrite the baselines
-        run: npx playwright test --grep @visual --update-snapshots
+        run: npx playwright test --grep @visual --update-snapshots=${{ inputs.mode }}
 
       # A push made with GITHUB_TOKEN starts no workflow run, so re-run CI on
       # the branch afterwards to see the suite green against the new images.

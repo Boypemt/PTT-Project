@@ -153,11 +153,21 @@ Windows or macOS machine directly.
 When a UI change moves them **on purpose**:
 
 1. GitHub → **Actions** → **Visual baselines** → **Run workflow** → pick your
-   branch. It rewrites the screenshots and commits them to that branch.
+   branch and a **mode**. It rewrites the screenshots and commits them to that
+   branch.
 2. Re-run CI on the branch afterwards: a push made with `GITHUB_TOKEN` starts no
    workflow run, so the PR will still be showing the old result.
 3. Say in the PR body that the baseline changed and why. A reviewer cannot tell
    an intended change from a regression by looking at the diff.
+
+**Which mode.** `changed` is the default and rewrites the baselines whose
+comparison fails — what an ordinary UI change needs. A change that lands
+*under* the tolerance in `playwright.config.ts` (`maxDiffPixelRatio` 0.01, so
+about 3,400 pixels at phone width) fails nothing, and `changed` then reports
+"the baselines already match" and leaves the stale image in place. Renaming
+one chip is enough to hit this. Pick `all` when you know what you changed is
+on screen and the suite stayed green: it rewrites every baseline, and the
+diff shows you which ones actually moved.
 
 With Docker to hand, the same thing locally (on a copy of the repo — it
 replaces `node_modules` with Linux builds):
