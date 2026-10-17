@@ -39,6 +39,29 @@ import { PatternKindFilter } from './PatternKindFilter'
 import { PatternThumbnail } from './PatternThumbnail'
 import { PrintAreaSelector } from './PrintAreaSelector'
 
+/**
+ * Three leaves thrown across the cloth: the scatter button's whole meaning,
+ * in the space a word would take. Drawn here rather than loaded, so it tints
+ * with the button's own colour and costs no request.
+ */
+function ScatterIcon() {
+  /** One leaf, a lens about its own centre, so a transform can place it. */
+  const leaf = 'M0 -4.2 C 2.6 -1.6 2.6 1.6 0 4.2 C -2.6 1.6 -2.6 -1.6 0 -4.2 Z'
+
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      className="size-4 shrink-0"
+    >
+      <path d={leaf} transform="translate(6 15.5) rotate(-28)" />
+      <path d={leaf} transform="translate(12.5 7.5) rotate(16)" />
+      <path d={leaf} transform="translate(18 16) rotate(-6)" />
+    </svg>
+  )
+}
+
 export function PatternsPanel({ product }: { product: Product }) {
   const { t } = useTranslation()
   const localized = useLocalized()
@@ -152,30 +175,43 @@ export function PatternsPanel({ product }: { product: Product }) {
             />
           </label>
 
-          {/* Nothing at all where the area takes one kind, at either width:
-              the component itself says so, rather than a row of one chip. */}
-          <PatternKindFilter
-            kinds={area.allowedKinds}
-            active={kind}
-            onChange={setKind}
-          />
+          {/* One row on a phone, which is what keeps the pattern names above
+              the fold: the kinds on the left, the scatter on the right.
+              Either can be missing — an area that takes one kind has no
+              toggle, an area that takes no leaves has no scatter — and with a
+              single child `justify-between` leaves it where it started, on
+              the left, rather than stranding it against the far edge.
+              Stacked again from `md` up, where the panel is a column too
+              narrow to hold both side by side. */}
+          <div className="flex items-center justify-between gap-2 md:flex-col md:items-start md:gap-3">
+            {/* Nothing at all where the area takes one kind, at either width:
+                the component itself says so, rather than a row of one chip. */}
+            <PatternKindFilter
+              kinds={area.allowedKinds}
+              active={kind}
+              onChange={setKind}
+            />
 
-          {/* Above the library rather than in it: it is not a pattern you
-              pick, it is the whole cloth in one tap. Only where leaves can be
-              placed at all, and only where the catalog has leaves to throw. */}
-          {canScatter ? (
-            <button
-              type="button"
-              onClick={() => {
-                // Seeded from the clock, so each tap throws a different
-                // handful and any one of them could be reproduced.
-                addLayers(scatterMotifs(all, area, scatterSeed()))
-              }}
-              className="min-h-touch self-start rounded-xl border border-forest-600 bg-forest-50 px-3 text-sm font-medium text-forest-700 transition-colors hover:bg-forest-100"
-            >
-              {t('customize.layers.scatter')}
-            </button>
-          ) : null}
+            {/* Above the library rather than in it: it is not a pattern you
+                pick, it is the whole cloth in one tap. Only where leaves can
+                be placed at all, and only where the catalog has leaves to
+                throw. The leaves on it are what make it legible at this size,
+                where the words alone are another chip in a row of chips. */}
+            {canScatter ? (
+              <button
+                type="button"
+                onClick={() => {
+                  // Seeded from the clock, so each tap throws a different
+                  // handful and any one of them could be reproduced.
+                  addLayers(scatterMotifs(all, area, scatterSeed()))
+                }}
+                className="flex min-h-touch shrink-0 items-center gap-1.5 rounded-xl border border-forest-600 bg-forest-50 px-2.5 text-sm font-medium text-forest-700 transition-colors hover:bg-forest-100"
+              >
+                <ScatterIcon />
+                {t('customize.layers.scatter')}
+              </button>
+            ) : null}
+          </div>
 
           {/* The button only where a tap would change something rather than
               add it; otherwise the line saying the next tap starts a layer.
