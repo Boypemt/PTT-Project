@@ -8,7 +8,7 @@
  */
 import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { MotifLayer, PrintArea } from '@/catalog'
 import { NUDGE, NUDGE_FAR } from '@/editor/motifKeys'
 import { editorStore } from '@/editor/store'
@@ -65,12 +65,7 @@ const leaf = () => {
 const motifs = () => editorStore.getState().design.layers
 
 beforeEach(() => {
-  vi.stubEnv('VITE_FLAGS', 'motifs')
   editorStore.getState().reset()
-})
-
-afterEach(() => {
-  vi.unstubAllEnvs()
 })
 
 describe('with the canvas focused', () => {

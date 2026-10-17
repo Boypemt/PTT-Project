@@ -7,7 +7,7 @@
  */
 interface ImportMetaEnv {
   /**
-   * Comma-separated feature flags, e.g. `motifs,export`. Set on Vercel's
+   * Comma-separated feature flags, e.g. `history,export`. Set on Vercel's
    * Preview environment and left unset on Production; see `src/lib/flags.ts`.
    */
   readonly VITE_FLAGS?: string

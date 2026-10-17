@@ -14,15 +14,15 @@ describe('isFlag', () => {
   })
 
   it('does not know anything else', () => {
-    expect(isFlag('motif')).toBe(false)
-    expect(isFlag('MOTIFS')).toBe(false)
+    expect(isFlag('exports')).toBe(false)
+    expect(isFlag('EXPORT')).toBe(false)
     expect(isFlag('')).toBe(false)
   })
 })
 
 describe('parseFlags', () => {
   it('reads a comma-separated list', () => {
-    expect(parsed('motifs,export')).toEqual(['export', 'motifs'])
+    expect(parsed('history,export')).toEqual(['export', 'history'])
   })
 
   it('is empty when the variable is unset or blank', () => {
@@ -33,12 +33,12 @@ describe('parseFlags', () => {
   })
 
   it('forgives the spacing and the capitals a dashboard invites', () => {
-    expect(parsed(' motifs , Export ')).toEqual(['export', 'motifs'])
-    expect(parsed('motifs,export,')).toEqual(['export', 'motifs'])
+    expect(parsed(' history , Export ')).toEqual(['export', 'history'])
+    expect(parsed('history,export,')).toEqual(['export', 'history'])
   })
 
   it('ignores a name it does not know, and keeps the ones it does', () => {
-    expect(parsed('motifs,motive,3d')).toEqual(['motifs'])
+    expect(parsed('history,histories,3d')).toEqual(['history'])
     expect(parsed('nothing-like-a-flag')).toEqual([])
   })
 
@@ -53,9 +53,9 @@ describe('isEnabled', () => {
   })
 
   it('is true only for the flags the build was given', () => {
-    vi.stubEnv('VITE_FLAGS', 'motifs')
+    vi.stubEnv('VITE_FLAGS', 'history')
 
-    expect(isEnabled('motifs')).toBe(true)
+    expect(isEnabled('history')).toBe(true)
     expect(isEnabled('export')).toBe(false)
   })
 

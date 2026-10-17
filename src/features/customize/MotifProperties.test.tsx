@@ -5,12 +5,11 @@
  * Driven through the page like a visitor would — tap a leaf in the library,
  * then work on it in the properties panel — so what is checked is that the
  * panel is wired to the store the canvas draws from, not that a component
- * renders. The flag is on throughout: with it off there is no leaf to select,
- * which `PatternsPanel.test.tsx` is the check for.
+ * renders.
  */
 import { fireEvent, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { MotifLayer, PrintArea } from '@/catalog'
 import { motifPlacement } from '@/editor/motifPlacement'
 import { editorStore } from '@/editor/store'
@@ -77,12 +76,7 @@ const selected = () => {
 const button = (name: string) => screen.getByRole('button', { name })
 
 beforeEach(() => {
-  vi.stubEnv('VITE_FLAGS', 'motifs')
   editorStore.getState().reset()
-})
-
-afterEach(() => {
-  vi.unstubAllEnvs()
 })
 
 describe('the motif properties panel', () => {

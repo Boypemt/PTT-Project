@@ -7,14 +7,10 @@
  * like the real thing: an area that takes tiles and motifs, one that takes
  * motifs only (the handkerchief's corner, the plate's centre), one tile-only
  * (the shirt's sleeves).
- *
- * Everything down to the last `describe` is a build with the `motifs` flag
- * off — production, in other words — so these are also the check that the flag
- * leaves no trace of leaves in the UI. The last block switches it on.
  */
-import { screen, waitFor, within } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 import type { Pattern, PrintArea } from '@/catalog'
 import { motifPlacement } from '@/editor/motifPlacement'
 import { editorStore } from '@/editor/store'
@@ -105,12 +101,8 @@ beforeEach(() => {
   editorStore.getState().reset()
 })
 
-afterEach(() => {
-  vi.unstubAllEnvs()
-})
-
 describe('the print area selector', () => {
-  it('offers one chip per area a pattern can go on', async () => {
+  it('offers one chip per print area', async () => {
     openProduct([cloth, band])
     const panel = await findPanel()
 
@@ -119,27 +111,27 @@ describe('the print area selector', () => {
     expect(chip(band.name.th)).toBeInTheDocument()
   })
 
-  it('leaves out an area that only takes motifs, which cannot be placed yet', async () => {
+  it('offers an area that takes leaves and nothing else', async () => {
     openProduct([cloth, corner, band])
     await findPanel()
 
-    expect(screen.queryByRole('button', { name: corner.name.th })).toBeNull()
+    expect(chip(corner.name.th)).toBeInTheDocument()
   })
 
   it('says nothing at all when the choice is between one area and itself', async () => {
-    openProduct([cloth, corner])
+    openProduct([cloth])
     const panel = await findPanel()
 
     expect(panel).not.toHaveTextContent(th.customize.printArea)
     expect(screen.queryByRole('button', { name: cloth.name.th })).toBeNull()
   })
 
-  it('starts on the first area a pattern can go on', async () => {
-    openProduct([cloth, band])
+  it('starts on the product own first area, whichever kinds it takes', async () => {
+    openProduct([corner, cloth, band])
     await findPanel()
 
-    expect(chip(cloth.name.th)).toHaveAttribute('aria-pressed', 'true')
-    expect(chip(band.name.th)).toHaveAttribute('aria-pressed', 'false')
+    expect(chip(corner.name.th)).toHaveAttribute('aria-pressed', 'true')
+    expect(chip(cloth.name.th)).toHaveAttribute('aria-pressed', 'false')
   })
 
   it('moves the target to the area the visitor picks', async () => {
@@ -153,51 +145,38 @@ describe('the print area selector', () => {
     expect(chip(cloth.name.th)).toHaveAttribute('aria-pressed', 'false')
     expect(editorStore.getState().selectedPrintAreaId).toBe(band.id)
   })
-
-  it('points at a usable area even when the product opens on a motif one', async () => {
-    openProduct([corner, cloth, band])
-    await findPanel()
-
-    // The store selects the product's first area; the library cannot offer
-    // that one, so the chips — and the next pattern — point at the cloth.
-    // Waited for rather than read straight away: the product reaches the store
-    // from an effect, which runs after the paint that put the panel on screen.
-    await waitFor(() => {
-      expect(editorStore.getState().selectedPrintAreaId).toBe(corner.id)
-    })
-    expect(chip(cloth.name.th)).toHaveAttribute('aria-pressed', 'true')
-  })
 })
 
 describe('the pattern library', () => {
-  it('offers the tiles the print area allows, and no motif yet', async () => {
+  it('offers every pattern of a kind the print area allows', async () => {
     openProduct([cloth])
     await findPanel()
 
     expect(thumb(seigaiha)).toBeInTheDocument()
     expect(thumb(gingham)).toBeInTheDocument()
-    // The cloth takes motifs, but the editor cannot place one until task 09.
-    expect(screen.queryByRole('button', { name: named(teak) })).toBeNull()
+    expect(thumb(teak)).toBeInTheDocument()
   })
 
-  it('lists the motif kind as coming soon rather than pretending it is there', async () => {
+  it('offers a live chip per kind where the area takes both', async () => {
     openProduct([cloth])
     const panel = await findPanel()
-    const motif = within(panel).getByRole('button', {
-      name: new RegExp(th.customize.kinds.motif),
-    })
 
-    expect(motif).toBeDisabled()
-    expect(motif).toHaveTextContent(th.customize.comingSoon)
+    for (const label of [th.customize.kinds.tile, th.customize.kinds.motif]) {
+      const kindChip = within(panel).getByRole('button', {
+        name: new RegExp(label),
+      })
+
+      expect(kindChip).toBeEnabled()
+      expect(kindChip).toHaveAttribute('aria-pressed', 'false')
+    }
   })
 
-  it('offers no way to scatter leaves that cannot be placed', async () => {
-    openProduct([cloth])
+  it('leaves out a pattern of a kind the area does not take', async () => {
+    openProduct([band])
     await findPanel()
 
-    expect(
-      screen.queryByRole('button', { name: th.customize.layers.scatter }),
-    ).toBeNull()
+    expect(thumb(seigaiha)).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: named(teak) })).toBeNull()
   })
 
   it('says nothing about kinds where the area takes only one', async () => {
@@ -435,12 +414,7 @@ describe('tapping a pattern with a layer selected', () => {
   })
 })
 
-describe('with the motifs flag on', () => {
-  /** A build made with `VITE_FLAGS=motifs`, which is Vercel's preview. */
-  beforeEach(() => {
-    vi.stubEnv('VITE_FLAGS', 'motifs')
-  })
-
+describe('laying leaves', () => {
   /**
    * The scale a tap lands a leaf at, taken from the rule itself: what is
    * checked here is that the panel uses it, and `motifPlacement.test.ts` is
@@ -448,25 +422,6 @@ describe('with the motifs flag on', () => {
    */
   const placedScale = (side: number) =>
     motifPlacement({ x: 0, y: 0, width: side, height: side }).scale
-
-  it('offers the motif-only area as a target of its own', async () => {
-    openProduct([cloth, corner, band])
-    await findPanel()
-
-    expect(chip(corner.name.th)).toBeInTheDocument()
-  })
-
-  it('offers the leaves, and the kind chip is no longer coming soon', async () => {
-    openProduct([cloth])
-    const panel = await findPanel()
-    const motif = within(panel).getByRole('button', {
-      name: new RegExp(th.customize.kinds.motif),
-    })
-
-    expect(thumb(teak)).toBeInTheDocument()
-    expect(motif).toBeEnabled()
-    expect(motif).not.toHaveTextContent(th.customize.comingSoon)
-  })
 
   it('shows the leaves alone once the leaf chip is pressed', async () => {
     const user = userEvent.setup()
