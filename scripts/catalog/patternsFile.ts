@@ -156,6 +156,10 @@ export type CommunityEntry = {
   name: { th: string; en: string }
   src: string
   thumbnail: string
+  /** `mask` = imported as ink in an alpha channel, so a dye can fill it. */
+  recolor?: 'mask'
+  /** The dye it is listed in; empty for a pattern that keeps its colours. */
+  defaultColors: string[]
   repeatUnits?: number
   fit?: 'repeat' | 'area'
   restrictTo?: { lines?: string[]; productIds?: string[] }
@@ -178,13 +182,16 @@ export function entryValue(entry: CommunityEntry): Record<string, unknown> {
     kind: 'tile',
     src: entry.src,
     thumbnail: entry.thumbnail,
-    recolorable: false,
+    // A mask is the one imported pattern a leaf dye means anything to; a
+    // photograph or a painting carries its colours in the file.
+    recolorable: entry.recolor !== undefined,
+    ...(entry.recolor === undefined ? {} : { recolor: entry.recolor }),
     ...(entry.repeatUnits === undefined
       ? {}
       : { repeatUnits: entry.repeatUnits }),
     ...(entry.fit === undefined ? {} : { fit: entry.fit }),
     ...(entry.restrictTo === undefined ? {} : { restrictTo: entry.restrictTo }),
-    defaultColors: [],
+    defaultColors: entry.defaultColors,
     tags: entry.tags,
     source: {
       type: 'community',
@@ -208,7 +215,10 @@ export function renderEntry(entry: CommunityEntry, indent = '    '): string {
     `${inner}"kind": "tile",`,
     `${inner}"src": ${q(entry.src)},`,
     `${inner}"thumbnail": ${q(entry.thumbnail)},`,
-    `${inner}"recolorable": false,`,
+    `${inner}"recolorable": ${entry.recolor === undefined ? 'false' : 'true'},`,
+    ...(entry.recolor === undefined
+      ? []
+      : [`${inner}"recolor": ${q(entry.recolor)},`]),
     ...(entry.repeatUnits === undefined
       ? []
       : [`${inner}"repeatUnits": ${String(entry.repeatUnits)},`]),
@@ -216,7 +226,7 @@ export function renderEntry(entry: CommunityEntry, indent = '    '): string {
     ...(entry.restrictTo === undefined
       ? []
       : [`${inner}"restrictTo": ${JSON.stringify(entry.restrictTo)},`]),
-    `${inner}"defaultColors": [],`,
+    `${inner}"defaultColors": ${JSON.stringify(entry.defaultColors)},`,
     `${inner}"tags": ${JSON.stringify(entry.tags)},`,
     `${inner}"source": {`,
     `${inner}  "type": "community",`,

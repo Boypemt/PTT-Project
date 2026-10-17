@@ -55,6 +55,7 @@ const entry = (overrides: Partial<CommunityEntry> = {}): CommunityEntry => ({
   name: { th: 'ลายมะนาว', en: 'Lemons' },
   src: '/catalog/patterns/community/lemons.0a0a0a0a.webp',
   thumbnail: '/catalog/patterns/community/lemons.0a0a0a0a-thumb.webp',
+  defaultColors: [],
   repeatUnits: 500,
   tags: ['community'],
   credit: 'Designer TBC',
@@ -122,6 +123,24 @@ describe('renderEntry', () => {
 
     expect(placed).toContain('"fit": "area"')
     expect(placed).toContain('"restrictTo"')
+  })
+
+  it('marks an ink mask as recolorable, in the dye it is listed in', () => {
+    const mask = entry({ recolor: 'mask', defaultColors: ['#4B2A4F'] })
+    const rendered = renderEntry(mask)
+
+    expect(rendered).toContain('"recolorable": true')
+    expect(rendered).toContain('"recolor": "mask"')
+    expect(rendered).toContain('"defaultColors": ["#4B2A4F"]')
+    expect(JSON.parse(rendered)).toEqual(entryValue(mask))
+  })
+
+  it('leaves a pattern that keeps its own colours alone', () => {
+    const rendered = renderEntry(entry())
+
+    expect(rendered).toContain('"recolorable": false')
+    expect(rendered).not.toContain('"recolor"')
+    expect(rendered).toContain('"defaultColors": []')
   })
 })
 

@@ -49,6 +49,56 @@ describe('parseManifest', () => {
     })
   })
 
+  it('accepts an ink mask listed in one dye', () => {
+    const parsed = parseManifest(
+      manifest(entry({ recolor: 'mask', defaultColors: ['#4B2A4F'] })),
+    )
+
+    expect(parsed.patterns[0]).toMatchObject({
+      recolor: 'mask',
+      defaultColors: ['#4B2A4F'],
+    })
+  })
+
+  it('refuses a mask painted in two colours at once', () => {
+    const problems = problemsOf(
+      manifest(
+        entry({ recolor: 'mask', defaultColors: ['#4B2A4F', '#6B8E3D'] }),
+      ),
+    )
+
+    expect(problems[0]).toContain('entry "lemons"')
+    expect(problems[0]).toContain('exactly one')
+  })
+
+  it('refuses a dye on a pattern whose colours are in the file', () => {
+    const problems = problemsOf(manifest(entry({ defaultColors: ['#4B2A4F'] })))
+
+    expect(problems[0]).toContain('defaultColors')
+  })
+
+  it('refuses levels for a pattern that is not read as a mask', () => {
+    const problems = problemsOf(
+      manifest(entry({ maskLevels: { black: 26, white: 191 } })),
+    )
+
+    expect(problems[0]).toContain('maskLevels')
+  })
+
+  it('refuses levels that are the wrong way round', () => {
+    const problems = problemsOf(
+      manifest(
+        entry({
+          recolor: 'mask',
+          defaultColors: ['#4B2A4F'],
+          maskLevels: { black: 191, white: 26 },
+        }),
+      ),
+    )
+
+    expect(problems[0]).toContain('black must be darker than white')
+  })
+
   it('keeps a licence the manifest states for itself', () => {
     const parsed = parseManifest(manifest(entry({ license: 'CC0-1.0' })))
 

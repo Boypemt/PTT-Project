@@ -18,6 +18,13 @@
  */
 import { createHash } from 'node:crypto'
 import sharp, { type Sharp } from 'sharp'
+import {
+  describeLevels,
+  histogramOf,
+  inkMask,
+  levelsFromHistogram,
+  type MaskLevels,
+} from './mask.ts'
 import { seamsOfRaw, type Seams } from './seams.ts'
 
 /** What the designer exports from. */
@@ -57,14 +64,28 @@ const RECIPE = [
   THUMB_QUALITY,
 ].join('|')
 
-/** Eight hex characters: short enough to read, long enough to be unique. */
-export function assetHash(source: Buffer): string {
+/**
+ * Eight hex characters: short enough to read, long enough to be unique.
+ *
+ * `variant` is whatever else decides what comes out of the same bytes — today
+ * that the artwork is converted to an ink mask, and the levels if they were
+ * given by hand. Levels the import reads for itself are not in it and do not
+ * need to be: they are a function of these same bytes and this same recipe.
+ */
+export function assetHash(source: Buffer, variant = ''): string {
   return createHash('sha256')
     .update(RECIPE)
+    .update(variant)
     .update(source)
     .digest('hex')
     .slice(0, 8)
 }
+
+/** What `assetHash` is told about a mask conversion, or '' for an ordinary one. */
+export const maskVariant = (mask: MaskOptions | undefined): string =>
+  mask === undefined
+    ? ''
+    : `mask:${mask.levels === undefined ? 'auto' : describeLevels(mask.levels)}`
 
 export type Encoded = {
   buffer: Buffer
@@ -74,18 +95,26 @@ export type Encoded = {
   height: number
 }
 
+/** Convert this one to an ink mask, at these levels or at read ones. */
+export type MaskOptions = { levels?: MaskLevels }
+
 export type Converted = {
   /** The artwork as delivered. */
   source: { bytes: number; width: number; height: number }
   pattern: Encoded
   thumb: Encoded
   seams: Seams
+  /** The levels the ink was read at, where this was converted to a mask. */
+  levels?: MaskLevels
   /** True where even the lowest quality tried is over `TARGET_BYTES`. */
   overTarget: boolean
 }
 
 /** The pattern at its catalog size, upright, and flattened if it can be. */
-async function prepared(source: Buffer): Promise<Sharp> {
+async function prepared(
+  source: Buffer,
+  mask: MaskOptions | undefined,
+): Promise<Sharp> {
   // `rotate()` with no angle applies the EXIF orientation, which a photo of
   // dyed cloth carries and a canvas export does not.
   const base = sharp(source).rotate().resize({
@@ -95,6 +124,10 @@ async function prepared(source: Buffer): Promise<Sharp> {
     withoutEnlargement: true,
   })
 
+  // A mask's transparency comes from the ink, not from the file, so there is
+  // nothing to flatten against and the page is about to be thrown away.
+  if (mask !== undefined) return base
+
   const { isOpaque } = await sharp(source).stats()
 
   // An opaque PNG still carries an alpha channel, and keeping it costs bytes
@@ -103,14 +136,56 @@ async function prepared(source: Buffer): Promise<Sharp> {
   return isOpaque ? base.flatten({ background: '#ffffff' }) : base
 }
 
+/**
+ * The drawing as a stencil: black throughout, its ink in the alpha channel.
+ *
+ * Resized first and masked after, so the levels are read from the pixels the
+ * catalog will actually serve — downsampling averages a JPEG's ringing away,
+ * and reading the full-resolution page would set the points against noise
+ * that is no longer there by the time it is applied.
+ */
+async function stencil(
+  image: Sharp,
+  { levels }: MaskOptions,
+): Promise<{ image: Sharp; levels: MaskLevels }> {
+  const { data, info } = await image
+    .clone()
+    .removeAlpha()
+    .toColourspace('b-w')
+    .raw()
+    .toBuffer({ resolveWithObject: true })
+
+  if (info.channels !== 1) {
+    throw new Error(
+      `expected one greyscale channel, got ${String(info.channels)}`,
+    )
+  }
+
+  const read = levels ?? levelsFromHistogram(histogramOf(data))
+
+  return {
+    image: sharp(inkMask(data, read), {
+      raw: { width: info.width, height: info.height, channels: 4 },
+    }),
+    levels: read,
+  }
+}
+
+/**
+ * Lossy throughout, except a mask's alpha: the alpha *is* the drawing there,
+ * and the three colour channels under it are a flat black the encoder spends
+ * almost nothing on, so the quality ladder below has little left to trade.
+ */
+const webpFor = (mask: boolean) => (mask ? { alphaQuality: 100 } : {})
+
 /** The smallest quality that fits the target, or the lowest one tried. */
-async function encode(image: Sharp): Promise<Encoded> {
+async function encode(image: Sharp, webp: object): Promise<Encoded> {
   let last: Encoded | undefined
 
   for (const quality of QUALITIES) {
     const { data, info } = await image
       .clone()
-      .webp({ quality })
+      .webp({ quality, ...webp })
       .toBuffer({ resolveWithObject: true })
     last = { buffer: data, quality, width: info.width, height: info.height }
 
@@ -125,11 +200,11 @@ async function encode(image: Sharp): Promise<Encoded> {
 }
 
 /** The library swatch. Small enough that one quality is the whole ladder. */
-async function thumbnail(image: Sharp): Promise<Encoded> {
+async function thumbnail(image: Sharp, webp: object): Promise<Encoded> {
   const { data, info } = await image
     .clone()
     .resize({ width: THUMB_EDGE, height: THUMB_EDGE, fit: 'inside' })
-    .webp({ quality: THUMB_QUALITY })
+    .webp({ quality: THUMB_QUALITY, ...webp })
     .toBuffer({ resolveWithObject: true })
 
   return {
@@ -140,10 +215,16 @@ async function thumbnail(image: Sharp): Promise<Encoded> {
   }
 }
 
-async function seamsOf(image: Sharp): Promise<Seams> {
-  const { data, info } = await image
-    .clone()
-    .removeAlpha()
+/**
+ * A mask's drawing is its alpha — the colour channels are a flat black that
+ * would score every seam a perfect 0.0 — so that is the channel the edges are
+ * read from. For everything else the picture is the colour.
+ */
+async function seamsOf(image: Sharp, mask: boolean): Promise<Seams> {
+  const flattened = mask
+    ? image.clone().extractChannel(3)
+    : image.clone().removeAlpha()
+  const { data, info } = await flattened
     .raw()
     .toBuffer({ resolveWithObject: true })
 
@@ -151,15 +232,22 @@ async function seamsOf(image: Sharp): Promise<Seams> {
 }
 
 /** Converts one piece of artwork, held in memory. */
-export async function convert(source: Buffer): Promise<Converted> {
-  const image = await prepared(source)
+export async function convert(
+  source: Buffer,
+  mask?: MaskOptions,
+): Promise<Converted> {
+  const page = await prepared(source, mask)
+  const inked = mask === undefined ? undefined : await stencil(page, mask)
+  const image = inked?.image ?? page
+  const webp = webpFor(mask !== undefined)
+
   // The size as delivered: `metadata()` on a pipeline reads its input.
   const { width = 0, height = 0 } = await sharp(source).metadata()
 
   const [pattern, thumb, seams] = await Promise.all([
-    encode(image),
-    thumbnail(image),
-    seamsOf(image),
+    encode(image, webp),
+    thumbnail(image, webp),
+    seamsOf(image, mask !== undefined),
   ])
 
   return {
@@ -167,6 +255,7 @@ export async function convert(source: Buffer): Promise<Converted> {
     pattern,
     thumb,
     seams,
+    levels: inked?.levels,
     overTarget: pattern.buffer.length > TARGET_BYTES,
   }
 }
