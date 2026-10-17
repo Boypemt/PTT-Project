@@ -15,7 +15,9 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
-    include: ['src/**/*.{test,spec}.{ts,tsx}'],
+    // The scripts are tools rather than app code, but the parts of them that
+    // decide something — an id, a seam score — are tested like anything else.
+    include: ['{src,scripts}/**/*.{test,spec}.{ts,tsx}'],
     css: true,
     restoreMocks: true,
     coverage: {

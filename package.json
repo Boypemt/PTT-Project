@@ -17,6 +17,7 @@
     "test": "vitest",
     "test:e2e": "playwright test",
     "shot": "tsx scripts/shot.ts",
+    "catalog:import": "tsx scripts/importPatterns.ts",
     "test:coverage": "vitest run --coverage",
     "preview": "vite preview",
     "prepare": "husky"
