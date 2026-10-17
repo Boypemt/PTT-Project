@@ -96,11 +96,21 @@ export default defineConfig({
   },
   expect: {
     toHaveScreenshot: {
-      /* Font antialiasing moves a few pixels by a shade or two between runs of
-         the same image. `threshold` forgives that per pixel; the ratio leaves
-         room for a handful of them without forgiving a moved element. */
-      threshold: 0.25,
-      maxDiffPixelRatio: 0.01,
+      /* An absolute budget, not a ratio. `maxDiffPixelRatio: 0.01` sounds
+         strict and is not: one percent of a 1280×800 shot is 10,240 pixels,
+         and text is thin — a whole panel of Thai can be rewritten inside that
+         budget. It was, twice. A renamed print-area chip never failed, and
+         `desktop/motif-plate.png` sat three PRs out of date showing a
+         properties panel the app had stopped drawing.
+
+         100 pixels is about one glyph. It is far more than the handful of
+         antialiased edges that move between two runs of the same image —
+         these baselines are photographed in the container CI compares them
+         in, so there is no cross-platform font difference to absorb — and far
+         less than any change a visitor could see. The per-pixel `threshold`
+         goes back to Playwright's default (0.2), since it no longer has to
+         cover for the ratio. */
+      maxDiffPixels: 100,
     },
   },
   projects: [

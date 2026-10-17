@@ -1,0 +1,27 @@
+# Refuses a push that would land on `main`.
+#
+# `main` is what the demo link is promoted from and everything reaches it
+# through a PR, so a push straight to it skips the review and both CI checks.
+# GitHub branch protection is the real gate (docs/RELEASING.md, one-time
+# setup); this is the one that catches it a second earlier, on a machine that
+# is already sitting on `main` after a merge.
+#
+# `release` is deliberately not here: promoting a release *is* a direct
+# fast-forward push to it.
+#
+# git feeds one line per ref being pushed on stdin:
+#   <local ref> <local sha> <remote ref> <remote sha>
+while read -r _local_ref _local_sha remote_ref _remote_sha; do
+  case "$remote_ref" in
+  refs/heads/main)
+    echo "main is protected — open a PR from a branch." >&2
+    echo >&2
+    echo "  git switch -c <type>/<topic>   # feat, fix, chore, docs, test" >&2
+    echo "  git push -u origin HEAD" >&2
+    echo >&2
+    echo "Already committed on main? Move the commits across with" >&2
+    echo "  git switch -c <type>/<topic> && git switch main && git reset --hard origin/main" >&2
+    exit 1
+    ;;
+  esac
+done

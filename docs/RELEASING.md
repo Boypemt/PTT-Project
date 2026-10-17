@@ -36,12 +36,17 @@ promotion:
 ## Promoting a release
 
 1. Everything is merged into `main` and CI is green there.
-2. Walk the demo journey by hand on `main`'s preview link, at phone width —
+2. Run the **Visual baselines** workflow on a branch off `main` in **`all`**
+   mode and look at what moves. Nothing should: every baseline a PR changed
+   was refreshed and explained by that PR. An image that moves here is one the
+   gate let drift, so read it before you read anything else — and if nothing
+   moves, that branch is thrown away and costs a minute.
+3. Walk the demo journey by hand on `main`'s preview link, at phone width —
    the e2e suite checks that the editor agrees with itself, not that the demo
    feels right.
-3. Write the release into [`CHANGELOG.md`](../CHANGELOG.md) (a PR like any
+4. Write the release into [`CHANGELOG.md`](../CHANGELOG.md) (a PR like any
    other).
-4. Tag the commit on `main` and push the tag:
+5. Tag the commit on `main` and push the tag:
 
    ```sh
    git switch main && git pull
@@ -49,7 +54,7 @@ promotion:
    git push origin v0.2.0
    ```
 
-5. Fast-forward `release` to that tag:
+6. Fast-forward `release` to that tag:
 
    ```sh
    git switch release && git pull
@@ -61,7 +66,7 @@ promotion:
    and nothing else; if the merge is refused, something was committed straight
    to `release` and that is the thing to look at, not an argument to drop.
 
-6. Watch the Production deployment finish in Vercel, then open the demo link
+7. Watch the Production deployment finish in Vercel, then open the demo link
    and check the version you expect is on it.
 
 ## Tagging
