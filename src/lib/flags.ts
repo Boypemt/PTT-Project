@@ -9,7 +9,7 @@
  * lets half a feature sit in `main` without a long-lived branch rotting beside
  * it.
  *
- * `VITE_FLAGS` is a comma-separated list: `VITE_FLAGS=motifs,export`. Vite
+ * `VITE_FLAGS` is a comma-separated list: `VITE_FLAGS=history,export`. Vite
  * replaces it at build time, so the value is baked into the bundle and
  * changing it on Vercel means a redeploy, not a reload.
  *
@@ -20,7 +20,6 @@
 
 /** Every flag the app knows, and the roadmap task each one hides. */
 export const FLAGS = [
-  'motifs', // 09: placeable leaf motifs with transform handles
   'history', // 11: undo/redo, autosave and the share link
   'export', // 12: PNG export and the order request summary
   'preview-3d', // 16: the 3D preview tab (phase 2)
@@ -34,8 +33,8 @@ export function isFlag(name: string): name is Flag {
 
 /**
  * The flags named in `value`. Names are trimmed and lowercased, because
- * `motifs, Export` is what a hurried hand types into an env var; anything left
- * that is not a flag is dropped.
+ * `history, Export` is what a hurried hand types into an env var; anything
+ * left that is not a flag is dropped.
  */
 export function parseFlags(value: string | undefined): Set<Flag> {
   const names = (value ?? '')

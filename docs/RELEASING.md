@@ -104,7 +104,7 @@ room remember.
 ## Feature flags
 
 `VITE_FLAGS` is a comma-separated list read by
-[`src/lib/flags.ts`](../src/lib/flags.ts) — `VITE_FLAGS=motifs,export`.
+[`src/lib/flags.ts`](../src/lib/flags.ts) — `VITE_FLAGS=history,export`.
 
 - **Preview** sets the flags of whatever is being worked on, so the team can
   try unfinished work on a real link.
@@ -113,6 +113,36 @@ room remember.
 
 Vite replaces the variable at build time, so changing it on Vercel takes a
 redeploy, not a reload. Locally, copy `.env.example` to `.env.local`.
+
+### The flagged e2e build
+
+Because the flags are baked in at build time, one server cannot show the site
+in both states, so [`playwright.config.ts`](../playwright.config.ts) can make a
+second one. `IN_PROGRESS_FLAGS` there is the list of flags that build is made
+with, and everything follows from it:
+
+| `IN_PROGRESS_FLAGS` | What the suite does |
+| --- | --- |
+| `[]` (now) | one build on 4173, the `desktop` and `pixel-7` projects, nothing else started |
+| `['export']` | that build, plus one made with `VITE_FLAGS=export` on 4174 and the `desktop-flagged` / `pixel-7-flagged` projects against it |
+
+So putting a feature behind a flag is two lines: add the flag to
+`IN_PROGRESS_FLAGS`, and put the journeys that need it in `e2e/flagged/`.
+Everything outside that folder keeps running against the plain build, which is
+production — a flag that leaked out of its gate fails there rather than being
+noticed on the demo link.
+
+Graduating the feature is the same two lines in reverse, plus the move the
+journeys deserve: out of `e2e/flagged/` into `e2e/`, where they run at both
+widths against the build a visitor gets. Each project keeps its own baselines
+(`e2e/__screenshots__/<project>/`), so a spec that moves takes its screenshots
+with it — `git mv` them into the `desktop` and `pixel-7` directories rather
+than letting the suite write a new set.
+
+Note what else graduating does: the production baselines were photographed
+with the feature off, so **every screenshot the feature touches now changes on
+purpose**. Refresh them with the workflow below and say in the PR which images
+moved and why.
 
 ## Updating the visual baselines
 

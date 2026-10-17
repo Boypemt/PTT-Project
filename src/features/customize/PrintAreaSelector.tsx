@@ -2,10 +2,10 @@
  * Which part of the product the next pattern lands on: the shawl's whole cloth
  * or its end band, the shirt's front or its sleeves.
  *
- * Only shown when there is a choice to make. A product with one usable area
- * needs no chips, and an area the editor cannot place anything on yet is not
- * offered at all (see `layerKinds.ts`) — so the handkerchief, whose corner
- * takes motifs only, shows none of this until task 09.
+ * Only shown when there is a choice to make: a product with one print area
+ * needs no chips. Every area the catalog gives a product is offered, whichever
+ * kinds it accepts — the handkerchief's corner takes leaves and nothing else,
+ * and is a target like any other.
  *
  * The chips read the selection back from the store rather than keeping their
  * own, so picking a layer on the canvas — which moves the selection to that
@@ -13,7 +13,7 @@
  */
 import { useTranslation } from 'react-i18next'
 import type { Product } from '@/catalog'
-import { targetPrintArea, usablePrintAreas } from '@/editor/layerKinds'
+import { targetPrintArea } from '@/editor/printAreas'
 import { useDesignStore } from '@/editor/useDesignStore'
 import { useLocalized } from '@/i18n/useLocalized'
 
@@ -23,7 +23,7 @@ export function PrintAreaSelector({ product }: { product: Product }) {
   const selectedId = useDesignStore((state) => state.selectedPrintAreaId)
   const selectPrintArea = useDesignStore((state) => state.selectPrintArea)
 
-  const areas = usablePrintAreas(product)
+  const areas = product.printAreas
   const target = targetPrintArea(product, selectedId)
 
   if (areas.length < 2) return null

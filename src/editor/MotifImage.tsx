@@ -39,8 +39,8 @@ import { usePaintedPattern } from './usePaintedPattern'
 export type MotifTransform = Pick<MotifLayer, 'x' | 'y' | 'scale' | 'rotation'>
 
 /**
- * What a motif needs to be handled. Absent — the `motifs` flag off, or a
- * canvas that is only being looked at — the leaf is drawn and nothing more.
+ * What a motif needs to be handled. Absent — a canvas that is only being
+ * looked at — the leaf is drawn and nothing more.
  */
 export type MotifTools = {
   /** The box the motif's centre is kept inside, in mockup units. */

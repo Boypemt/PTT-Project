@@ -6,26 +6,38 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-10-xx
+
+M2 finished: the customizer a visitor can design on. Tiles, leaf dyes and the
+base cloth were already there; this is the half that makes it eco-print —
+single leaves, laid where the community lays them.
+
 ### Added
 
-- **Leaf motifs, behind the `motifs` flag.** Single leaves can be laid on the
-  cloth the way eco-printing does it: tap a leaf and it lands in the middle of
-  the print area, drag it, and scale or turn it with handles that keep its
-  shape and snap to every 45°. It stays inside the area it prints on while you
-  drag rather than snapping back afterwards. This also opens the print areas
-  that take nothing but motifs — the handkerchief's corner, the wrap cloth's
-  centre, the plate's centre. A selected leaf has its own panel — size,
-  rotation, strength, leaf dyes, copy, reset, delete — and on a desktop the
-  arrow keys nudge it, Shift+arrows further, Delete removes it and Ctrl/Cmd+D
-  copies it, while the cloth has the focus. Off in production:
-  `VITE_FLAGS=motifs` is set on Vercel's Preview environment only, and the e2e
-  suite runs both states.
-- **"โปรยใบไม้ / Scatter leaves"**, behind the same flag. One tap throws five
-  to eight leaves across the print area at random places, angles and sizes —
-  the look the community's cloth actually has, which laying one leaf at a time
-  takes a dozen taps to reach. Only patterns that name the leaves they are
-  made from are thrown, so the designer's own entries decide what a scatter
-  uses.
+- **Leaf motifs.** Single leaves can be laid on the cloth the way eco-printing
+  does it: tap a leaf and it lands in the middle of the print area, drag it,
+  and scale or turn it with handles that keep its shape and snap to every 45°.
+  It stays inside the area it prints on while you drag rather than snapping
+  back afterwards. This also opens the print areas that take nothing but
+  motifs — the handkerchief's corner, the wrap cloth's centre, the plate's
+  centre. A selected leaf has its own panel — size, rotation, strength, leaf
+  dyes, copy, reset, delete — and on a desktop the arrow keys nudge it,
+  Shift+arrows further, Delete removes it and Ctrl/Cmd+D copies it, while the
+  cloth has the focus.
+- **"โปรยใบไม้ / Scatter leaves".** One tap throws five to eight leaves across
+  the print area at random places, angles and sizes — the look the community's
+  cloth actually has, which laying one leaf at a time takes a dozen taps to
+  reach. Only patterns that name the leaves they are made from are thrown, so
+  the designer's own entries decide what a scatter uses.
+
+### Changed
+
+- **The `motifs` flag is gone**, which is what put the two above on the demo
+  link. They went into `main` switched off and were tried on Preview first;
+  removing the flag is the last commit of that feature, as
+  [`docs/RELEASING.md`](docs/RELEASING.md) has it. The flag machinery stays for
+  what is still to come, and so does the e2e suite's second, flagged build —
+  generic now, and building nothing while no feature is behind a flag.
 
 ### Fixed
 
@@ -33,6 +45,12 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
   the page is in English. Tracking pushed Thai vowel and tone marks off the
   consonant they belong to, which showed on the landing eyebrow
   (วิสาหกิจชุมชนป่าต้นผึ้ง) and the placeholder badge.
+- **Two tests that raced the code they were watching.** A handful of
+  assertions read what a React effect writes — the `noindex` tag on
+  `/dev/catalog`, the store's print area — on the paint before the effect had
+  run, and lost that race about one full-suite run in six on a loaded machine.
+  They wait now. Nothing a visitor meets changed; a red CI run that means
+  nothing is how a suite stops being read.
 
 ## [0.1.0-demo] — not yet tagged
 

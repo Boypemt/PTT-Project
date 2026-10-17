@@ -11,7 +11,7 @@ node_modules
 dist
 dist-ssr
 # The flagged build the motif e2e project is served from
-dist-motifs
+dist-flagged
 *.local
 
 # Editor directories and files

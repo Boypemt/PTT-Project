@@ -15,12 +15,10 @@
  * `ProductMockup` stays in use on /products and /dev/catalog, where a still
  * picture is all those pages need.
  *
- * The stage listens for taps only where there is something to take hold of,
- * which is leaf motifs and therefore the `motifs` flag: with it off this is
- * the picture it has always been, with nothing on it that answers a pointer.
- * With it on, every node but the motifs is still deaf — so a tap that reaches
- * the stage itself is a tap on empty cloth, and that is what clears the
- * selection.
+ * The only nodes on the stage that answer a pointer are the leaf motifs; every
+ * other one is deaf (`listening={false}` where it is drawn). So a tap that
+ * reaches the stage itself is a tap on empty cloth, and that is what clears
+ * the selection.
  */
 import { useEffect, useRef, type ReactNode } from 'react'
 import Konva from 'konva'
@@ -35,7 +33,6 @@ import {
 } from 'react-konva'
 import type { Layer as DesignLayer, PrintArea } from '@/catalog'
 import type { PrintAreaClip, Product } from '@/catalog'
-import { isEnabled } from '@/lib/flags'
 import { fitContain, pixelRatio, type Fit } from '@/lib/geometry'
 import { areaBounds } from './areaBounds'
 import { clipFunc } from './clip'
@@ -181,7 +178,6 @@ export function EditorCanvas({ product }: { product: Product }) {
   const { mockup } = product
   const fit = fitContain(mockup, size)
   const scene = buildScene(product, design)
-  const handles = isEnabled('motifs')
 
   /** What one motif layer may do to itself; see `MotifImage`. */
   const motifTools = (area: PrintArea, layer: DesignLayer): MotifTools => ({
@@ -208,21 +204,21 @@ export function EditorCanvas({ product }: { product: Product }) {
   }
 
   return (
+    // In the tab order, because the arrow keys nudge the selected leaf and a
+    // key press has to reach something. `application` is what tells a screen
+    // reader to pass those keys through to the editor rather than move its own
+    // cursor with them — and the two rules below are the price of that role:
+    // jsx-a11y counts it as non-interactive, which it is everywhere except on
+    // a canvas whose contents no DOM node stands for.
+    // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
     <div
       ref={containerRef}
       className="min-h-0 min-w-0 flex-1 outline-forest-600 focus-visible:outline-2"
-      // Focusable only where there is something to handle, so a build without
-      // motifs has the same tab order it has always had. `application` is what
-      // tells a screen reader to pass the arrow keys through to the editor
-      // rather than move its own cursor with them.
-      {...(handles
-        ? {
-            role: 'application',
-            tabIndex: 0,
-            'aria-label': t('customize.canvas'),
-            onKeyDown,
-          }
-        : {})}
+      role="application"
+      // eslint-disable-next-line jsx-a11y/no-noninteractive-tabindex
+      tabIndex={0}
+      aria-label={t('customize.canvas')}
+      onKeyDown={onKeyDown}
     >
       {/* Nothing to draw until the box has been measured, and a zero-sized
           stage is an error in Konva rather than an empty picture. */}
@@ -230,13 +226,10 @@ export function EditorCanvas({ product }: { product: Product }) {
         <Stage
           width={size.width}
           height={size.height}
-          // Both handlers are attached either way; with nothing to take hold
-          // of, `listening` is what stops Konva dispatching to them at all.
-          listening={handles}
           onMouseDown={clearSelection}
           onTouchStart={clearSelection}
         >
-          <Layer listening={handles}>
+          <Layer>
             {/* The paper the DOM mockup sat on. `multiply` needs something
                 opaque underneath, or the shading would darken transparency
                 and come out heavier than it does on /products. */}
@@ -259,7 +252,7 @@ export function EditorCanvas({ product }: { product: Product }) {
                       key={layer.id}
                       layer={layer}
                       mockup={mockup}
-                      motif={handles ? motifTools(area, layer) : undefined}
+                      motif={motifTools(area, layer)}
                     />
                   ))}
                 </Group>
@@ -280,7 +273,7 @@ export function EditorCanvas({ product }: { product: Product }) {
 
             {/* Last, so the handles are drawn over the design, and outside
                 `MockupSpace`, so they are sized in screen pixels. */}
-            {handles ? <MotifTransformer selectedId={selectedLayerId} /> : null}
+            <MotifTransformer selectedId={selectedLayerId} />
           </Layer>
         </Stage>
       ) : null}

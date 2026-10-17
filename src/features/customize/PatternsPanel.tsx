@@ -1,11 +1,10 @@
 /**
  * The left panel: the library a visitor picks patterns from.
  *
- * What it offers follows the selected print area, not the other way round:
- * the area decides which kinds of pattern are allowed, `SUPPORTED_LAYER_KINDS`
- * decides which of those the editor can place yet, and only then is the
- * catalog filtered. No pattern or product is named here — the panel would show
- * the designer's real patterns the day patterns.json changes.
+ * What it offers follows the selected print area, not the other way round: the
+ * area decides which kinds of pattern are allowed, and only then is the catalog
+ * filtered. No pattern or product is named here — the panel would show the
+ * designer's real patterns the day patterns.json changes.
  *
  * Two shapes, one DOM. From `md` up it is a column with a search box, kind
  * chips and a grid. Below `md` the panel is a sheet along the bottom edge
@@ -13,13 +12,12 @@
  * becomes a strip that scrolls sideways: the sheet stays short enough to see
  * what you are designing.
  *
- * The kind chips stay at every width once both kinds can be placed, because
- * they are what keeps tiles and leaves apart. One strip holding both would be
- * fourteen thumbnails to scroll sideways through, and at that size a leaf
- * silhouette and a tile swatch are not tellable apart — while someone laying
- * leaves wants the leaves and nothing else. They cost one row of the sheet, so
- * they appear there only where there is a real choice to make: on a phone a
- * live chip beside one marked "coming soon" is not one.
+ * The kind chips stay at every width, because they are what keeps tiles and
+ * leaves apart. One strip holding both would be fourteen thumbnails to scroll
+ * sideways through, and at that size a leaf silhouette and a tile swatch are
+ * not tellable apart — while someone laying leaves wants the leaves and
+ * nothing else. They cost one row of the sheet, and on a phone that row buys
+ * back several swipes.
  */
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -30,9 +28,9 @@ import {
   type PrintArea,
   type Product,
 } from '@/catalog'
-import { targetPrintArea, usableKinds } from '@/editor/layerKinds'
 import { newMotifLayer } from '@/editor/motifPlacement'
 import { filterPatterns } from '@/editor/patternFilter'
+import { targetPrintArea } from '@/editor/printAreas'
 import { leafPatterns, scatterMotifs, scatterSeed } from '@/editor/scatter'
 import { replaceableLayer } from '@/editor/selection'
 import { useDesignStore } from '@/editor/useDesignStore'
@@ -58,8 +56,8 @@ export function PatternsPanel({ product }: { product: Product }) {
   const selectedLayerId = useDesignStore((state) => state.selectedLayerId)
 
   const area = targetPrintArea(product, selectedPrintAreaId)
-  const placeable = area === undefined ? [] : usableKinds(area)
-  const kinds = kind === null ? placeable : placeable.filter((k) => k === kind)
+  const allowed = area?.allowedKinds ?? []
+  const kinds = kind === null ? allowed : allowed.filter((k) => k === kind)
   const all = status === 'ready' ? catalog.patterns : []
   const patterns = filterPatterns(all, { query, kinds }, (pattern) =>
     localized(pattern.name),
@@ -72,7 +70,7 @@ export function PatternsPanel({ product }: { product: Product }) {
 
   const canScatter =
     area !== undefined &&
-    placeable.includes('motif') &&
+    area.allowedKinds.includes('motif') &&
     leafPatterns(all).length > 0
 
   /**
@@ -154,18 +152,13 @@ export function PatternsPanel({ product }: { product: Product }) {
             />
           </label>
 
-          {/* On a phone the chips only earn their row when both kinds can
-              actually be placed. A chip beside one marked "coming soon" is
-              not a choice, so below `md` it stays out of a sheet that has the
-              canvas to share — which is also what keeps this panel exactly as
-              it is today wherever the kind is not placeable yet. */}
-          <div className={placeable.length > 1 ? undefined : 'hidden md:block'}>
-            <PatternKindFilter
-              kinds={area.allowedKinds}
-              active={kind}
-              onChange={setKind}
-            />
-          </div>
+          {/* Nothing at all where the area takes one kind, at either width:
+              the component itself says so, rather than a row of one chip. */}
+          <PatternKindFilter
+            kinds={area.allowedKinds}
+            active={kind}
+            onChange={setKind}
+          />
 
           {/* Above the library rather than in it: it is not a pattern you
               pick, it is the whole cloth in one tap. Only where leaves can be

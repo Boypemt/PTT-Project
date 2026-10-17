@@ -1,5 +1,5 @@
 dist
-dist-motifs
+dist-flagged
 coverage
 playwright-report
 test-results

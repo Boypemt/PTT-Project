@@ -13,20 +13,24 @@
  * browser channel — `channel: 'chrome'` would want Google Chrome installed,
  * while the chromium Playwright ships is what CI has.
  *
- * And two builds, which is where feature flags come in. `VITE_FLAGS` is read
- * at build time and baked into the bundle (see `src/lib/flags.ts`), so one
- * server cannot show the site in both states: there is a plain build, which is
- * production and what every spec outside `e2e/motifs/` runs against, and a
- * flagged build on its own port that the motif journeys run against. Both are
- * served, so one run covers what a visitor meets today and what the team can
- * try on a preview link — and a flag that leaked into production would fail
- * the first group rather than be noticed later.
+ * And, while a feature is being built, a second build. `VITE_FLAGS` is read at
+ * build time and baked into the bundle (see `src/lib/flags.ts`), so one server
+ * cannot show the site in both states: the plain build is production and what
+ * every spec runs against, and a flagged build on its own port serves the
+ * journeys of whatever is still switched off. One run then covers both what a
+ * visitor meets today and what the team can try on a preview link — and a flag
+ * that leaked into production fails the first group rather than being noticed
+ * later.
  *
- * That makes four projects: each width against each build.
+ * `IN_PROGRESS_FLAGS` below is what drives that, and it is empty right now:
+ * nothing is behind a flag, so there is no second build, no second pair of
+ * projects and nothing to wait for. To put a feature behind one, add its flag
+ * to that list and its journeys to `e2e/flagged/`; take both away when the
+ * feature graduates. `docs/RELEASING.md` says the same from the release side.
  *
  * Screenshot baselines are Linux-only on purpose; see `e2e/visual.spec.ts`.
- * Each project keeps its own, so the flagged builds photograph into
- * directories of their own and the production baselines never move.
+ * Each project keeps its own, so a flagged build photographs into directories
+ * of its own and the production baselines never move.
  */
 import process from 'node:process'
 import { defineConfig, devices } from '@playwright/test'
@@ -43,14 +47,20 @@ const url = (port: number) => `http://${HOST}:${port}`
 
 const BASE_URL = url(PORT)
 
-/** The flags the second build is made with: the ones in review right now. */
-const PREVIEW_FLAGS = 'motifs'
+/**
+ * The flags the second build is made with: whatever is in review right now.
+ * Empty, so there is no second build — see the header.
+ */
+const IN_PROGRESS_FLAGS: string[] = []
+
+/** Whether there is a flagged build to make, serve and run anything against. */
+const FLAGGED = IN_PROGRESS_FLAGS.length > 0
 
 /** Its own `dist`, so the two builds cannot overwrite each other. */
-const FLAGGED_DIST = 'dist-motifs'
+const FLAGGED_DIST = 'dist-flagged'
 
 /** The journeys that need the flagged build, by their folder under `e2e/`. */
-const FLAGGED_SPECS = 'motifs/**'
+const FLAGGED_SPECS = 'flagged/**'
 
 const CI = process.env.CI !== undefined && process.env.CI !== ''
 
@@ -104,24 +114,31 @@ export default defineConfig({
       testIgnore: FLAGGED_SPECS,
       use: { ...devices['Pixel 7'], browserName: 'chromium' },
     },
-    {
-      name: 'desktop-motifs',
-      testMatch: FLAGGED_SPECS,
-      use: {
-        browserName: 'chromium',
-        viewport: { width: 1280, height: 800 },
-        baseURL: url(FLAGGED_PORT),
-      },
-    },
-    {
-      name: 'pixel-7-motifs',
-      testMatch: FLAGGED_SPECS,
-      use: {
-        ...devices['Pixel 7'],
-        browserName: 'chromium',
-        baseURL: url(FLAGGED_PORT),
-      },
-    },
+    /* Left out entirely while nothing is behind a flag, rather than defined
+       and empty: a project with no tests is a line of noise in every report,
+       and its server would be three minutes of CI spent on nothing. */
+    ...(FLAGGED
+      ? [
+          {
+            name: 'desktop-flagged',
+            testMatch: FLAGGED_SPECS,
+            use: {
+              browserName: 'chromium' as const,
+              viewport: { width: 1280, height: 800 },
+              baseURL: url(FLAGGED_PORT),
+            },
+          },
+          {
+            name: 'pixel-7-flagged',
+            testMatch: FLAGGED_SPECS,
+            use: {
+              ...devices['Pixel 7'],
+              browserName: 'chromium' as const,
+              baseURL: url(FLAGGED_PORT),
+            },
+          },
+        ]
+      : []),
   ],
   webServer: [
     {
@@ -134,12 +151,16 @@ export default defineConfig({
       /* A cold Vite build on a CI runner takes its time. */
       timeout: 180_000,
     },
-    {
-      command: FLAGGED_SERVER,
-      url: url(FLAGGED_PORT),
-      env: { VITE_FLAGS: PREVIEW_FLAGS },
-      reuseExistingServer: !CI,
-      timeout: 180_000,
-    },
+    ...(FLAGGED
+      ? [
+          {
+            command: FLAGGED_SERVER,
+            url: url(FLAGGED_PORT),
+            env: { VITE_FLAGS: IN_PROGRESS_FLAGS.join(',') },
+            reuseExistingServer: !CI,
+            timeout: 180_000,
+          },
+        ]
+      : []),
   ],
 })
