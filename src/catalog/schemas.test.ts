@@ -76,6 +76,67 @@ describe('patternSchema', () => {
     expect(result.success).toBe(true)
   })
 
+  it('accepts a bitmap tinted as an ink mask', () => {
+    const result = patternSchema.safeParse(
+      makePattern({
+        src: '/catalog/patterns/community/celestial-star.1a2b3c4d.webp',
+        recolorable: true,
+        recolor: 'mask',
+        defaultColors: ['#4B2A4F'],
+      }),
+    )
+
+    expect(result.success).toBe(true)
+  })
+
+  it('rejects a recolorable bitmap that does not say it is a mask', () => {
+    const result = patternSchema.safeParse(
+      makePattern({
+        src: '/catalog/patterns/community/celestial-star.1a2b3c4d.webp',
+        recolorable: true,
+        defaultColors: ['#4B2A4F'],
+      }),
+    )
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['recolor'])
+  })
+
+  it('rejects a mask painted in more than one colour', () => {
+    const result = patternSchema.safeParse(
+      makePattern({
+        src: '/catalog/patterns/community/celestial-star.1a2b3c4d.webp',
+        recolorable: true,
+        recolor: 'mask',
+        defaultColors: ['#4B2A4F', '#6B8E3D'],
+      }),
+    )
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['defaultColors'])
+  })
+
+  it('rejects a recolour mode on a pattern that cannot be recoloured', () => {
+    const result = patternSchema.safeParse(
+      makePattern({ recolorable: false, defaultColors: [], recolor: 'svg' }),
+    )
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['recolor'])
+  })
+
+  it('rejects a bitmap claiming its own fills can be rewritten', () => {
+    const result = patternSchema.safeParse(
+      makePattern({
+        src: '/catalog/patterns/community/celestial-star.1a2b3c4d.webp',
+        recolor: 'svg',
+      }),
+    )
+
+    expect(result.success).toBe(false)
+    expect(result.error?.issues[0]?.path).toEqual(['recolor'])
+  })
+
   it('accepts a tile with a repeat size in mockup units', () => {
     const result = patternSchema.safeParse(
       makePattern({ kind: 'tile', repeatUnits: 500 }),

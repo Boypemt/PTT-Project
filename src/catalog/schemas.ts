@@ -75,6 +75,11 @@ export const productLineSchema = z.enum(['fabric', 'leaf', 'gift', 'drinkware'])
 
 export const patternFitSchema = z.enum(['repeat', 'area'])
 
+export const patternRecolorSchema = z.enum(['svg', 'mask'])
+
+/** Which of the two tinting routes a file can take is decided by its type. */
+const isSvgPath = (src: string) => src.toLowerCase().endsWith('.svg')
+
 export const patternRestrictionSchema = z
   .strictObject({
     lines: z.array(productLineSchema).min(1).optional(),
@@ -94,6 +99,7 @@ export const patternSchema = z
     src: catalogAssetPathSchema,
     thumbnail: catalogAssetPathSchema.optional(),
     recolorable: z.boolean(),
+    recolor: patternRecolorSchema.optional(),
     repeatUnits: z.number().positive().optional(),
     fit: patternFitSchema.optional(),
     restrictTo: patternRestrictionSchema.optional(),
@@ -104,6 +110,30 @@ export const patternSchema = z
   })
   .refine((p) => !p.recolorable || p.defaultColors.length > 0, {
     message: 'a recolorable pattern needs at least one entry in defaultColors',
+    path: ['defaultColors'],
+  })
+  // `recolor` says *how* a pattern is tinted, so it means nothing on one that
+  // is not. Two fields that could disagree are kept from disagreeing here.
+  .refine((p) => p.recolor === undefined || p.recolorable, {
+    message:
+      'recolor says how a pattern is tinted, so it needs recolorable: true',
+    path: ['recolor'],
+  })
+  .refine((p) => p.recolor !== 'svg' || isSvgPath(p.src), {
+    message: 'only an SVG can have its own fills rewritten',
+    path: ['recolor'],
+  })
+  // A bitmap has no fills to rewrite, so a recolorable one is an ink mask and
+  // has to say so: nothing about a .webp tells the two apart.
+  .refine((p) => !p.recolorable || isSvgPath(p.src) || p.recolor === 'mask', {
+    message:
+      'a recolorable bitmap is tinted as an ink mask: say recolor: "mask"',
+    path: ['recolor'],
+  })
+  // One mask, one ink, one colour — and one slot in the leaf-dye picker.
+  .refine((p) => p.recolor !== 'mask' || p.defaultColors.length === 1, {
+    message:
+      'an ink mask is painted in one colour, so defaultColors holds exactly one',
     path: ['defaultColors'],
   })
   // A motif is placed by hand and sized against MOTIF_UNIT, so neither of the
