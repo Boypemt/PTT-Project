@@ -1,6 +1,7 @@
 /**
  * The pictures the suite keeps, at both widths: the editor with a tile printed
- * on the cloth, and a leaf laid in a corner that takes nothing else.
+ * on the cloth, a leaf laid in a corner that takes nothing else, and the
+ * designer's line art dyed on three products that each trim it differently.
  *
  * The journeys check that the editor still agrees with itself; these check
  * that it still *looks* like itself — a panel that has slipped behind the
@@ -30,7 +31,12 @@
  */
 import process from 'node:process'
 import { expect, test } from '@playwright/test'
-import { mockupSize, printAreaName, productName } from './fixtures/catalog'
+import {
+  dyeSwatchName,
+  mockupSize,
+  printAreaName,
+  productName,
+} from './fixtures/catalog'
 import { applyPattern, onMockup, openPanel } from './fixtures/editor'
 import { messages } from './fixtures/ui'
 
@@ -43,8 +49,19 @@ const HANDKERCHIEF = 'handkerchief'
 const CORNER = 'corner'
 const LEAF = 'teak'
 
-/** A pattern laid into the print area once instead of repeated. */
-const PLACEMENT = 'hearts'
+/**
+ * The designer's line art on three products that each show it differently:
+ * tiled across a cream shawl in a dye the visitor picked, wrapped round the
+ * mug in the colour the catalog lists it in, and trimmed to the plate's
+ * circle. What no assertion can check is the thing that makes a mask a mask —
+ * that the cloth shows between the lines rather than a white page.
+ */
+const MASK = 'celestial-star'
+const MASK_DYE = { leaf: 'teak', color: 'deep-purple' }
+const MUG = 'mug'
+const MUG_MASK = 'hexaflow'
+const PLATE = 'leaf-plate'
+const PLATE_MASK = 'diamond-lattice'
 
 /** The webfont every line break on the page depends on. */
 const FONT = '1rem "IBM Plex Sans Thai"'
@@ -122,26 +139,56 @@ test(
 )
 
 test(
-  'a placement pattern filling the handkerchief',
+  'line art tiled across the shawl in a leaf dye',
   { tag: '@visual' },
   async ({ page }) => {
-    await page.goto(`/customize/${HANDKERCHIEF}`)
-    await expect(
-      page.getByRole('heading', {
-        level: 1,
-        name: productName(HANDKERCHIEF, 'th'),
-      }),
-    ).toBeVisible()
+    await page.goto(`/customize/${PRODUCT}`)
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
 
-    await applyPattern(page, th, 'th', PLACEMENT)
+    await applyPattern(page, th, 'th', MASK)
+    await openPanel(page, th, 'properties')
+    await page
+      .getByRole('button', {
+        name: dyeSwatchName(MASK_DYE.leaf, MASK_DYE.color, 'th'),
+        exact: true,
+      })
+      .click()
+
     await waitForFont(page)
 
-    // The one thing no assertion can check: that the picture covers the cloth
-    // once, keeps its proportions, and is trimmed by the area rather than
-    // repeated across it.
-    await expect(page).toHaveScreenshot('placement-on-cloth.png')
+    // The dye poured through the ink, and the cream of the cloth showing
+    // between the lines — which is the whole of what the mask is for.
+    await expect(page).toHaveScreenshot('mask-on-shawl.png')
   },
 )
+
+test('line art wrapped round the mug', { tag: '@visual' }, async ({ page }) => {
+  await page.goto(`/customize/${MUG}`)
+  await expect(
+    page.getByRole('heading', { level: 1, name: productName(MUG, 'th') }),
+  ).toBeVisible()
+
+  await applyPattern(page, th, 'th', MUG_MASK)
+  await waitForFont(page)
+
+  // In the colour the catalog lists it in, on the narrowest print area
+  // there is: a repeat meant for a shawl has to still read at 260 units.
+  await expect(page).toHaveScreenshot('mask-on-mug.png')
+})
+
+test('line art trimmed to the plate', { tag: '@visual' }, async ({ page }) => {
+  await page.goto(`/customize/${PLATE}`)
+  await expect(
+    page.getByRole('heading', { level: 1, name: productName(PLATE, 'th') }),
+  ).toBeVisible()
+
+  await applyPattern(page, th, 'th', PLATE_MASK)
+  await waitForFont(page)
+
+  // The one print area that is a path rather than a rectangle: the tile has
+  // to stop at the plate's rim and nowhere else.
+  await expect(page).toHaveScreenshot('mask-on-plate.png')
+})
 
 test(
   'a leaf in the middle of the plate',

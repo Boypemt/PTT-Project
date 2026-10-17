@@ -52,10 +52,16 @@ existing scroll.
 
 ## Community patterns — `public/catalog/patterns/community/`
 
-The designer's first delivery. Each arrived as a 2480×3508 PNG and was
-converted by `npm run catalog:import` into a WebP with a long edge of 1600 px
-plus a 240 px thumbnail; the originals are the designer's masters and are not
+The designer's second delivery, which replaces the first. Each arrived as line
+art on a white page — a JPEG or PNG about 1076×1522 — and was converted by
+`npm run catalog:import` into an ink mask: a WebP with a long edge of up to
+1600 px whose alpha channel carries the lines and whose page is transparent,
+plus a 240 px thumbnail. The originals are the designer's masters and are not
 kept in this repository.
+
+Being masks, they are printed in the community's own leaf dyes rather than in
+colours of their own, and each entry's `defaultColors` names the one it is
+listed in.
 
 The files are named `<id>.<hash>.webp` and `<id>.<hash>-thumb.webp`, where the
 hash is taken from the artwork — a revision lands under a new name, so the rows
@@ -63,13 +69,14 @@ below are listed by id rather than by file name.
 
 | Id | Pattern | Author | License |
 | --- | --- | --- | --- |
-| `marble-swirl` | ลายหินอ่อน / Marble swirl | Designer TBC | Community-owned — terms TBC |
-| `indigo-tie-dye` | ลายมัดย้อมคราม / Indigo tie-dye | Designer TBC | Community-owned — terms TBC |
-| `lemons` | ลายมะนาว / Lemons | Designer TBC | Community-owned — terms TBC |
-| `stars` | ลายดาว / Stars | Designer TBC | Community-owned — terms TBC |
-| `pastel-stripes` | ลายทางพาสเทล / Pastel stripes | Designer TBC | Community-owned — terms TBC |
-| `hearts` | ลายหัวใจ / Hearts (placement) | Designer TBC | Community-owned — terms TBC |
-| `bubbles` | ลายวงกลม / Bubbles (placement) | Designer TBC | Community-owned — terms TBC |
+| `hexaflow` | รังนิรมิต / HexaFlow | Designer TBC | Community-owned — terms TBC |
+| `geometric-prism` | เขาสลับลาย / Geometric Prism | Designer TBC | Community-owned — terms TBC |
+| `celestial-star` | ดารานิรมิต / Celestial Star | Designer TBC | Community-owned — terms TBC |
+| `optical-cube` | กล่องมายา / Optical Cube | Designer TBC | Community-owned — terms TBC |
+| `continuous-loop` | เกลียวอนันต์ / Continuous Loop | Designer TBC | Community-owned — terms TBC |
+| `diamond-lattice` | ประกายเพชร / Diamond Lattice | Designer TBC | Community-owned — terms TBC |
+| `soft-weave` | สุขเส้นสาน / Soft Weave | Designer TBC | Community-owned — terms TBC |
+| `onyx-matrix` | มิติวงกต / Onyx Matrix | Designer TBC | Community-owned — terms TBC |
 
 Replace the author and licence columns — and the `source` block of each entry
 in `public/catalog/patterns.json` — once the community has agreed how these

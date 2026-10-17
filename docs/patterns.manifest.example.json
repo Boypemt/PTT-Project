@@ -46,6 +46,32 @@
 
     {
       "_comment": [
+        "Line art — black or grey drawing on a white page — imported as an ink",
+        "mask. The import reads the drawing's own darkness into transparency,",
+        "so the page disappears and only the lines are left. The site then",
+        "paints those lines in whichever leaf dye the visitor picks, and the",
+        "cloth's colour shows between them.",
+        "defaultColors is the dye it is listed in: exactly one, because a mask",
+        "has one ink. Pick it from public/catalog/leaf-dyes.json.",
+        "maskLevels is for the rare drawing the import reads wrong — black is",
+        "the luminance (0-255) the ink ends at, white the one the paper begins",
+        "at. The import prints the levels it read for every mask; leave this",
+        "out unless those came out wrong."
+      ],
+
+      "file": "Untitled_Artwork 9.png",
+      "id": "celestial-star",
+      "name": { "th": "ดารานิรมิต", "en": "Celestial Star" },
+      "recolor": "mask",
+      "defaultColors": ["#4B2A4F"],
+      "_maskLevels": { "black": 150, "white": 228 },
+      "repeatUnits": 300,
+      "tags": ["geometric", "star"],
+      "credit": "Designer TBC"
+    },
+
+    {
+      "_comment": [
         "A placement pattern: one drawing that fills the print area once,",
         "instead of a surface that repeats. It has no repeat size — the print",
         "area decides how big it is — and its edges never have to meet, so the",
@@ -67,7 +93,7 @@
         "product lines (fabric, leaf, gift, drinkware), or single products by",
         "id (shawl-cotton, handkerchief, leaf-plate, ...), or both — a product",
         "qualifies on either. Leave it out and the pattern prints on",
-        "everything, which is what all seven do today.",
+        "everything.",
         "license is only needed while the wording is unsettled; left out, an",
         "entry says \"Community-owned — terms TBC\"."
       ],

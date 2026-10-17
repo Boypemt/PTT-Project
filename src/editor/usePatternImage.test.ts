@@ -9,6 +9,7 @@
  */
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { resetMaskTints } from './maskTint'
 import { resetImageCache } from './useImage'
 import {
   RASTER_SCALE,
@@ -21,6 +22,9 @@ const GINGHAM = '/catalog/patterns/gingham.svg'
 
 /** A photographed pattern: a bitmap already, with nothing in it to tint. */
 const LEMONS = '/catalog/patterns/community/lemons.webp'
+
+/** The designer's line art: a bitmap whose ink is painted through its alpha. */
+const CELESTIAL = '/catalog/patterns/community/celestial-star.webp'
 
 const RASTER_URL = 'data:image/png;base64,rastered'
 
@@ -58,6 +62,11 @@ function stubCanvas(): DrawCall[] {
         ) => {
           draws.push({ width, height })
         },
+        // An ink mask is drawn at its own size and then flooded with the
+        // colour, so the second half of that composite has to exist here too.
+        fillRect: () => undefined,
+        globalCompositeOperation: 'source-over',
+        fillStyle: '',
       } as unknown as CanvasRenderingContext2D
     },
   )
@@ -69,6 +78,7 @@ function stubCanvas(): DrawCall[] {
 afterEach(() => {
   vi.restoreAllMocks()
   resetPatternRasters()
+  resetMaskTints()
   resetImageCache()
 })
 
@@ -152,6 +162,54 @@ describe('usePatternImage', () => {
     expect(result.current.ratio).toBe(1)
     expect(result.current.status).toBe('loaded')
     expect(result.current.image.src).toContain(LEMONS)
+  })
+
+  it('paints an ink mask in the layer, at the size it was imported', () => {
+    const draws = stubCanvas()
+    const { result } = renderHook(() =>
+      usePatternImage(CELESTIAL, ['#4B2A4F'], 'mask'),
+    )
+
+    sized(result.current.image, 1600)
+    fire(result.current.image, 'load')
+
+    // Painted once, and not blown up: the mask is already catalog-sized, so
+    // the ratio the caller divides out is 1 rather than RASTER_SCALE.
+    expect(draws).toHaveLength(1)
+    expect(result.current.ratio).toBe(1)
+    expect(result.current.image.src).toBe(RASTER_URL)
+  })
+
+  it('paints the same mask again for a second colour', () => {
+    const draws = stubCanvas()
+    const first = renderHook(() =>
+      usePatternImage(CELESTIAL, ['#4B2A4F'], 'mask'),
+    )
+
+    sized(first.result.current.image, 1600)
+    fire(first.result.current.image, 'load')
+
+    const second = renderHook(() =>
+      usePatternImage(CELESTIAL, ['#6B8E3D'], 'mask'),
+    )
+
+    sized(second.result.current.image, 1600)
+    fire(second.result.current.image, 'load')
+
+    // One stencil, two colourways, two bitmaps — and the stencil fetched once.
+    expect(draws).toHaveLength(2)
+  })
+
+  it('draws an ink mask as imported when the layer names no colour', () => {
+    const draws = stubCanvas()
+    const { result } = renderHook(() => usePatternImage(CELESTIAL, [], 'mask'))
+
+    sized(result.current.image, 1600)
+    fire(result.current.image, 'load')
+
+    expect(draws).toEqual([])
+    expect(result.current.ratio).toBe(1)
+    expect(result.current.image.src).toContain(CELESTIAL)
   })
 
   it('falls back for an SVG that decodes to no size at all', () => {

@@ -4,6 +4,7 @@
  */
 import { existsSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { allowsProduct } from '@/editor/patternFilter'
 import { validateCatalogRefs } from './crossRefs'
 import { CATALOG_FILES } from './files'
 import { parseCatalogFile } from './loaders'
@@ -129,20 +130,53 @@ describe('the seeded catalog in public/catalog', () => {
     ).toBe(true)
   })
 
-  it('gives every photographed pattern a thumbnail and no dye', () => {
+  it('gives every imported pattern a thumbnail, and a mask one ink', () => {
     const { patterns } = loadSeedCatalog()
-    const photographed = patterns.filter(
-      (pattern) => !pattern.src.endsWith('.svg'),
-    )
+    const bitmaps = patterns.filter((pattern) => !pattern.src.endsWith('.svg'))
 
-    expect(photographed.length).toBeGreaterThan(0)
+    expect(bitmaps.length).toBeGreaterThan(0)
 
     // Without a thumbnail the library would fetch every full-size pattern to
-    // draw it an inch wide; and a photograph has no fills to tint.
+    // draw it an inch wide.
+    expect(bitmaps.every((pattern) => pattern.thumbnail !== undefined)).toBe(
+      true,
+    )
+
+    // A bitmap has no fills to rewrite, so the only one a dye means anything
+    // to is an ink mask — and a mask has one ink, in one colour.
     expect(
-      photographed.every((pattern) => pattern.thumbnail !== undefined),
+      bitmaps.every(
+        (pattern) =>
+          pattern.recolorable === (pattern.recolor === 'mask') &&
+          pattern.defaultColors.length === (pattern.recolorable ? 1 : 0),
+      ),
     ).toBe(true)
-    expect(photographed.every((pattern) => !pattern.recolorable)).toBe(true)
+  })
+
+  it('offers every product a library, with the community’s own in it', () => {
+    const { patterns, products } = loadSeedCatalog()
+
+    for (const product of products) {
+      const offered = patterns.filter((pattern) =>
+        allowsProduct(pattern, product),
+      )
+      const community = offered.filter(
+        (pattern) => pattern.source.type === 'community',
+      )
+
+      // The designer drew each pattern for particular products, so the
+      // library follows `restrictTo` — and no product may be left with an
+      // empty one. The drawn placeholders print on everything, so a product
+      // the designer has not reached yet still has patterns to try.
+      expect(
+        community.length,
+        `${product.id} is offered no community pattern`,
+      ).toBeGreaterThan(0)
+      expect(
+        offered.length,
+        `${product.id} is offered no pattern at all`,
+      ).toBeGreaterThan(community.length)
+    }
   })
 
   it('marks the approximate leaf-dye hexes and drawn mockups as placeholders', () => {

@@ -61,6 +61,8 @@ Design Pattern/
 | `name` | ชื่อที่แสดงบนเว็บ ไทย + อังกฤษ |
 | `fit` | ใส่ `"area"` ถ้าเป็นลายวางครั้งเดียว ไม่ใส่ = ลายต่อเนื่อง |
 | `repeatUnits` | ขนาดลาย 1 รอบ (ดูข้อ 4) ลายวางครั้งเดียวไม่ต้องใส่ |
+| `recolor` | ใส่ `"mask"` ถ้าเป็นลายเส้นบนพื้นขาว (ดูข้อ 6) |
+| `defaultColors` | สีเริ่มต้นของลายเส้น ใส่ได้สีเดียว (ใช้คู่กับ `recolor`) |
 | `restrictTo` | จำกัดสินค้าที่ใช้ลายนี้ได้ ไม่ใส่ = ใช้ได้ทุกชิ้น |
 | `tags` | คำค้น ระบบเติม `community` ให้เอง |
 | `credit` | ชื่อผู้ออกแบบที่จะใช้เครดิต |
@@ -92,8 +94,8 @@ npm run catalog:import -- "../Design Pattern"
 - รันซ้ำโดยไม่เปลี่ยนอะไร = ไม่มีอะไรเปลี่ยน ปลอดภัยเสมอ
 - ชื่อไฟล์ที่เว็บใช้จะมีรหัสของภาพต่อท้าย (`lemons.a271f856.webp`) แก้ภาพแล้วรหัสเปลี่ยน
   เบราว์เซอร์จึงไม่เอาภาพเก่าใน cache มาแสดง
-- ลายที่เป็นภาพถ่าย/ภาพวาด จะ **เลือกสีจากใบไม้ไม่ได้** (สีฝังอยู่ในภาพแล้ว)
-  เว็บจะซ่อนตัวเลือกสีให้เอง
+- ลายที่เป็นภาพถ่าย/ภาพวาดสี จะ **เลือกสีจากใบไม้ไม่ได้** (สีฝังอยู่ในภาพแล้ว)
+  เว็บจะซ่อนตัวเลือกสีให้เอง — ลายเส้นบนพื้นขาวเลือกสีได้ ดูข้อ 6
 
 ### 4. ขนาดลาย (repeatUnits)
 
@@ -119,6 +121,10 @@ npm run catalog:import -- "../Design Pattern"
 - **ลายวางครั้งเดียว** (`"fit": "area"`) — ภาพเดียวเต็มพื้นที่พิมพ์ เช่น ลายหัวใจ ลายวงกลม
   ไม่ต้องสนใจเรื่องขอบ ระบบจะขยายให้เต็มพื้นที่และตัดส่วนเกินออก
 
+> ลายวางครั้งเดียวมีภาพเทียบ (visual test) ของตัวเองใน `e2e/visual.spec.ts`
+> ตอนนี้ในแคตตาล็อกไม่มีลายแบบนี้แล้ว ภาพเทียบจึงถูกถอดออก — **ลาย `fit: "area"`
+> ลายถัดไปที่เพิ่มเข้ามา ต้องเพิ่มภาพเทียบนั้นกลับไปด้วย**
+
 **เช็กลิสต์ลายต่อเนื่อง**
 
 - [ ] ขอบซ้าย–ขวา ลายวิ่งต่อกันสนิท
@@ -138,6 +144,40 @@ npm run catalog:import -- "../Design Pattern"
 - คำเตือนนี้ **ไม่ใช่ error** ลายวางครั้งเดียวมีคำเตือนได้เป็นปกติ
   แต่ถ้าเป็นลายที่ตั้งใจให้ปูซ้ำ แปลว่าต้อง export ใหม่ให้ขอบต่อกัน
 - คะแนนจะขึ้นเฉพาะลายที่เพิ่งเพิ่มหรือเพิ่งแก้ภาพ (ลายเดิมไม่ต้องแปลงใหม่)
+
+### 6. ลายเส้นที่เปลี่ยนสีได้ (`recolor: "mask"`)
+
+ลายที่วาดเป็น **เส้นสีเข้มบนพื้นขาว** ใส่ `"recolor": "mask"` ได้ ระบบจะอ่าน
+"ความเข้ม" ของภาพเป็นความทึบ — เส้น = ทึบ พื้นขาว = ใส — แล้วทิ้งพื้นไป
+
+ผลคือลูกค้าเลือกสีจากใบไม้มาลงบนลายนี้ได้ และ **สีผ้าจะโผล่ขึ้นมาระหว่างเส้น**
+เหมือนพิมพ์ลงบนผ้าจริง ไม่ใช่แปะกระดาษขาวทับผ้า
+
+```json
+{
+  "file": "ดารานิรมิต.JPG",
+  "id": "celestial-star",
+  "name": { "th": "ดารานิรมิต", "en": "Celestial Star" },
+  "recolor": "mask",
+  "defaultColors": ["#4B2A4F"],
+  "repeatUnits": 300,
+  "credit": "Designer TBC"
+}
+```
+
+- `defaultColors` = สีเริ่มต้นที่ลายนี้จะแสดงในคลังลาย **ใส่ได้สีเดียว**
+  (ลายเส้นมีหมึกสีเดียว) เลือกจากค่าสีใน `public/catalog/leaf-dyes.json`
+- เส้นสีอะไรก็ได้ ไม่จำเป็นต้องดำ — สคริปต์อ่านจากภาพแต่ละภาพเอง
+  (ลายสุขเส้นสานเส้นสีน้ำตาลอ่อน ก็ออกมาทึบเต็มเหมือนกัน)
+- สคริปต์จะบอกค่าที่อ่านได้ทุกครั้ง
+
+```
+    ink mask  levels 159–228 (read from the drawing), painted in #9C7A3C
+```
+
+- ถ้าผลออกมาไม่ถูก (เส้นหาย หรือพื้นไม่ใส) ใส่ `"maskLevels"` กำกับเองได้
+  `black` = ค่าความสว่างที่ถือว่าเป็นเส้น `white` = ค่าที่ถือว่าเป็นพื้น (0–255)
+- ภาพสี/ภาพถ่าย **ไม่ต้องใส่** `recolor` — สีอยู่ในภาพแล้ว และเลือกสีใบไม้ไม่ได้
 
 ### ถ้าสคริปต์ฟ้อง
 
@@ -202,6 +242,8 @@ One pattern, one entry:
 | `name` | what the site shows, Thai and English |
 | `fit` | `"area"` for a pattern placed once; leave it out for a repeating tile |
 | `repeatUnits` | the size of one repeat (step 4); omit for a placement pattern |
+| `recolor` | `"mask"` for line art on a white page (step 6) |
+| `defaultColors` | the dye it is listed in — one colour, with `recolor` |
 | `restrictTo` | keeps it off products it was not drawn for; omit for all of them |
 | `tags` | search words; `community` is added for you |
 | `credit` | who to credit |
@@ -235,8 +277,9 @@ Then `git add -A`, commit and open a PR as usual.
 - The served file names carry a hash of the artwork
   (`lemons.a271f856.webp`), so a revision can never be served from a browser's
   cache.
-- A photographed or painted pattern **cannot be recoloured** — its colours are
-  in the file — so the site hides the leaf-dye picker for it.
+- A photographed or colour-painted pattern **cannot be recoloured** — its
+  colours are in the file — so the site hides the leaf-dye picker for it. Line
+  art on a white page can: see step 6.
 
 ### 4. Repeat size (`repeatUnits`)
 
@@ -267,6 +310,10 @@ file's proportions.
   (hearts, bubbles). The edges do not matter: the site scales it to cover the
   area and trims the overflow.
 
+> A placement pattern had a screenshot test of its own in `e2e/visual.spec.ts`.
+> The catalog holds none today, so that test was removed with the pattern it
+> photographed — **the next `fit: "area"` pattern added has to put it back**.
+
 **Seamless checklist**
 
 - [ ] the drawing continues across the left/right join
@@ -290,6 +337,44 @@ The script scores every tile's seams:
   meant to repeat needs a seamless export instead.
 - scores are printed for patterns that are new or whose picture changed;
   an unchanged pattern is not converted again.
+
+### 6. Line art the dyes can colour (`recolor: "mask"`)
+
+A pattern drawn as **dark lines on a white page** can say `"recolor": "mask"`.
+The import reads the drawing's own darkness as opacity — line opaque, page
+transparent — and throws the page away.
+
+What that buys: a visitor can print it in any of the community's leaf dyes,
+and **the cloth's colour shows between the lines**, the way a print on cloth
+actually looks, rather than a white sheet laid over it.
+
+```json
+{
+  "file": "ดารานิรมิต.JPG",
+  "id": "celestial-star",
+  "name": { "th": "ดารานิรมิต", "en": "Celestial Star" },
+  "recolor": "mask",
+  "defaultColors": ["#4B2A4F"],
+  "repeatUnits": 300,
+  "credit": "Designer TBC"
+}
+```
+
+- `defaultColors` is the dye the library lists it in: **exactly one**, because
+  a mask has one ink. Take the value from `public/catalog/leaf-dyes.json`.
+- The lines do not have to be black. The levels are read from each drawing on
+  its own, so สุขเส้นสาน's pale taupe comes out as solid as the rest.
+- The import says what it read, every time:
+
+```
+    ink mask  levels 159–228 (read from the drawing), painted in #9C7A3C
+```
+
+- If it reads one wrong — lines missing, or a grey wash where the cloth should
+  show — set `"maskLevels"`: `black` is the luminance the ink ends at, `white`
+  the one the paper begins at, both 0–255.
+- A photograph or a colour drawing leaves `recolor` out. Its colours are in the
+  file, and the leaf-dye picker stays hidden for it.
 
 ### When the script complains
 

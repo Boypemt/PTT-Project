@@ -15,6 +15,8 @@
  * - converts each file to a WebP under 600 KB plus a 240 px thumbnail, named
  *   with a hash of the artwork, so a revision cannot be served from a cache
  *   and an unchanged one is not rewritten (`scripts/catalog/images.ts`);
+ * - turns a pattern the manifest marks `recolor: "mask"` into ink in an alpha
+ *   channel, so a leaf dye can be poured into it (`scripts/catalog/mask.ts`);
  * - rewrites **only** the community entries of `public/catalog/patterns.json`,
  *   leaving every drawn placeholder exactly as it is
  *   (`scripts/catalog/patternsFile.ts`);
@@ -36,7 +38,14 @@ import { readdir, readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import path from 'node:path'
 import process from 'node:process'
 import { fileURLToPath } from 'node:url'
-import { assetHash, convert, TARGET_BYTES } from './catalog/images.ts'
+import {
+  assetHash,
+  convert,
+  maskVariant,
+  TARGET_BYTES,
+  type MaskOptions,
+} from './catalog/images.ts'
+import { describeLevels } from './catalog/mask.ts'
 import {
   COMMUNITY_TAG,
   idOf,
@@ -130,6 +139,10 @@ function withoutAssets(value: unknown): unknown {
   return copy
 }
 
+/** How this entry is converted, or nothing where it is taken as it is. */
+const maskOptions = (entry: ManifestEntry): MaskOptions | undefined =>
+  entry.recolor === 'mask' ? { levels: entry.maskLevels } : undefined
+
 /** The catalog entry a manifest entry becomes, once its files are named. */
 function catalogEntry(entry: ManifestEntry, hash: string): CommunityEntry {
   const stem = `${entry.id}.${hash}`
@@ -139,6 +152,8 @@ function catalogEntry(entry: ManifestEntry, hash: string): CommunityEntry {
     name: entry.name,
     src: `${PUBLIC_DIR}/${stem}.webp`,
     thumbnail: `${PUBLIC_DIR}/${stem}-thumb.webp`,
+    recolor: entry.recolor,
+    defaultColors: entry.defaultColors,
     repeatUnits: entry.repeatUnits,
     fit: entry.fit,
     restrictTo: entry.restrictTo,
@@ -219,7 +234,8 @@ export async function importPatterns({
       )
     }
 
-    const next = catalogEntry(entry, assetHash(source))
+    const mask = maskOptions(entry)
+    const next = catalogEntry(entry, assetHash(source, maskVariant(mask)))
     const before = existing.get(entry.id)
     const imageChanged = before !== undefined && srcOf(before) !== next.src
     // Everything but the two file names, which the image already accounts
@@ -260,7 +276,7 @@ export async function importPatterns({
       continue
     }
 
-    const converted = await convert(source)
+    const converted = await convert(source, mask)
 
     await writeFile(path.join(outDir, names[0]), converted.pattern.buffer)
     await writeFile(path.join(outDir, names[1]), converted.thumb.buffer)
@@ -273,6 +289,14 @@ export async function importPatterns({
         `${kb(converted.pattern.buffer.length)} at q${String(converted.pattern.quality)}` +
         `, thumb ${kb(converted.thumb.buffer.length)}`,
     )
+
+    if (converted.levels !== undefined) {
+      log(
+        `      ink mask  levels ${describeLevels(converted.levels)}` +
+          `${entry.maskLevels === undefined ? ' (read from the drawing)' : ' (from the manifest)'}` +
+          `, painted in ${entry.defaultColors.join(' ')}`,
+      )
+    }
 
     if (converted.overTarget) {
       warn(

@@ -10,6 +10,14 @@
  * images to draw them an inch wide; a drawn SVG is small enough to be its own
  * swatch.
  *
+ * An ink mask has no colour of its own — it is a stencil, and black on the
+ * page — so it is hung as a CSS mask over the pattern's first `defaultColors`
+ * entry instead of as a background. The library then shows the colour the
+ * catalog gives it, and recolouring the whole library is an edit to
+ * patterns.json rather than eight re-exported thumbnails. The mask sits in a
+ * span inside the bordered box, because a mask clips the element it is on,
+ * border and all.
+ *
  * The placeholder badge comes from `source.type`, so an entry the designer
  * replaces loses it by an edit to patterns.json. It is written on the button
  * rather than hung off a tooltip, because a tooltip is nothing on a phone.
@@ -46,6 +54,33 @@ export function PatternThumbnail({
   const isPlaceholder = pattern.source.type === 'placeholder'
   const isPlacement = pattern.fit === 'area'
 
+  const asset = pattern.thumbnail ?? pattern.src
+  // A placement pattern is one picture rather than a surface, so the swatch
+  // shows the whole of it. Repeated, the only pattern in the library that
+  // never repeats would be the one advertising that it does.
+  const size = isPlacement ? 'contain' : '60%'
+  const repeat = isPlacement ? 'no-repeat' : 'repeat'
+
+  const swatch =
+    pattern.recolor === 'mask'
+      ? {
+          backgroundColor: pattern.defaultColors[0],
+          maskImage: `url("${asset}")`,
+          WebkitMaskImage: `url("${asset}")`,
+          maskSize: size,
+          WebkitMaskSize: size,
+          maskRepeat: repeat,
+          WebkitMaskRepeat: repeat,
+          maskPosition: 'center',
+          WebkitMaskPosition: 'center',
+        }
+      : {
+          backgroundImage: `url("${asset}")`,
+          backgroundSize: size,
+          backgroundRepeat: repeat,
+          backgroundPosition: 'center',
+        }
+
   return (
     <li className="w-24 shrink-0 md:w-auto">
       <button
@@ -63,20 +98,9 @@ export function PatternThumbnail({
             : 'border-border-soft'
         }`}
       >
-        <span
-          style={{
-            backgroundImage: `url("${pattern.thumbnail ?? pattern.src}")`,
-          }}
-          className={`block h-14 w-full rounded-lg border border-border-soft bg-paper-50 md:aspect-square md:h-auto ${
-            // A placement pattern is one picture rather than a surface, so the
-            // swatch shows the whole of it. Repeated, the only pattern in the
-            // library that never repeats would be the one advertising that it
-            // does.
-            isPlacement
-              ? 'bg-contain bg-center bg-no-repeat'
-              : 'bg-[length:60%] bg-repeat'
-          }`}
-        />
+        <span className="block h-14 w-full overflow-hidden rounded-lg border border-border-soft bg-paper-50 md:aspect-square md:h-auto">
+          <span className="block size-full" style={swatch} />
+        </span>
         {/* Already in the button's own label, so not read out twice. */}
         <span
           aria-hidden="true"

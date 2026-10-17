@@ -49,6 +49,27 @@ const localizedSchema = z.strictObject({
   en: z.string().min(1),
 })
 
+const hexColorSchema = z
+  .string()
+  .regex(
+    /^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/,
+    'must be a hex colour, e.g. "#4B2A4F"',
+  )
+
+const levelSchema = z.number().int().min(0).max(255)
+
+/**
+ * The luminance the ink ends at and the paper begins at, for a drawing the
+ * import reads wrong. Omitted — which is the ordinary case — it reads them
+ * from the drawing itself (`mask.ts`).
+ */
+const maskLevelsSchema = z
+  .strictObject({ black: levelSchema, white: levelSchema })
+  .refine((levels) => levels.black < levels.white, {
+    message: 'black must be darker than white',
+    path: ['white'],
+  })
+
 const restrictToSchema = z
   .strictObject({
     lines: z
@@ -68,6 +89,16 @@ export const manifestEntrySchema = z
     /** The pattern's identity. Keep it when the artwork is revised. */
     id: idSchema,
     name: localizedSchema,
+    /**
+     * `mask` = line art on a white page, imported as ink in an alpha channel
+     * so a leaf dye can be poured into it. Omitted, the artwork keeps the
+     * colours it was drawn in and the dye picker stays hidden.
+     */
+    recolor: z.enum(['mask']).optional(),
+    /** The dye it is listed in. Exactly one, for a mask's one ink. */
+    defaultColors: z.array(hexColorSchema).default([]),
+    /** Levels for a mask the import reads wrong. Omitted, it reads them. */
+    maskLevels: maskLevelsSchema.optional(),
     /** `area` = laid into the print area once. Omitted is a repeating tile. */
     fit: z.enum(['repeat', 'area']).optional(),
     /** Mockup units one repeat covers across the tile's width. */
@@ -83,6 +114,33 @@ export const manifestEntrySchema = z
       'a pattern placed once is sized by the print area, so it has no repeatUnits',
     path: ['repeatUnits'],
   })
+  // One mask, one ink, one colour — and one slot in the leaf-dye picker.
+  .refine(
+    (entry) => entry.recolor !== 'mask' || entry.defaultColors.length === 1,
+    {
+      message:
+        'an ink mask is painted in one colour, so defaultColors holds exactly one',
+      path: ['defaultColors'],
+    },
+  )
+  // A pattern that keeps its own colours has no colour to be listed in: the
+  // dye would be offered and then do nothing.
+  .refine(
+    (entry) => entry.defaultColors.length === 0 || entry.recolor === 'mask',
+    {
+      message:
+        'only a pattern with recolor: "mask" takes defaultColors — its colours are in the file otherwise',
+      path: ['defaultColors'],
+    },
+  )
+  .refine(
+    (entry) => entry.maskLevels === undefined || entry.recolor === 'mask',
+    {
+      message:
+        'maskLevels is how an ink mask is read, so it needs recolor: "mask"',
+      path: ['maskLevels'],
+    },
+  )
 
 export type ManifestEntry = z.infer<typeof manifestEntrySchema>
 

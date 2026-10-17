@@ -29,8 +29,15 @@
  * costs nothing. A design with no colours, or a file that could not be read,
  * rasterises the pattern as it is on disk — in the `var(--c1, …)` fallbacks
  * written into it, which are its `defaultColors`.
+ *
+ * A bitmap the catalog marks `recolor: "mask"` is the third case and takes
+ * neither path: it is a stencil of the designer's ink, so it is already the
+ * size it will be drawn at and its colour is flooded through its alpha
+ * (`maskTint.ts`) rather than written into a file.
  */
 import { useMemo } from 'react'
+import type { PatternRecolor } from '@/catalog'
+import { tintedMask } from './maskTint'
 import { useImage, type ImageStatus } from './useImage'
 import { useTintedSvg } from './useTintedSvg'
 
@@ -107,8 +114,10 @@ const NO_COLORS: readonly string[] = []
 export function usePatternImage(
   src: string,
   colors: readonly string[] = [],
+  recolor?: PatternRecolor,
 ): PatternImage {
-  const vector = isVector(src)
+  const mask = recolor === 'mask'
+  const vector = !mask && isVector(src)
 
   // The file with the design's colours in it, or nothing while that is being
   // fetched — and then the pattern as it is on disk, in its own defaults. A
@@ -119,24 +128,40 @@ export function usePatternImage(
   const url = tinted.url ?? src
   const source = useImage(url)
 
+  // One ink, one colour: the mask carries a single channel of coverage, and
+  // the catalog holds a mask pattern to one entry in `defaultColors` to match.
+  const ink = mask ? colors[0] : undefined
+
   // Keyed by the pattern and its colours rather than by the URL: a tinted URL
   // is the whole file, and the same tile in two colourways is two rasters.
-  const key = `${src}|${colors.join(',')}@${String(RASTER_SCALE)}x`
+  const key = mask
+    ? `${src}|${ink ?? ''}`
+    : `${src}|${colors.join(',')}@${String(RASTER_SCALE)}x`
 
-  const raster = useMemo(
-    () =>
-      vector && source.status === 'loaded'
-        ? rasterUrl(key, source.image)
-        : null,
-    [vector, key, source.status, source.image],
-  )
+  const painted = useMemo(() => {
+    if (source.status !== 'loaded') return null
+
+    if (mask) {
+      // Nothing to flood it with: a layer whose colours were edited away
+      // draws the stencil in the ink it was imported as.
+      return ink === undefined ? null : tintedMask(key, source.image, ink)
+    }
+
+    return vector ? rasterUrl(key, source.image) : null
+  }, [mask, ink, vector, key, source.status, source.image])
 
   // One `useImage` call either way, so the hook order never changes. Before a
   // raster exists this asks for the SVG the line above already holds, which
   // the cache answers without a second request.
-  const rastered = useImage(raster ?? url)
+  const drawn = useImage(painted ?? url)
 
-  if (raster === null) return { ...source, ratio: 1 }
+  if (painted === null) return { ...source, ratio: 1 }
 
-  return { status: rastered.status, image: rastered.image, ratio: RASTER_SCALE }
+  // A mask is served at the size it is drawn at, so only a rasterised SVG
+  // reports a ratio for the caller to divide back out.
+  return {
+    status: drawn.status,
+    image: drawn.image,
+    ratio: mask ? 1 : RASTER_SCALE,
+  }
 }

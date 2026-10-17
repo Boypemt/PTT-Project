@@ -40,6 +40,17 @@ export type PatternKind = 'tile' | 'motif'
 export type PatternFit = 'repeat' | 'area'
 
 /**
+ * How a pattern takes a leaf-dye colour.
+ *
+ * `svg` writes the colours into the file's own fills — a drawing made to be
+ * tinted. `mask` is for the designer's line art: the import turns its ink into
+ * an alpha channel, and the colour is painted through that mask at render
+ * time, so the cloth's own colour shows through the ground. A pattern with
+ * neither is a picture whose colours are in it already.
+ */
+export type PatternRecolor = 'svg' | 'mask'
+
+/**
  * Where a pattern may be printed. Absent means everywhere; present, a product
  * qualifies when its line or its id is named.
  */
@@ -55,8 +66,14 @@ export type Pattern = {
   /** SVG or PNG under /catalog/patterns/. */
   src: string
   thumbnail?: string
-  /** SVG whose fills follow currentColor/CSS vars, so leaf-dye colours can tint it. */
+  /** Whether leaf-dye colours mean anything here — what shows the dye picker. */
   recolorable: boolean
+  /**
+   * How it is tinted, where it is. Omitted on a recolorable SVG, which is the
+   * original case and reads as `svg`; required as `mask` on a recolorable
+   * bitmap, because nothing about a `.webp` says which of the two it is.
+   */
+  recolor?: PatternRecolor
   /**
    * Mockup units one repeat of the tile covers across its *width*; its height
    * follows from the asset's aspect ratio, so nothing is stretched. This is
