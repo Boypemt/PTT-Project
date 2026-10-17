@@ -144,7 +144,7 @@ describe('parseManifest', () => {
       await readFile('docs/patterns.manifest.example.json', 'utf8'),
     )
 
-    expect(parseManifest(example).patterns).toHaveLength(3)
+    expect(parseManifest(example).patterns).toHaveLength(4)
   })
 
   it('rejects a repeat size on a pattern that is placed once', () => {

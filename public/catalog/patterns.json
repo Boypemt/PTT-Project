@@ -212,15 +212,17 @@
       }
     },
     {
-      "id": "marble-swirl",
-      "name": { "th": "ลายหินอ่อน", "en": "Marble swirl" },
+      "id": "hexaflow",
+      "name": { "th": "รังนิรมิต", "en": "HexaFlow" },
       "kind": "tile",
-      "src": "/catalog/patterns/community/marble-swirl.03cd1b76.webp",
-      "thumbnail": "/catalog/patterns/community/marble-swirl.03cd1b76-thumb.webp",
-      "recolorable": false,
-      "repeatUnits": 500,
-      "defaultColors": [],
-      "tags": ["community", "abstract", "marble"],
+      "src": "/catalog/patterns/community/hexaflow.ba60bafe.webp",
+      "thumbnail": "/catalog/patterns/community/hexaflow.ba60bafe-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 300,
+      "restrictTo": { "productIds": ["mug", "tumbler", "fan", "keychain"] },
+      "defaultColors": ["#6B8E3D"],
+      "tags": ["community", "geometric", "hexagon"],
       "source": {
         "type": "community",
         "credit": "Designer TBC",
@@ -228,15 +230,17 @@
       }
     },
     {
-      "id": "indigo-tie-dye",
-      "name": { "th": "ลายมัดย้อมคราม", "en": "Indigo tie-dye" },
+      "id": "geometric-prism",
+      "name": { "th": "เขาสลับลาย", "en": "Geometric Prism" },
       "kind": "tile",
-      "src": "/catalog/patterns/community/indigo-tie-dye.f523da5d.webp",
-      "thumbnail": "/catalog/patterns/community/indigo-tie-dye.f523da5d-thumb.webp",
-      "recolorable": false,
-      "repeatUnits": 500,
-      "defaultColors": [],
-      "tags": ["community", "tie-dye", "indigo"],
+      "src": "/catalog/patterns/community/geometric-prism.9ee6b8b5.webp",
+      "thumbnail": "/catalog/patterns/community/geometric-prism.9ee6b8b5-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 300,
+      "restrictTo": { "productIds": ["mug", "tumbler", "fan", "keychain"] },
+      "defaultColors": ["#C9962B"],
+      "tags": ["community", "geometric", "triangle"],
       "source": {
         "type": "community",
         "credit": "Designer TBC",
@@ -244,15 +248,26 @@
       }
     },
     {
-      "id": "lemons",
-      "name": { "th": "ลายมะนาว", "en": "Lemons" },
+      "id": "celestial-star",
+      "name": { "th": "ดารานิรมิต", "en": "Celestial Star" },
       "kind": "tile",
-      "src": "/catalog/patterns/community/lemons.a271f856.webp",
-      "thumbnail": "/catalog/patterns/community/lemons.a271f856-thumb.webp",
-      "recolorable": false,
-      "repeatUnits": 500,
-      "defaultColors": [],
-      "tags": ["community", "fruit", "lemons"],
+      "src": "/catalog/patterns/community/celestial-star.f78402ef.webp",
+      "thumbnail": "/catalog/patterns/community/celestial-star.f78402ef-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 300,
+      "restrictTo": {
+        "productIds": [
+          "shawl-cotton",
+          "shawl-silk",
+          "handkerchief",
+          "wrap-cloth",
+          "shirt-women",
+          "shirt-men"
+        ]
+      },
+      "defaultColors": ["#4B2A4F"],
+      "tags": ["community", "geometric", "star"],
       "source": {
         "type": "community",
         "credit": "Designer TBC",
@@ -260,15 +275,28 @@
       }
     },
     {
-      "id": "stars",
-      "name": { "th": "ลายดาว", "en": "Stars" },
+      "id": "optical-cube",
+      "name": { "th": "กล่องมายา", "en": "Optical Cube" },
       "kind": "tile",
-      "src": "/catalog/patterns/community/stars.bc249253.webp",
-      "thumbnail": "/catalog/patterns/community/stars.bc249253-thumb.webp",
-      "recolorable": false,
-      "repeatUnits": 500,
-      "defaultColors": [],
-      "tags": ["community", "stars"],
+      "src": "/catalog/patterns/community/optical-cube.753dd2d0.webp",
+      "thumbnail": "/catalog/patterns/community/optical-cube.753dd2d0-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 300,
+      "restrictTo": {
+        "productIds": [
+          "shawl-cotton",
+          "shawl-silk",
+          "handkerchief",
+          "wrap-cloth",
+          "shirt-women",
+          "shirt-men",
+          "mug",
+          "tumbler"
+        ]
+      },
+      "defaultColors": ["#4A3222"],
+      "tags": ["community", "geometric", "cube"],
       "source": {
         "type": "community",
         "credit": "Designer TBC",
@@ -276,15 +304,26 @@
       }
     },
     {
-      "id": "pastel-stripes",
-      "name": { "th": "ลายทางพาสเทล", "en": "Pastel stripes" },
+      "id": "continuous-loop",
+      "name": { "th": "เกลียวอนันต์", "en": "Continuous Loop" },
       "kind": "tile",
-      "src": "/catalog/patterns/community/pastel-stripes.83e271ff.webp",
-      "thumbnail": "/catalog/patterns/community/pastel-stripes.83e271ff-thumb.webp",
-      "recolorable": false,
-      "repeatUnits": 500,
-      "defaultColors": [],
-      "tags": ["community", "stripes"],
+      "src": "/catalog/patterns/community/continuous-loop.0b436c58.webp",
+      "thumbnail": "/catalog/patterns/community/continuous-loop.0b436c58-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 240,
+      "restrictTo": {
+        "productIds": [
+          "mug",
+          "leaf-plate",
+          "shawl-cotton",
+          "shawl-silk",
+          "handkerchief",
+          "wrap-cloth"
+        ]
+      },
+      "defaultColors": ["#6A5A72"],
+      "tags": ["community", "geometric", "loop"],
       "source": {
         "type": "community",
         "credit": "Designer TBC",
@@ -292,15 +331,17 @@
       }
     },
     {
-      "id": "hearts",
-      "name": { "th": "ลายหัวใจ", "en": "Hearts" },
+      "id": "diamond-lattice",
+      "name": { "th": "ประกายเพชร", "en": "Diamond Lattice" },
       "kind": "tile",
-      "src": "/catalog/patterns/community/hearts.78c6188a.webp",
-      "thumbnail": "/catalog/patterns/community/hearts.78c6188a-thumb.webp",
-      "recolorable": false,
-      "fit": "area",
-      "defaultColors": [],
-      "tags": ["community", "hearts", "placement"],
+      "src": "/catalog/patterns/community/diamond-lattice.465358fe.webp",
+      "thumbnail": "/catalog/patterns/community/diamond-lattice.465358fe-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 300,
+      "restrictTo": { "productIds": ["keychain", "fan", "leaf-plate"] },
+      "defaultColors": ["#A23B62"],
+      "tags": ["community", "geometric", "diamond"],
       "source": {
         "type": "community",
         "credit": "Designer TBC",
@@ -308,15 +349,57 @@
       }
     },
     {
-      "id": "bubbles",
-      "name": { "th": "ลายวงกลม", "en": "Bubbles" },
+      "id": "soft-weave",
+      "name": { "th": "สุขเส้นสาน", "en": "Soft Weave" },
       "kind": "tile",
-      "src": "/catalog/patterns/community/bubbles.755f98d8.webp",
-      "thumbnail": "/catalog/patterns/community/bubbles.755f98d8-thumb.webp",
-      "recolorable": false,
-      "fit": "area",
-      "defaultColors": [],
-      "tags": ["community", "circles", "placement"],
+      "src": "/catalog/patterns/community/soft-weave.55aac5af.webp",
+      "thumbnail": "/catalog/patterns/community/soft-weave.55aac5af-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 300,
+      "restrictTo": {
+        "productIds": [
+          "fan",
+          "shawl-cotton",
+          "shawl-silk",
+          "handkerchief",
+          "wrap-cloth",
+          "shirt-women",
+          "shirt-men"
+        ]
+      },
+      "defaultColors": ["#9C7A3C"],
+      "tags": ["community", "geometric", "weave"],
+      "source": {
+        "type": "community",
+        "credit": "Designer TBC",
+        "license": "Community-owned — terms TBC"
+      }
+    },
+    {
+      "id": "onyx-matrix",
+      "name": { "th": "มิติวงกต", "en": "Onyx Matrix" },
+      "kind": "tile",
+      "src": "/catalog/patterns/community/onyx-matrix.f4dc197a.webp",
+      "thumbnail": "/catalog/patterns/community/onyx-matrix.f4dc197a-thumb.webp",
+      "recolorable": true,
+      "recolor": "mask",
+      "repeatUnits": 300,
+      "restrictTo": {
+        "productIds": [
+          "mug",
+          "tumbler",
+          "shirt-women",
+          "shirt-men",
+          "shawl-cotton",
+          "shawl-silk",
+          "handkerchief",
+          "wrap-cloth",
+          "fan"
+        ]
+      },
+      "defaultColors": ["#C9A13B"],
+      "tags": ["community", "geometric", "square"],
       "source": {
         "type": "community",
         "credit": "Designer TBC",
