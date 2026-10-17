@@ -6,7 +6,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import type { ProductMockup, TileLayer } from '@/catalog'
-import { tileFill } from './tileFill'
+import { tileFill, tileUnitScale } from './tileFill'
 
 const mockup: ProductMockup = {
   base: '/catalog/products/shawl-cotton-base.svg',
@@ -88,5 +88,37 @@ describe('tileFill', () => {
 
   it('passes the layer opacity through', () => {
     expect(tileFill(makeLayer({ opacity: 0.4 }), mockup, 2).opacity).toBe(0.4)
+  })
+
+  it('prints one repeat across the pattern repeat size at scale 1', () => {
+    // 500 units of a 1000-unit mockup, from an image 1000 px wide.
+    const fill = tileFill(makeLayer(), mockup, 1, tileUnitScale(500, 1000))
+
+    expect(fill.fillPatternScaleX).toBe(0.5)
+    expect(fill.fillPatternScaleY).toBe(0.5)
+  })
+
+  it('keeps the repeat size whatever the file was exported at', () => {
+    const small = tileFill(makeLayer(), mockup, 1, tileUnitScale(500, 1000))
+    const large = tileFill(makeLayer(), mockup, 2, tileUnitScale(500, 2000))
+
+    // 2000 natural pixels rasterised at 2x is 4000 image pixels for the same
+    // 500 units of cloth, so the fill is scaled a quarter as much.
+    expect(large.fillPatternScaleX).toBe(small.fillPatternScaleX / 4)
+  })
+})
+
+describe('tileUnitScale', () => {
+  it('leaves a pattern with no repeat size at its own pixel size', () => {
+    expect(tileUnitScale(undefined, 800)).toBe(1)
+  })
+
+  it('divides the repeat size by the pixels it is drawn in', () => {
+    expect(tileUnitScale(500, 1000)).toBe(0.5)
+    expect(tileUnitScale(1200, 600)).toBe(2)
+  })
+
+  it('leaves an undecoded image alone rather than collapsing it', () => {
+    expect(tileUnitScale(500, 0)).toBe(1)
   })
 })

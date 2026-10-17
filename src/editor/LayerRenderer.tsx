@@ -27,7 +27,7 @@ import {
   type TileLayer,
 } from '@/catalog'
 import { MotifImage, type MotifTools } from './MotifImage'
-import { tileFill } from './tileFill'
+import { tileFill, tileUnitScale } from './tileFill'
 import { usePaintedPattern } from './usePaintedPattern'
 
 /** The still rectangle whose *fill* carries the tile. */
@@ -44,9 +44,16 @@ function TileLayerView({
 
   if (painted === null) return null
 
+  // The asset's own width, the raster divided back out, is what the pattern's
+  // repeat size is measured against.
+  const units = tileUnitScale(
+    pattern.repeatUnits,
+    painted.image.naturalWidth / painted.ratio,
+  )
+
   return (
     <Rect
-      {...tileFill(layer, mockup, painted.ratio)}
+      {...tileFill(layer, mockup, painted.ratio, units)}
       fillPatternImage={painted.image}
       // A tile has no position of its own to drag, and this rectangle covers
       // the whole mockup: left listening it would swallow every tap meant for
