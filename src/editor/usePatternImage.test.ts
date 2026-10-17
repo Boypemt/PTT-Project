@@ -19,6 +19,9 @@ import {
 const SEIGAIHA = '/catalog/patterns/seigaiha.svg'
 const GINGHAM = '/catalog/patterns/gingham.svg'
 
+/** A photographed pattern: a bitmap already, with nothing in it to tint. */
+const LEMONS = '/catalog/patterns/community/lemons.webp'
+
 const RASTER_URL = 'data:image/png;base64,rastered'
 
 /** The natural size of the SVG, which jsdom does not decode for itself. */
@@ -135,6 +138,20 @@ describe('usePatternImage', () => {
     expect(result.current.status).toBe('loaded')
     expect(result.current.ratio).toBe(1)
     expect(result.current.image.src).toContain(SEIGAIHA)
+  })
+
+  it('loads a photographed pattern as it is, without rasterising it', () => {
+    const draws = stubCanvas()
+    const { result } = renderHook(() => usePatternImage(LEMONS, ['#4B2A4F']))
+
+    sized(result.current.image, 1600)
+    fire(result.current.image, 'load')
+
+    // Nothing drawn, nothing re-encoded, and the WebP itself on the stage.
+    expect(draws).toEqual([])
+    expect(result.current.ratio).toBe(1)
+    expect(result.current.status).toBe('loaded')
+    expect(result.current.image.src).toContain(LEMONS)
   })
 
   it('falls back for an SVG that decodes to no size at all', () => {
