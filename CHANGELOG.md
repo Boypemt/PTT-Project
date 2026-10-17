@@ -17,12 +17,21 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 - **A pattern can say how big its repeat is**, in the mockup's own units
   (`repeatUnits`), so "one repeat across half the shawl" is a decision in the
   catalog rather than an accident of what the artwork was exported at.
-- **`npm run catalog:import -- <dir>`** converts the designer's artwork into
-  catalog assets — a WebP under 600 KB plus a thumbnail per pattern — and
-  scores each tile's seams, warning where a tile will not meet itself when it
-  repeats. The originals stay with the designer.
+- **`npm run catalog:import -- <dir>`** is the whole of adding or revising a
+  pattern. The artwork folder carries a `patterns.manifest.json` listing each
+  file with its id, its name in both languages, its repeat size and its
+  credit; the command converts every file to a WebP under 600 KB plus a
+  thumbnail, updates the community half of `patterns.json` — never the
+  hand-written placeholders — deletes assets nothing refers to any more, and
+  says what it added, updated, removed or left alone. Served file names carry
+  a hash of the artwork, so a revision can never be served from a cache.
+  Running it twice changes nothing. The originals stay with the designer.
+  Seam scores and their warnings come with it, as before.
 - **[`docs/ADDING_PATTERNS.md`](docs/ADDING_PATTERNS.md)**, Thai and English:
-  everything needed to send a pattern and add it, without reading any code.
+  the three steps — put the file in the folder, add its manifest entry, run
+  the command — plus the seamless checklist, what the repeat size means in
+  units of cloth, and an annotated
+  [example manifest](docs/patterns.manifest.example.json).
 
 ### Changed
 

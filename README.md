@@ -16,8 +16,9 @@ The PR-by-PR plan: [`docs/ROADMAP.md`](docs/ROADMAP.md). Working rules for
 contributors (and for Claude Code): [`CLAUDE.md`](CLAUDE.md).
 
 **Sending patterns?** [`docs/ADDING_PATTERNS.md`](docs/ADDING_PATTERNS.md) —
-Thai and English — covers the export settings, the seamless checklist, the
-repeat size and `npm run catalog:import`.
+Thai and English — is three steps: put the file in the artwork folder, add its
+entry to `patterns.manifest.json`, run `npm run catalog:import -- "<folder>"`.
+It also covers the export settings, the seamless checklist and the repeat size.
 
 ## Stack
 
