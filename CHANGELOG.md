@@ -6,7 +6,7 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
-## [0.2.0] — 2026-10-xx
+## [0.2.0] — 2026-10-17
 
 M2 finished: the customizer a visitor can design on. Tiles, leaf dyes and the
 base cloth were already there; this is the half that makes it eco-print —
@@ -45,6 +45,13 @@ single leaves, laid where the community lays them.
   the page is in English. Tracking pushed Thai vowel and tone marks off the
   consonant they belong to, which showed on the landing eyebrow
   (วิสาหกิจชุมชนป่าต้นผึ้ง) and the placeholder badge.
+- **The pattern names on a phone.** Putting leaves in everyone's hands added
+  two rows to the sheet above the pattern strip, and the strip is what gave
+  way: the names under the swatches fell below the fold, so choosing a pattern
+  by anything but its picture meant scrolling the sheet and losing sight of
+  the cloth. The kind toggle and "โปรยใบไม้" now share a row, and on a phone
+  the swatch is a band rather than a square with the placeholder badge in its
+  corner. Nothing moves from tablet width up.
 - **Two tests that raced the code they were watching.** A handful of
   assertions read what a React effect writes — the `noindex` tag on
   `/dev/catalog`, the store's print area — on the paint before the effect had

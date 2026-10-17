@@ -12,6 +12,12 @@
  * replaces loses it by an edit to patterns.json. It is written on the button
  * rather than hung off a tooltip, because a tooltip is nothing on a phone.
  *
+ * On a phone the card has to fit the sheet's bottom strip without the name
+ * falling off it, so two things give way: the swatch is a band rather than a
+ * square, and the badge sits in its corner instead of taking a line of its
+ * own. Both are the same element at both widths — the badge moves back into
+ * the flow from `md` up, where the grid has the room for it.
+ *
  * The button says its own name instead of letting one be assembled from the
  * text inside it: a name built from several elements picks up whatever spacing
  * the browser decides on between them, and this is a name that tests and
@@ -48,7 +54,7 @@ export function PatternThumbnail({
         // tap would be changing away from.
         aria-pressed={current}
         onClick={onPick}
-        className={`flex w-full flex-col items-start gap-1 rounded-xl border bg-surface p-1.5 text-left transition-colors hover:border-forest-600 hover:bg-paper-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 ${
+        className={`relative flex w-full flex-col items-start gap-1 rounded-xl border bg-surface p-1.5 text-left transition-colors hover:border-forest-600 hover:bg-paper-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest-600 ${
           current
             ? 'border-forest-600 ring-2 ring-forest-600'
             : 'border-border-soft'
@@ -58,7 +64,7 @@ export function PatternThumbnail({
           style={{
             backgroundImage: `url("${pattern.thumbnail ?? pattern.src}")`,
           }}
-          className="block aspect-square w-full rounded-lg border border-border-soft bg-paper-50 bg-[length:60%] bg-repeat"
+          className="block h-14 w-full rounded-lg border border-border-soft bg-paper-50 bg-[length:60%] bg-repeat md:aspect-square md:h-auto"
         />
         {/* Already in the button's own label, so not read out twice. */}
         <span
@@ -70,7 +76,7 @@ export function PatternThumbnail({
         {isPlaceholder ? (
           <span
             aria-hidden="true"
-            className="rounded-full bg-marigold-100 px-1.5 text-[0.625rem] font-semibold text-marigold-900"
+            className="absolute top-2.5 right-2.5 rounded-full bg-marigold-100 px-1.5 text-[0.625rem] font-semibold text-marigold-900 md:static md:top-auto md:right-auto"
           >
             {t('common.placeholderLabel')}
           </span>
