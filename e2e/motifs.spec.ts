@@ -1,18 +1,15 @@
 /**
- * Laying leaves on the cloth: the journeys that only exist with `VITE_FLAGS=
- * motifs`, run against the flagged build on its own port (see
- * playwright.config.ts).
+ * Laying leaves on the cloth.
  *
  * The canvas is one bitmap, so there is nothing in the DOM to ask where a leaf
  * is — and nothing is exported from the app for a test's benefit. So these
  * check what a visitor can see: the layer list, which panel line the
  * properties shows, and whether what the canvas paints changed at all. Where
- * the leaf actually ends up is the visual baselines' job, next door.
+ * the leaf actually ends up is the visual baselines' job, in `visual.spec.ts`.
  *
  * The handkerchief is the product throughout, because its corner takes motifs
- * and nothing else: with the flag off that area is not offered at all, so
- * every one of these would fail against the production build — which is the
- * point of running both.
+ * and nothing else — the area the editor could not serve at all until motifs
+ * graduated from their flag.
  */
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
@@ -22,7 +19,7 @@ import {
   printAreaCenter,
   printAreaName,
   productName,
-} from '../fixtures/catalog'
+} from './fixtures/catalog'
 import {
   applyPattern,
   canvas,
@@ -31,8 +28,8 @@ import {
   layerRows,
   onMockup,
   openPanel,
-} from '../fixtures/editor'
-import { messages } from '../fixtures/ui'
+} from './fixtures/editor'
+import { messages } from './fixtures/ui'
 
 const th = messages.th
 

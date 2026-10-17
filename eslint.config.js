@@ -10,7 +10,7 @@ export default tseslint.config(
   {
     ignores: [
       'dist',
-      'dist-motifs',
+      'dist-flagged',
       'coverage',
       'playwright-report',
       'test-results',
