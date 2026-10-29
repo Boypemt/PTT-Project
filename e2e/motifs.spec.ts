@@ -28,6 +28,7 @@ import {
   layerRows,
   onMockup,
   openPanel,
+  waitForPaint,
 } from './fixtures/editor'
 import { messages } from './fixtures/ui'
 
@@ -58,7 +59,14 @@ async function layLeaf(page: import('@playwright/test').Page) {
       exact: true,
     })
     .click()
+
+  const bare = await canvas(page).screenshot()
   await applyPattern(page, th, 'th', LEAF)
+
+  // Not until the leaf is actually drawn: every journey below points at where
+  // it lies, and a click that arrives first reaches the cloth instead and
+  // lets go of the selection it was about to use.
+  await waitForPaint(page, bare)
 }
 
 /** The point on screen the leaf was laid at: the middle of its print area. */
