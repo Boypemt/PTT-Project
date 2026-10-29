@@ -70,6 +70,14 @@ test('the demo journey: landing, a two-pattern shawl, then English', async ({
   // The editor arrives as its own chunk, so this is also the wait for it.
   await expect(heading(product)).toBeVisible()
 
+  // This build is production, so the half-finished export is not in it. A flag
+  // that leaked fails here rather than being noticed on the demo link — and
+  // the editor header is where it would show, because that is where the button
+  // goes. The line comes out when `export` graduates.
+  await expect(
+    page.getByRole('button', { name: th.export.done, exact: true }),
+  ).toBeHidden()
+
   // The first pattern on the cloth.
   await applyPattern(page, th, 'th', FIRST_PATTERN)
 

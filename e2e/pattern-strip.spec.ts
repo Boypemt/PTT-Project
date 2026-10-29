@@ -19,8 +19,12 @@
  * and the strip is a grid.
  */
 import { expect, test } from '@playwright/test'
-import { printAreaName, productName } from './fixtures/catalog'
-import { applyPattern, expectPatternNamesUnclipped } from './fixtures/editor'
+import { productName } from './fixtures/catalog'
+import {
+  applyPattern,
+  expectPatternNamesUnclipped,
+  printAreaButton,
+} from './fixtures/editor'
 import { messages } from './fixtures/ui'
 
 const th = messages.th
@@ -91,12 +95,7 @@ test('the handkerchief corner keeps its pattern names on screen', async ({
     }),
   ).toBeVisible()
 
-  await page
-    .getByRole('button', {
-      name: printAreaName(HANDKERCHIEF, CORNER, 'th'),
-      exact: true,
-    })
-    .click()
+  await printAreaButton(page, HANDKERCHIEF, CORNER, 'th').click()
 
   await measureThroughTheStates(page, LEAF)
 })

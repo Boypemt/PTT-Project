@@ -6,7 +6,7 @@
  * does through roles and accessible names, the way a visitor does.
  */
 import { expect, type Locator, type Page } from '@playwright/test'
-import { patternButtonName } from './catalog'
+import { patternButtonName, printAreaName } from './catalog'
 import { interpolate, type Lang, type Messages } from './ui'
 
 type PanelId = 'patterns' | 'properties'
@@ -34,6 +34,19 @@ export async function openPanel(
 /** One pattern's button in the library. */
 export function patternButton(page: Page, name: string): Locator {
   return page.getByRole('button', { name, exact: true })
+}
+
+/** The chip that aims the library at one part of the product. */
+export function printAreaButton(
+  page: Page,
+  productId: string,
+  areaId: string,
+  lang: Lang,
+): Locator {
+  return page.getByRole('button', {
+    name: printAreaName(productId, areaId, lang),
+    exact: true,
+  })
 }
 
 /** A locator's box, or a failure saying which element had none. */
