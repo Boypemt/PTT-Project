@@ -56,7 +56,12 @@
         "maskLevels is for the rare drawing the import reads wrong — black is",
         "the luminance (0-255) the ink ends at, white the one the paper begins",
         "at. The import prints the levels it read for every mask; leave this",
-        "out unless those came out wrong."
+        "out unless those came out wrong.",
+        "crop is the same for the cut: a mask is cut down to whole repeats of",
+        "the drawing inside it, measured by the import and printed as it runs.",
+        "Give a window in the ORIGINAL file's pixels only where it finds the",
+        "repeat wrong, or says it found none down one of the edges.",
+        "NOTE repeatUnits is the width of one repeat AFTER that cut."
       ],
 
       "file": "Untitled_Artwork 9.png",
@@ -65,7 +70,8 @@
       "recolor": "mask",
       "defaultColors": ["#4B2A4F"],
       "_maskLevels": { "black": 150, "white": 228 },
-      "repeatUnits": 300,
+      "_crop": { "x": 0, "y": 39, "width": 946, "height": 1444 },
+      "repeatUnits": 216,
       "tags": ["geometric", "star"],
       "credit": "Designer TBC"
     },
