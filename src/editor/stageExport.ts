@@ -58,11 +58,29 @@ export type ExportGeometry = {
   pixelRatio: number
 }
 
-/** The size in real pixels that `geometry` produces. */
+/**
+ * Half a pixel of headroom on the target, because Konva *floors* the canvas it
+ * renders into (`Canvas.js`: `Math.floor(size * pixelRatio)`).
+ *
+ * A ratio of `target / crop` multiplies back to `target` in arithmetic and to
+ * `target - 1e-13` in binary, which floors to one pixel short. CI caught that
+ * as a 999px export of a design drawn in 1000 units, on a phone-sized canvas
+ * whose box happened to divide badly; the same code gave a clean 1000 on the
+ * machine it was written on. Aiming half a pixel high puts the floor on the
+ * intended number from either side of it.
+ */
+const FLOOR_HEADROOM = 0.5
+
+/**
+ * The size in real pixels that `geometry` produces.
+ *
+ * Floors, as Konva does, so this is what the file will actually be rather than
+ * what it ought to be.
+ */
 export function exportedSize(geometry: ExportGeometry): Size {
   return {
-    width: Math.round(geometry.width * geometry.pixelRatio),
-    height: Math.round(geometry.height * geometry.pixelRatio),
+    width: Math.floor(geometry.width * geometry.pixelRatio),
+    height: Math.floor(geometry.height * geometry.pixelRatio),
   }
 }
 
@@ -77,9 +95,11 @@ export function exportGeometry(mockup: Size, fit: Fit): ExportGeometry | null {
 
   if (!(onScreen > 0) || !Number.isFinite(onScreen)) return null
 
-  const target = Math.min(
-    Math.max(SCREEN_MULTIPLE * onScreen, native),
-    MAX_EXPORT_EDGE,
+  // A whole number of pixels: the cap and the mockup's own size are both
+  // whole, and twice the screen is rounded to one so the export is a size
+  // somebody could name rather than 1104.7812.
+  const target = Math.round(
+    Math.min(Math.max(SCREEN_MULTIPLE * onScreen, native), MAX_EXPORT_EDGE),
   )
 
   return {
@@ -87,6 +107,6 @@ export function exportGeometry(mockup: Size, fit: Fit): ExportGeometry | null {
     y: fit.offsetY,
     width: fit.width,
     height: fit.height,
-    pixelRatio: target / onScreen,
+    pixelRatio: (target + FLOOR_HEADROOM) / onScreen,
   }
 }

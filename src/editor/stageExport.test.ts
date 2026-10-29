@@ -34,8 +34,11 @@ describe('exportGeometry', () => {
     const fit = fitIn(SQUARE, 600, 600)
     const geometry = exportGeometry(SQUARE, fit)
 
-    expect(geometry?.pixelRatio).toBe(2)
     expect(exportedSize(geometry!)).toEqual({ width: 1200, height: 1200 })
+    // The ratio itself carries half a pixel of headroom against Konva's
+    // flooring, so the size above is the contract and this is only that the
+    // headroom stayed headroom.
+    expect(geometry?.pixelRatio).toBeCloseTo(2, 2)
   })
 
   it('falls back to the mockup size when twice the screen is smaller', () => {
@@ -45,7 +48,7 @@ describe('exportGeometry', () => {
     const geometry = exportGeometry(SQUARE, fit)
 
     expect(exportedSize(geometry!)).toEqual({ width: 1000, height: 1000 })
-    expect(geometry?.pixelRatio).toBeCloseTo(1000 / 360, 10)
+    expect(geometry?.pixelRatio).toBeCloseTo(1000 / 360, 2)
   })
 
   it('caps the longer edge', () => {
@@ -89,6 +92,42 @@ describe('exportGeometry', () => {
 
       expect(Math.max(size.width, size.height)).toBeGreaterThanOrEqual(
         Math.max(SQUARE.width, SQUARE.height),
+      )
+    }
+  })
+
+  /**
+   * The regression CI found: a ratio of `target / crop` multiplies back to a
+   * hair under `target` in binary, and Konva floors, so a design drawn in 1000
+   * units came out 999 wide on a canvas box that happened to divide badly. The
+   * box is a `getBoundingClientRect` and is fractional far more often than not,
+   * so this sweeps rather than picks.
+   */
+  it('lands on a whole pixel from any box, however it divides', () => {
+    for (let box = 120; box < 1500; box += 0.13) {
+      const geometry = exportGeometry(SQUARE, fitIn(SQUARE, box, box))
+      const size = exportedSize(geometry!)
+      const longest = Math.max(size.width, size.height)
+
+      expect(longest, `a ${String(box)}px box`).toBeGreaterThanOrEqual(
+        Math.min(SQUARE.width, MAX_EXPORT_EDGE),
+      )
+      expect(longest, `a ${String(box)}px box`).toBeLessThanOrEqual(
+        MAX_EXPORT_EDGE,
+      )
+    }
+  })
+
+  it('lands on a whole pixel for a mockup that is not square either', () => {
+    for (let box = 120; box < 1500; box += 0.17) {
+      const size = exportedSize(exportGeometry(TALL, fitIn(TALL, box, box))!)
+      const longest = Math.max(size.width, size.height)
+
+      expect(longest, `a ${String(box)}px box`).toBeGreaterThanOrEqual(
+        Math.max(TALL.width, TALL.height),
+      )
+      expect(longest, `a ${String(box)}px box`).toBeLessThanOrEqual(
+        MAX_EXPORT_EDGE,
       )
     }
   })
