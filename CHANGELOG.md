@@ -6,6 +6,20 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
+### Fixed
+
+- **The patterns no longer show a seam where they repeat.** The artwork is a
+  window onto a pattern rather than a tile of it, so its left edge landed
+  against its right edge mid-motif and the repeat printed as a grid of joins.
+  The import now measures how often each drawing repeats and cuts it to whole
+  repeats, trimming bare paper at the edges with it. Seven of the eight meet
+  on both edges; กล่องมายา's join went from 52.6 to 1.5. เขาสลับลาย still
+  shows 5.2 across and เกลียวอนันต์ keeps the bare paper top and bottom,
+  because no repeat could be measured down it — both want a seamless export
+  from the designer.
+- Every pattern's `repeatUnits` was rescaled with the cut, so the prints are
+  the size on the cloth they already were.
+
 ### Changed
 
 - **The designer's v2 patterns replace v1.** Eight drawings — รังนิรมิต,

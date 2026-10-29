@@ -23,8 +23,10 @@ import {
   histogramOf,
   inkMask,
   levelsFromHistogram,
+  maskLut,
   type MaskLevels,
 } from './mask.ts'
+import { type AlphaMap, cropAxis, SEARCH_EDGE } from './period.ts'
 import { seamsOfRaw, type Seams } from './seams.ts'
 
 /** What the designer exports from. */
@@ -56,7 +58,9 @@ const THUMB_QUALITY = 70
  * leading version by hand if sharp's own output ever changes under us.
  */
 const RECIPE = [
-  'v1',
+  // v2: a mask is cropped to whole repeats of its own drawing before it is
+  // resized, so every mask in the catalog is rebuilt under a new name.
+  'v2',
   LONG_EDGE,
   THUMB_EDGE,
   TARGET_BYTES,
@@ -82,10 +86,17 @@ export function assetHash(source: Buffer, variant = ''): string {
 }
 
 /** What `assetHash` is told about a mask conversion, or '' for an ordinary one. */
-export const maskVariant = (mask: MaskOptions | undefined): string =>
-  mask === undefined
-    ? ''
-    : `mask:${mask.levels === undefined ? 'auto' : describeLevels(mask.levels)}`
+export const maskVariant = (mask: MaskOptions | undefined): string => {
+  if (mask === undefined) return ''
+
+  const levels =
+    mask.levels === undefined ? 'auto' : describeLevels(mask.levels)
+  // A crop the import works out for itself is a function of these same bytes
+  // and this same recipe, so only one given by hand has to be named here.
+  const crop = mask.crop === undefined ? '' : `+crop:${describeRect(mask.crop)}`
+
+  return `mask:${levels}${crop}`
+}
 
 export type Encoded = {
   buffer: Buffer
@@ -95,8 +106,29 @@ export type Encoded = {
   height: number
 }
 
+/** A window on the artwork, in the pixels it was delivered at. */
+export type Rect = { x: number; y: number; width: number; height: number }
+
+export const describeRect = ({ x, y, width, height }: Rect): string =>
+  `${String(width)}×${String(height)} at ${String(x)},${String(y)}`
+
 /** Convert this one to an ink mask, at these levels or at read ones. */
-export type MaskOptions = { levels?: MaskLevels }
+export type MaskOptions = {
+  levels?: MaskLevels
+  /** The window to take, instead of the one the repeat would decide. */
+  crop?: Rect
+}
+
+/** What was cut out of the artwork, and what decided it. */
+export type Cropped = {
+  rect: Rect
+  /** The artwork's own size, upright, for reporting what changed. */
+  from: { width: number; height: number }
+  /** True where the manifest said where to cut rather than the drawing. */
+  byHand: boolean
+  /** The repeat found on each axis; `null` is an axis left whole. */
+  periods: { x: number | null; y: number | null }
+}
 
 export type Converted = {
   /** The artwork as delivered. */
@@ -106,6 +138,8 @@ export type Converted = {
   seams: Seams
   /** The levels the ink was read at, where this was converted to a mask. */
   levels?: MaskLevels
+  /** What was cut out of it, where this was converted to a mask. */
+  cropped?: Cropped
   /** True where even the lowest quality tried is over `TARGET_BYTES`. */
   overTarget: boolean
 }
@@ -114,10 +148,26 @@ export type Converted = {
 async function prepared(
   source: Buffer,
   mask: MaskOptions | undefined,
+  crop: Rect | undefined,
 ): Promise<Sharp> {
   // `rotate()` with no angle applies the EXIF orientation, which a photo of
   // dyed cloth carries and a canvas export does not.
-  const base = sharp(source).rotate().resize({
+  const upright = sharp(source).rotate()
+
+  // Cut to the repeat before anything else: the resize below decides how many
+  // pixels a repeat is worth, and cropping after it would throw away
+  // precision the measurement was made at.
+  const window =
+    crop === undefined
+      ? upright
+      : upright.extract({
+          left: crop.x,
+          top: crop.y,
+          width: crop.width,
+          height: crop.height,
+        })
+
+  const base = window.resize({
     width: LONG_EDGE,
     height: LONG_EDGE,
     fit: 'inside',
@@ -168,6 +218,92 @@ async function stencil(
       raw: { width: info.width, height: info.height, channels: 4 },
     }),
     levels: read,
+  }
+}
+
+/** The artwork read as ink coverage, which is what a repeat is measured in. */
+async function alphaMapOf(
+  image: Sharp,
+  levels: MaskLevels | undefined,
+): Promise<{ map: AlphaMap; levels: MaskLevels }> {
+  const { data, info } = await image
+    .removeAlpha()
+    .toColourspace('b-w')
+    .raw()
+    .toBuffer({ resolveWithObject: true })
+
+  const read = levels ?? levelsFromHistogram(histogramOf(data))
+  const lut = maskLut(read)
+  const alpha = new Uint8Array(data.length)
+
+  for (let at = 0; at < data.length; at += 1) alpha[at] = lut[data[at]]
+
+  return {
+    map: { data: alpha, width: info.width, height: info.height },
+    levels: read,
+  }
+}
+
+/** A window the artwork does not contain is a mistake worth naming. */
+function assertFits(crop: Rect, size: { width: number; height: number }): void {
+  const fits =
+    crop.x >= 0 &&
+    crop.y >= 0 &&
+    crop.x + crop.width <= size.width &&
+    crop.y + crop.height <= size.height
+
+  if (!fits) {
+    throw new Error(
+      `crop ${describeRect(crop)} does not fit the artwork` +
+        ` (${String(size.width)}×${String(size.height)})`,
+    )
+  }
+}
+
+/**
+ * The window to take out of the artwork: whole repeats of the drawing it
+ * holds, or the window the manifest named.
+ *
+ * Measured on the artwork as delivered rather than on the resized copy,
+ * because the crop is applied before the resize — see `prepared` — and a
+ * period worked out at a fifth of the size is a period a few pixels wrong.
+ */
+async function cropFor(source: Buffer, mask: MaskOptions): Promise<Cropped> {
+  const upright = sharp(source).rotate()
+  const full = await alphaMapOf(upright.clone(), mask.levels)
+  const from = { width: full.map.width, height: full.map.height }
+
+  if (mask.crop !== undefined) {
+    assertFits(mask.crop, from)
+
+    return {
+      rect: mask.crop,
+      from,
+      byHand: true,
+      periods: { x: null, y: null },
+    }
+  }
+
+  const search = await alphaMapOf(
+    upright.clone().resize({
+      width: SEARCH_EDGE,
+      height: SEARCH_EDGE,
+      fit: 'inside',
+      withoutEnlargement: true,
+    }),
+    // The same levels at both sizes, so the search and the refinement are
+    // looking at the same drawing.
+    full.levels,
+  )
+
+  const x = cropAxis(full.map, search.map, 'x')
+  const y = cropAxis(full.map, search.map, 'y')
+
+  return {
+    rect: { x: x.start, y: y.start, width: x.length, height: y.length },
+    from,
+    byHand: false,
+    periods: { x: x.period, y: y.period },
   }
 }
 
@@ -236,7 +372,8 @@ export async function convert(
   source: Buffer,
   mask?: MaskOptions,
 ): Promise<Converted> {
-  const page = await prepared(source, mask)
+  const cropped = mask === undefined ? undefined : await cropFor(source, mask)
+  const page = await prepared(source, mask, cropped?.rect)
   const inked = mask === undefined ? undefined : await stencil(page, mask)
   const image = inked?.image ?? page
   const webp = webpFor(mask !== undefined)
@@ -256,6 +393,7 @@ export async function convert(
     thumb,
     seams,
     levels: inked?.levels,
+    cropped,
     overTarget: pattern.buffer.length > TARGET_BYTES,
   }
 }

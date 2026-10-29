@@ -77,6 +77,47 @@ describe('parseManifest', () => {
     expect(problems[0]).toContain('defaultColors')
   })
 
+  it('accepts a window to cut a mask to by hand', () => {
+    const parsed = parseManifest(
+      manifest(
+        entry({
+          recolor: 'mask',
+          defaultColors: ['#4B2A4F'],
+          crop: { x: 0, y: 39, width: 946, height: 1444 },
+        }),
+      ),
+    )
+
+    expect(parsed.patterns[0]?.crop).toEqual({
+      x: 0,
+      y: 39,
+      width: 946,
+      height: 1444,
+    })
+  })
+
+  it('refuses a window on a pattern that is not read as a mask', () => {
+    const problems = problemsOf(
+      manifest(entry({ crop: { x: 0, y: 0, width: 10, height: 10 } })),
+    )
+
+    expect(problems[0]).toContain('crop')
+  })
+
+  it('refuses a window with no width to it', () => {
+    const problems = problemsOf(
+      manifest(
+        entry({
+          recolor: 'mask',
+          defaultColors: ['#4B2A4F'],
+          crop: { x: 0, y: 0, width: 0, height: 10 },
+        }),
+      ),
+    )
+
+    expect(problems[0]).toContain('crop.width')
+  })
+
   it('refuses levels for a pattern that is not read as a mask', () => {
     const problems = problemsOf(
       manifest(entry({ maskLevels: { black: 26, white: 191 } })),

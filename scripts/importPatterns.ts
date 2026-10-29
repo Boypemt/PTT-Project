@@ -16,7 +16,8 @@
  *   with a hash of the artwork, so a revision cannot be served from a cache
  *   and an unchanged one is not rewritten (`scripts/catalog/images.ts`);
  * - turns a pattern the manifest marks `recolor: "mask"` into ink in an alpha
- *   channel, so a leaf dye can be poured into it (`scripts/catalog/mask.ts`);
+ *   channel, so a leaf dye can be poured into it (`scripts/catalog/mask.ts`),
+ *   cut to whole repeats of the drawing it holds (`scripts/catalog/period.ts`);
  * - rewrites **only** the community entries of `public/catalog/patterns.json`,
  *   leaving every drawn placeholder exactly as it is
  *   (`scripts/catalog/patternsFile.ts`);
@@ -41,8 +42,10 @@ import { fileURLToPath } from 'node:url'
 import {
   assetHash,
   convert,
+  describeRect,
   maskVariant,
   TARGET_BYTES,
+  type Cropped,
   type MaskOptions,
 } from './catalog/images.ts'
 import { describeLevels } from './catalog/mask.ts'
@@ -141,7 +144,9 @@ function withoutAssets(value: unknown): unknown {
 
 /** How this entry is converted, or nothing where it is taken as it is. */
 const maskOptions = (entry: ManifestEntry): MaskOptions | undefined =>
-  entry.recolor === 'mask' ? { levels: entry.maskLevels } : undefined
+  entry.recolor === 'mask'
+    ? { levels: entry.maskLevels, crop: entry.crop }
+    : undefined
 
 /** The catalog entry a manifest entry becomes, once its files are named. */
 function catalogEntry(entry: ManifestEntry, hash: string): CommunityEntry {
@@ -168,6 +173,45 @@ function catalogEntry(entry: ManifestEntry, hash: string): CommunityEntry {
 /** The file name part of a catalog asset path. */
 const basename = (publicPath: string) =>
   publicPath.slice(publicPath.lastIndexOf('/') + 1)
+
+/**
+ * What was cut out of the artwork and why — and, where an axis kept its full
+ * extent, that nothing was found to cut it on. That last line is the one
+ * worth printing: a pattern whose repeat could not be measured is a pattern
+ * that will still show its seam, and the designer is the only one who can fix
+ * it, by exporting the drawing as a tile.
+ */
+function reportCrop(
+  cropped: Cropped,
+  log: (line: string) => void,
+  warn: (line: string) => void,
+) {
+  const { rect, from, byHand, periods } = cropped
+  const said = (period: number | null) =>
+    period === null ? 'whole' : String(period)
+
+  log(
+    `      crop  ${String(from.width)}×${String(from.height)} → ${describeRect(rect)}` +
+      (byHand
+        ? '  (from the manifest)'
+        : `  (repeat ${said(periods.x)} × ${said(periods.y)})`),
+  )
+
+  const loose = byHand
+    ? []
+    : [
+        periods.x === null ? 'across' : undefined,
+        periods.y === null ? 'down' : undefined,
+      ].filter((axis) => axis !== undefined)
+
+  if (loose.length > 0) {
+    warn(
+      `      WARNING: no repeat found ${loose.join(' or ')} the drawing, so that` +
+        ' edge is\n               left as it was delivered. Ask for a seamless' +
+        ' export, or give\n               the window to cut with "crop" in the manifest.',
+    )
+  }
+}
 
 function reportSeams(
   seams: Seams,
@@ -297,6 +341,9 @@ export async function importPatterns({
           `, painted in ${entry.defaultColors.join(' ')}`,
       )
     }
+
+    if (converted.cropped !== undefined)
+      reportCrop(converted.cropped, log, warn)
 
     if (converted.overTarget) {
       warn(

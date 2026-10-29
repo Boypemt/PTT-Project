@@ -125,6 +125,9 @@ npm run catalog:import -- "../Design Pattern"
 > ตอนนี้ในแคตตาล็อกไม่มีลายแบบนี้แล้ว ภาพเทียบจึงถูกถอดออก — **ลาย `fit: "area"`
 > ลายถัดไปที่เพิ่มเข้ามา ต้องเพิ่มภาพเทียบนั้นกลับไปด้วย**
 
+> **ลายเส้น (`recolor: "mask"`) ระบบจะตัดให้เองก่อน** — ดูข้อ 7
+> ส่งภาพที่ลายซ้ำครบรอบมาได้เลย ไม่ต้องตัดขอบให้พอดีเอง
+
 **เช็กลิสต์ลายต่อเนื่อง**
 
 - [ ] ขอบซ้าย–ขวา ลายวิ่งต่อกันสนิท
@@ -178,6 +181,27 @@ npm run catalog:import -- "../Design Pattern"
 - ถ้าผลออกมาไม่ถูก (เส้นหาย หรือพื้นไม่ใส) ใส่ `"maskLevels"` กำกับเองได้
   `black` = ค่าความสว่างที่ถือว่าเป็นเส้น `white` = ค่าที่ถือว่าเป็นพื้น (0–255)
 - ภาพสี/ภาพถ่าย **ไม่ต้องใส่** `recolor` — สีอยู่ในภาพแล้ว และเลือกสีใบไม้ไม่ได้
+
+### 7. ระบบตัดลายให้พอดีรอบให้เอง
+
+ลายเส้น (`recolor: "mask"`) ระบบจะ **วัดว่าลายซ้ำรอบทุกกี่พิกเซล** แล้วตัดภาพ
+ให้เหลือจำนวนรอบเต็ม ๆ ขอบซ้ายจึงต่อกับขอบขวาได้สนิท — ภาพที่ capture
+มาจากโปรแกรมออกแบบ (ตัดไม่พอดีรอบ) ใช้ได้เลย ไม่ต้องแก้
+
+ขอบที่เป็นพื้นขาวเปล่า ๆ ระบบตัดทิ้งให้ด้วย
+
+```
+    crop  1076×1522 → 924×799 at 0,0  (repeat 462 × 799)
+```
+
+- `repeat` = ขนาด 1 รอบที่วัดได้ (พิกเซล) ด้านไหนวัดไม่ได้จะขึ้นว่า `whole`
+  แปลว่าด้านนั้นไม่ได้ตัด และจะมีคำเตือน — ด้านนั้นจะยังมีรอยต่อ
+  วิธีแก้คือ export ใหม่ให้ขอบต่อกัน หรือระบุกรอบเองด้วย `crop`
+- `crop` ระบุเป็นพิกเซลของ **ไฟล์ต้นฉบับ** `{ "x": 0, "y": 39, "width": 946, "height": 1444 }`
+
+> **สำคัญ: `repeatUnits` คือความกว้างของลาย 1 รอบ _หลังตัด_**
+> ถ้าภาพที่ส่งมามีลายซ้ำ 2 รอบ แล้วระบบตัดเหลือรอบเดียว ลายบนสินค้าจะใหญ่ขึ้นเท่าตัว
+> ดูภาพตัวอย่างที่ `/dev/catalog` แล้วปรับ `repeatUnits` ตาม
 
 ### ถ้าสคริปต์ฟ้อง
 
@@ -314,6 +338,10 @@ file's proportions.
 > The catalog holds none today, so that test was removed with the pattern it
 > photographed — **the next `fit: "area"` pattern added has to put it back**.
 
+> **Line art (`recolor: "mask"`) is cut to its repeat for you** — step 7. Send
+> a drawing that repeats and let the import find where; it does not have to be
+> cropped to the repeat by hand.
+
 **Seamless checklist**
 
 - [ ] the drawing continues across the left/right join
@@ -375,6 +403,29 @@ actually looks, rather than a white sheet laid over it.
   the one the paper begins at, both 0–255.
 - A photograph or a colour drawing leaves `recolor` out. Its colours are in the
   file, and the leaf-dye picker stays hidden for it.
+
+### 7. The repeat is found and cut for you
+
+For line art (`recolor: "mask"`) the import **measures how often the drawing
+repeats** and cuts the file down to a whole number of those repeats, so its
+left edge continues into its right. A screenshot taken from the tool the
+pattern was drawn in — cropped wherever the marquee fell — is fine as it is.
+Bare paper at an edge is trimmed with it.
+
+```
+    crop  1076×1522 → 924×799 at 0,0  (repeat 462 × 799)
+```
+
+- `repeat` is what was measured, in pixels. An axis it could not measure says
+  `whole`, is left exactly as delivered, and warns: **that edge will still
+  show a seam.** A seamless export fixes it, or name the window yourself.
+- `crop` is in the pixels of the original file:
+  `{ "x": 0, "y": 39, "width": 946, "height": 1444 }`.
+
+> **`repeatUnits` is the width of one repeat _after_ the cut.** If the file
+> you sent held two repeats and the import keeps one, the print comes out
+> twice the size on the cloth. Look at `/dev/catalog` and set `repeatUnits`
+> against what you see.
 
 ### When the script complains
 
