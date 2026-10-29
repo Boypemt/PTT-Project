@@ -37,6 +37,18 @@ export const MAX_EXPORT_EDGE = 2000
 /** How much bigger than the screen a design is exported. */
 const SCREEN_MULTIPLE = 2
 
+/**
+ * Konva's name for the nodes that are notes to the visitor rather than part of
+ * the design: the handles round the selected leaf, and the dashes showing where
+ * a pattern may print.
+ *
+ * They are hidden for the length of an export and put back, so what a visitor
+ * downloads is the product rather than the editor. It lives here, with the rest
+ * of what export means, because the two nodes that wear it are drawn in two
+ * different files and neither should be the one the other imports it from.
+ */
+export const ANNOTATION = 'editor-annotation'
+
 /** What `Konva.Stage#toDataURL` is given: a crop in stage pixels, and a scale. */
 export type ExportGeometry = {
   x: number

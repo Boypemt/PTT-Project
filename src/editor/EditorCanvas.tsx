@@ -19,8 +19,13 @@
  * other one is deaf (`listening={false}` where it is drawn). So a tap that
  * reaches the stage itself is a tap on empty cloth, and that is what clears
  * the selection.
+ *
+ * It is also where a design is turned into a PNG. Everything that question
+ * needs is here and nowhere else — the stage, and the fit that says which part
+ * of it is the mockup — so the stage leaves a renderer in `designPng.ts` while
+ * it is mounted and the editor header asks that for a picture.
  */
-import { useEffect, useRef, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, type ReactNode } from 'react'
 import Konva from 'konva'
 import { useTranslation } from 'react-i18next'
 import {
@@ -36,10 +41,12 @@ import type { PrintAreaClip, Product } from '@/catalog'
 import { fitContain, pixelRatio, type Fit } from '@/lib/geometry'
 import { areaBounds } from './areaBounds'
 import { clipFunc } from './clip'
+import { setDesignRenderer, type DesignPng } from './designPng'
 import { LayerRenderer } from './LayerRenderer'
 import type { MotifTools } from './MotifImage'
 import { MotifTransformer } from './MotifTransformer'
 import { buildScene } from './scene'
+import { ANNOTATION, exportedSize, exportGeometry } from './stageExport'
 import { useDesignFor, useDesignStore } from './useDesignStore'
 import { useMotifKeyboard } from './useMotifKeyboard'
 import { useImage } from './useImage'
@@ -149,8 +156,10 @@ function PrintAreaOutline({ clip }: { clip: PrintAreaClip }) {
     stroke: PRINT_AREA_INK,
     strokeWidth: 4,
     dash: [16, 12],
-    // An annotation, so it never stands between a tap and a leaf.
+    // An annotation, so it never stands between a tap and a leaf — and never
+    // reaches an exported PNG.
     listening: false,
+    name: ANNOTATION,
   }
 
   return clip.type === 'rect' ? (
@@ -169,6 +178,7 @@ function PrintAreaOutline({ clip }: { clip: PrintAreaClip }) {
 export function EditorCanvas({ product }: { product: Product }) {
   const { t } = useTranslation()
   const [containerRef, size] = useMeasuredSize<HTMLDivElement>()
+  const stage = useRef<Konva.Stage>(null)
   const onKeyDown = useMotifKeyboard(product)
   const design = useDesignFor(product)
   const showPrintAreas = useDesignStore((state) => state.showPrintAreas)
@@ -176,7 +186,10 @@ export function EditorCanvas({ product }: { product: Product }) {
   const selectLayer = useDesignStore((state) => state.selectLayer)
   const updateLayer = useDesignStore((state) => state.updateLayer)
   const { mockup } = product
-  const fit = fitContain(mockup, size)
+  // Memoised for its identity rather than its cost: the export renderer below
+  // is registered for as long as the fit holds, and a fresh object on every
+  // selection change would re-register it on every tap.
+  const fit = useMemo(() => fitContain(mockup, size), [mockup, size])
   const scene = buildScene(product, design)
 
   /** What one motif layer may do to itself; see `MotifImage`. */
@@ -203,6 +216,57 @@ export function EditorCanvas({ product }: { product: Product }) {
     if (event.target === event.target.getStage()) selectLayer(null)
   }
 
+  /**
+   * A PNG of the design: the mockup's own box on the stage, at the size
+   * `exportGeometry` works out, with the editor's annotations off.
+   *
+   * Hiding them is done to the nodes rather than through the store, and that is
+   * deliberate. Routing it through React would mean a render with the handles
+   * gone, a frame in which the visitor sees them vanish, and only then the
+   * shutter — which is both a flicker and a promise about when the state lands
+   * that React does not make. `toDataURL` draws the scene graph into a canvas
+   * of its own, synchronously, so hiding and restoring either side of the one
+   * call never reaches the screen at all.
+   *
+   * `null` when there is nothing to photograph: a stage whose box the browser
+   * has not measured yet, which is the same zero fit the render below draws
+   * nothing for.
+   */
+  const renderPng = useCallback((): DesignPng | null => {
+    const node = stage.current
+    const geometry = exportGeometry(mockup, fit)
+
+    if (node === null || geometry === null) return null
+
+    const annotations = node.find(`.${ANNOTATION}`)
+    const wasVisible = annotations.map((annotation) => annotation.visible())
+
+    for (const annotation of annotations) annotation.visible(false)
+
+    try {
+      return {
+        dataUrl: node.toDataURL({ ...geometry, mimeType: 'image/png' }),
+        ...exportedSize(geometry),
+      }
+    } finally {
+      annotations.forEach((annotation, index) => {
+        annotation.visible(wasVisible[index])
+      })
+    }
+  }, [mockup, fit])
+
+  // Left in place for as long as this canvas is on screen, so the editor
+  // header can ask for a picture without the workspace between them having to
+  // know that exporting exists. Re-registered when the fit changes, since that
+  // is what says which part of the stage is the mockup.
+  useEffect(() => {
+    setDesignRenderer(renderPng)
+
+    return () => {
+      setDesignRenderer(null)
+    }
+  }, [renderPng])
+
   return (
     // In the tab order, because the arrow keys nudge the selected leaf and a
     // key press has to reach something. `application` is what tells a screen
@@ -224,6 +288,7 @@ export function EditorCanvas({ product }: { product: Product }) {
           stage is an error in Konva rather than an empty picture. */}
       {fit.scale > 0 ? (
         <Stage
+          ref={stage}
           width={size.width}
           height={size.height}
           onMouseDown={clearSelection}
