@@ -59,6 +59,18 @@ const hexColorSchema = z
 const levelSchema = z.number().int().min(0).max(255)
 
 /**
+ * The window to take out of a drawing, in the pixels it was delivered at,
+ * for one whose repeat the import finds wrong. Omitted — which is the
+ * ordinary case — it cuts to the repeat it measures (`period.ts`).
+ */
+const cropSchema = z.strictObject({
+  x: z.number().int().min(0),
+  y: z.number().int().min(0),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+})
+
+/**
  * The luminance the ink ends at and the paper begins at, for a drawing the
  * import reads wrong. Omitted — which is the ordinary case — it reads them
  * from the drawing itself (`mask.ts`).
@@ -99,6 +111,8 @@ export const manifestEntrySchema = z
     defaultColors: z.array(hexColorSchema).default([]),
     /** Levels for a mask the import reads wrong. Omitted, it reads them. */
     maskLevels: maskLevelsSchema.optional(),
+    /** The window to cut, for a mask whose repeat the import finds wrong. */
+    crop: cropSchema.optional(),
     /** `area` = laid into the print area once. Omitted is a repeating tile. */
     fit: z.enum(['repeat', 'area']).optional(),
     /** Mockup units one repeat covers across the tile's width. */
@@ -141,6 +155,11 @@ export const manifestEntrySchema = z
       path: ['maskLevels'],
     },
   )
+  .refine((entry) => entry.crop === undefined || entry.recolor === 'mask', {
+    message:
+      'crop is how an ink mask is cut to its repeat, so it needs recolor: "mask"',
+    path: ['crop'],
+  })
 
 export type ManifestEntry = z.infer<typeof manifestEntrySchema>
 

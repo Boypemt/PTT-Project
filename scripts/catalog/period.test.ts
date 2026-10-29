@@ -8,6 +8,7 @@
 import { describe, expect, it } from 'vitest'
 import {
   type AlphaMap,
+  correlation,
   cropAxis,
   detectPeriod,
   inkedSpan,
@@ -88,8 +89,8 @@ describe('detectPeriod', () => {
   })
 
   it('reports no period down an axis that never changes', () => {
-    // Bars across the page are the same row over and over: every lag matches
-    // perfectly, which is not a repeat, it is a blank answer.
+    // Bars across the page are the same row over and over: every lag agrees
+    // perfectly, which is not a repeat, it is an axis with nothing on it.
     expect(detectPeriod(bars(400, 300, 40), 'y')).toBeNull()
   })
 
@@ -102,10 +103,23 @@ describe('detectPeriod', () => {
     ).toBeNull()
   })
 
-  it('scores the trough well below what an ordinary lag scores', () => {
-    const found = detectPeriod(bars(400, 300, 40), 'x')
+  it('agrees with itself at the period and disagrees between', () => {
+    const map = bars(400, 300, 40)
+    const span = { start: 0, length: 400 }
 
-    expect(found?.match).toBeLessThan((found?.baseline ?? 0) * 0.45)
+    expect(detectPeriod(map, 'x')?.match).toBeGreaterThan(0.95)
+
+    // Half a period along, the bars land in the gaps: the same drawing
+    // inside out, which is as far from a repeat as it gets.
+    expect(correlation(map, 'x', 20, span)).toBeLessThan(0)
+  })
+
+  it('finds a repeat that only fits once and a bit in the file', () => {
+    // Four of the designer's eight are like this, and a search that stops at
+    // half the width is exactly why their seams survived the first import.
+    const map = draw(400, 200, (x) => (x % 260 < 130 ? 255 : 0))
+
+    expect(detectPeriod(map, 'x')?.period).toBe(260)
   })
 })
 
@@ -114,7 +128,7 @@ describe('refinePeriod', () => {
     const map = bars(400, 300, 40)
     const span = { start: 0, length: 400 }
 
-    expect(refinePeriod(map, 'x', span, 43, 5)).toBe(40)
+    expect(refinePeriod(map, 'x', span, 43, 5).period).toBe(40)
   })
 })
 
