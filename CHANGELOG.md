@@ -6,37 +6,69 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
-### Fixed
+## [0.4.0] — 2026-10-29
 
-- **The patterns no longer show a seam where they repeat.** The artwork is a
-  window onto a pattern rather than a tile of it, so its left edge landed
-  against its right edge mid-motif and the repeat printed as a grid of joins.
-  The import now measures how often each drawing repeats and cuts it to whole
-  repeats, trimming bare paper at the edges with it. Seven of the eight meet
-  on both edges; กล่องมายา's join went from 52.6 to 1.5. เขาสลับลาย still
-  shows 5.2 across and เกลียวอนันต์ keeps the bare paper top and bottom,
-  because no repeat could be measured down it — both want a seamless export
-  from the designer.
-- Every pattern's `repeatUnits` was rescaled with the cut, so the prints are
-  the size on the cloth they already were.
+The designer's real patterns, in the community's own colours. v0.3.0 could
+take a pattern the designer sent and put it on a product; this one makes that
+pattern theirs to colour — the eight v2 drawings arrive as line art, and the
+import turns each one's ink into a stencil a leaf dye is poured through, so
+the cloth shows between the lines instead of a white page sitting on it. Each
+pattern also says which products it was drawn for, and each is cut to the
+repeat inside it, so it tiles without a seam.
+
+### Added
+
+- **Leaf-dye recolouring for the designer's line art.** A drawing on a white
+  page is imported as an ink mask: its darkness becomes an alpha channel,
+  opaque at the line and transparent at the paper. The editor floods the
+  layer's dye through that mask, so any of the community's leaf colours can be
+  printed in any of these patterns, and the base cloth colour shows between
+  the lines the way an eco-print does. The library swatch carries the same
+  mask over the colour the catalog lists it in.
+- **`recolor: "mask"` in the pattern manifest**, with `defaultColors` for the
+  dye a pattern is listed in, `maskLevels` for a drawing the import reads
+  wrong, and `crop` for one whose repeat it finds wrong. The levels and the
+  cut are printed for every mask it converts. See `docs/ADDING_PATTERNS.md`.
+- **Per-product pattern restrictions.** Each pattern names the products the
+  designer drew it for — from their own sheet — and the library offers a
+  product only those. The mug lists five patterns, the plate two; the drawn
+  placeholders still print on everything, so no product is left with an empty
+  library.
 
 ### Changed
 
 - **The designer's v2 patterns replace v1.** Eight drawings — รังนิรมิต,
   เขาสลับลาย, ดารานิรมิต, กล่องมายา, เกลียวอนันต์, ประกายเพชร, สุขเส้นสาน and
-  มิติวงกต — arrive as black line art and are **recolourable with the leaf
-  dyes**: the import reads each drawing's ink into an alpha channel, so the
-  colour is the visitor's to choose and the cloth shows between the lines.
-  Each says which products it was drawn for, so the library a product offers
-  is the patterns that suit it. The seven v1 patterns and their assets are
-  gone, and a saved design that used one loses that layer.
+  มิติวงกต — in place of the seven that stood in for them. The old patterns
+  and their assets are gone, and a saved design that used one loses that
+  layer.
+- **Destructive git commands need asking first** — `git checkout -- .`,
+  `git reset --hard`, `git clean -fd`, `git push --force` — even when
+  everything is committed, because that is a belief about the working tree and
+  these are the commands that destroy the evidence when it is wrong.
+  `CLAUDE.md` names them and points at the non-destructive way round.
 
-### Added
+### Fixed
 
-- **`recolor: "mask"` in the pattern manifest**, with `defaultColors` for the
-  dye a pattern is listed in and `maskLevels` for a drawing the import reads
-  wrong. The levels it read are printed for every mask it converts. See
-  `docs/ADDING_PATTERNS.md`.
+- **The patterns no longer show a seam where they repeat.** The artwork is a
+  window onto a pattern rather than a tile of it, so its left edge landed
+  against its right edge mid-motif and the repeat printed as a grid of joins.
+  The import now measures how often each drawing repeats — correlating the ink
+  with itself at every lag — and cuts it to whole repeats, trimming bare paper
+  at the edges with it. Seven of the eight meet on both edges; กล่องมายา's
+  join went from 52.6 to 1.5. เขาสลับลาย still shows 5.2 across and
+  เกลียวอนันต์ keeps the bare paper top and bottom, because no repeat could be
+  measured down it — both want a seamless export from the designer.
+- Every pattern's `repeatUnits` was rescaled with the cut, so the prints are
+  the size on the cloth they already were rather than half as large again.
+- **Two tests that failed now and then in a full run** and passed on their
+  own. The motif keyboard journey pointed at the leaf before its image had
+  decoded, so the click landed on the cloth behind it and let go of the
+  selection it was about to press keys at; it now waits for the canvas to
+  paint. The code-split route test gave a one-second assertion the job of
+  covering the editor's whole module graph being transformed; the module is
+  loaded up front and the release is flushed with `act`, so the assertion is
+  synchronous. Neither was fixed with a retry or a longer timeout.
 
 ### Removed
 

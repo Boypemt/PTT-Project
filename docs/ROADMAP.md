@@ -31,6 +31,9 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 18 | done | `chore/flags-and-release-docs` | feat(lib): feature flags, releasing guide and changelog ([#18](https://github.com/Boypemt/PTT-Project/pull/18)) | — (ad-hoc) | 17 |
 | 19 | done | `feat/community-patterns` | feat(catalog): the designer's first community patterns ([#28](https://github.com/Boypemt/PTT-Project/pull/28)) | — (ad-hoc) | 10 |
 | 20 | done | `feat/pattern-manifest` | feat(catalog): import patterns from a manifest ([#29](https://github.com/Boypemt/PTT-Project/pull/29)) | — (ad-hoc) | 19 |
+| 21 | done | `feat/patterns-v2` | feat(catalog): the designer's v2 patterns, recolourable with leaf dyes ([#31](https://github.com/Boypemt/PTT-Project/pull/31)) | — (ad-hoc) | 20 |
+| 22 | done | `feat/import-period-crop` | feat(catalog): cut each pattern to its own repeat, so the tiles stop showing seams ([#32](https://github.com/Boypemt/PTT-Project/pull/32)) | — (ad-hoc) | 21 |
+| 23 | done | `test/stabilize-flaky-tests` | test: fix the two races behind the intermittent suite failures ([#33](https://github.com/Boypemt/PTT-Project/pull/33)) | — (ad-hoc) | 17 |
 
 **Where 14 stands.** 17 took most of it: the Playwright setup and CI job, the demo journey at
 both widths, the axe pass, and the editor route was already lazy-loaded in 08a. What is left for
