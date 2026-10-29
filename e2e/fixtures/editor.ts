@@ -66,6 +66,30 @@ export function canvas(page: Page): Locator {
 }
 
 /**
+ * Waits until the canvas paints something it was not painting before.
+ *
+ * A pattern is in the store the moment the library is tapped, and the layer
+ * list says so at once — but it only reaches the stage when its image has
+ * decoded, which on a loaded machine is a good deal later. A click aimed at a
+ * leaf that is not drawn yet lands on the cloth behind it instead, and a tap
+ * on bare cloth lets the selection go: the journey then carries on pressing
+ * keys at nothing.
+ *
+ * So any journey that puts something on the canvas and then points at it
+ * waits here first. The canvas is one bitmap with nothing in the DOM to ask,
+ * and nothing is exported from the app for a test's benefit, so what it has
+ * painted is read the only way there is — by looking at it.
+ */
+export async function waitForPaint(page: Page, before: Buffer): Promise<void> {
+  await expect(async () => {
+    expect(
+      (await canvas(page).screenshot()).equals(before),
+      'the canvas is still painting what it was before',
+    ).toBe(false)
+  }).toPass()
+}
+
+/**
  * Where a point in the mockup's own coordinates lands on screen.
  *
  * The app centres the mockup inside the canvas as large as it goes
