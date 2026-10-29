@@ -29,6 +29,14 @@ real data later **without code changes**.
 ## Git workflow (mandatory)
 - **Before ANY commit, run `git branch --show-current`; if it prints `main` or `release`, stop and create a branch.**
   A merge leaves the checkout on `main`, so the branch you are on is not the branch you last chose.
+- **Never run a destructive git command without asking me first.** That means
+  `git checkout -- .`, `git checkout <ref> -- .`, `git reset --hard`, `git clean -fd` and
+  `git push --force`. This holds **even when everything is committed** and the command looks
+  safe — "it's all committed" is a belief about the working tree, and these are exactly the
+  commands that destroy the evidence when that belief is wrong. Ask first, and say what you
+  expect the command to throw away. There is almost always a non-destructive way to get the
+  same answer: `git stash push -- <paths>` to set changes aside, `git switch -c` or
+  `git worktree add` to look at another branch, `git restore --staged` to unstage.
 - Never commit to `main`. One branch per task: `feat/…`, `fix/…`, `chore/…`, `docs/…`, `test/…`.
 - **Atomic commits** — each commit is ONE logical change that you can describe in one Conventional Commit line,
   and the project builds and passes tests at every commit. Never dump the whole task into a single commit at the end,
