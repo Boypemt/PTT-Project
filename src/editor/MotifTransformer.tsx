@@ -27,6 +27,7 @@
 import { useEffect, useRef } from 'react'
 import Konva from 'konva'
 import { Transformer } from 'react-konva'
+import { ANNOTATION } from './stageExport'
 
 /** `--color-forest-600`: the ink selection is drawn in everywhere else. */
 const SELECTION_INK = '#4a7c3f'
@@ -106,6 +107,9 @@ export function MotifTransformer({
   return (
     <Transformer
       ref={transformer}
+      // The handles say which leaf is selected, which is a thing about the
+      // editor rather than about the cloth — so they come off for an export.
+      name={ANNOTATION}
       keepRatio
       flipEnabled={false}
       enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}

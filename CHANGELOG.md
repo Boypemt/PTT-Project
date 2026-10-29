@@ -6,6 +6,23 @@ the tags described in [`docs/RELEASING.md`](docs/RELEASING.md).
 
 ## [Unreleased]
 
+### Added
+
+- **A design can be taken away as a picture.** "เสร็จแล้ว / Done" in the editor
+  header downloads the product as a PNG — the mockup alone, without the paper
+  around it, the handles round the selected leaf or the dashed print areas, and
+  with every pattern in the leaf dyes it was given. It is exported at twice the
+  size it is on screen, or at the size the design was drawn if that is larger,
+  so a shawl designed on a phone is not a 720px picture of a 1000-unit design;
+  the longer edge is capped at 2000px, because this is a file meant to go out
+  over LINE. The file is named `paton-phueng-<product>-<date>.png`, dated by the
+  visitor's own clock rather than UTC.
+
+  Behind the `export` flag: the order request dialog and the ways to send it
+  are the two tasks after this one, and until all three are in, Production sees
+  nothing. The editor header is the same height with the button as without it at
+  both widths, which a new Playwright measurement holds it to.
+
 ## [0.4.0] — 2026-10-29
 
 The designer's real patterns, in the community's own colours. v0.3.0 could

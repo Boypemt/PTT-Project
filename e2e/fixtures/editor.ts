@@ -6,7 +6,7 @@
  * does through roles and accessible names, the way a visitor does.
  */
 import { expect, type Locator, type Page } from '@playwright/test'
-import { patternButtonName } from './catalog'
+import { patternButtonName, printAreaName } from './catalog'
 import { interpolate, type Lang, type Messages } from './ui'
 
 type PanelId = 'patterns' | 'properties'
@@ -34,6 +34,124 @@ export async function openPanel(
 /** One pattern's button in the library. */
 export function patternButton(page: Page, name: string): Locator {
   return page.getByRole('button', { name, exact: true })
+}
+
+/** The chip that aims the library at one part of the product. */
+export function printAreaButton(
+  page: Page,
+  productId: string,
+  areaId: string,
+  lang: Lang,
+): Locator {
+  return page.getByRole('button', {
+    name: printAreaName(productId, areaId, lang),
+    exact: true,
+  })
+}
+
+/** A locator's box, or a failure saying which element had none. */
+async function boxOf(locator: Locator, what: string) {
+  const box = await locator.boundingBox()
+
+  if (box === null) throw new Error(`${what} has no box to measure`)
+
+  return box
+}
+
+/**
+ * Every pattern name the strip is showing, whole.
+ *
+ * On a phone the library is a sheet on the bottom edge sharing the screen with
+ * the canvas, and the name is the last thing in each card — so it is the first
+ * thing to go when anything above the strip grows by a row. A name half a line
+ * short of being readable is invisible to every other assertion in the suite:
+ * the button is still there, still has its accessible name, still takes a tap.
+ * Only its box says what a visitor can actually read.
+ *
+ * So this measures. For each card the strip is showing in full — one mid-swipe
+ * at the edge is cut off sideways on purpose, and skipped — the name's box has
+ * to sit inside whichever edge would clip it: the sheet it scrolls in, or the
+ * bottom of the screen when the sheet runs past it.
+ *
+ * Called from the production spec and again from the flagged one, because the
+ * row this guards against is exactly what a new button in the editor header
+ * would cost.
+ */
+export async function expectPatternNamesUnclipped(
+  page: Page,
+  ui: Messages,
+): Promise<void> {
+  await openPanel(page, ui, 'patterns')
+
+  const panel = page.getByRole('region', { name: ui.customize.patterns })
+  const sheet = await boxOf(panel, 'the pattern sheet')
+  const viewport = page.viewportSize()
+
+  if (viewport === null) throw new Error('the page reports no viewport size')
+
+  // The two edges that can cut a name off: the sheet scrolls inside itself, and
+  // the sheet itself can be taller than what is left of the screen.
+  const ceiling = Math.max(sheet.y, 0)
+  const floor = Math.min(sheet.y + sheet.height, viewport.height)
+
+  // The library's own list — the print-area chips and the kind chips are
+  // `ul > li > button` too, but their buttons take their name from their text,
+  // so only a pattern card carries an `aria-label`. A selector that drifted
+  // onto the chips would match nothing here rather than pass on the wrong row.
+  const cards = panel.locator(':scope > ul > li > button[aria-label]')
+  const count = await cards.count()
+
+  expect(
+    count,
+    'the pattern strip is showing no patterns to measure',
+  ).toBeGreaterThan(0)
+
+  let measured = 0
+
+  for (let i = 0; i < count; i += 1) {
+    const card = cards.nth(i)
+    const cardBox = await boxOf(card, `pattern card ${String(i)}`)
+
+    // Cut off sideways by the strip's own scrolling, which is what a strip is
+    // for. Only a card the visitor can see whole has a name to read whole.
+    if (
+      cardBox.x < sheet.x - 0.5 ||
+      cardBox.x + cardBox.width > sheet.x + sheet.width + 0.5
+    ) {
+      continue
+    }
+
+    const name = card.locator(':scope > span[aria-hidden="true"]').first()
+    const text = (await name.textContent())?.trim() ?? ''
+    const label = (await card.getAttribute('aria-label')) ?? ''
+
+    // The card names itself for screen readers and prints the same name for
+    // everyone else; if those two stop agreeing, this is measuring the wrong
+    // element and should say so rather than quietly pass.
+    expect(text, `pattern card ${String(i)} prints no name`).not.toBe('')
+    expect(
+      label,
+      `the name in pattern card ${String(i)} is not the name it is labelled with`,
+    ).toContain(text)
+
+    const nameBox = await boxOf(name, `the name "${text}"`)
+
+    expect(
+      nameBox.y,
+      `"${text}" is cut off at the top of the pattern sheet`,
+    ).toBeGreaterThanOrEqual(ceiling - 0.5)
+    expect(
+      nameBox.y + nameBox.height,
+      `"${text}" runs ${String(Math.round(nameBox.y + nameBox.height - floor))}px past the bottom of the pattern sheet`,
+    ).toBeLessThanOrEqual(floor + 0.5)
+
+    measured += 1
+  }
+
+  expect(
+    measured,
+    'every pattern card was mid-swipe, so no name was measured',
+  ).toBeGreaterThan(0)
 }
 
 /**

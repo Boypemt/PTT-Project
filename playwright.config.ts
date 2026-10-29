@@ -22,11 +22,10 @@
  * that leaked into production fails the first group rather than being noticed
  * later.
  *
- * `IN_PROGRESS_FLAGS` below is what drives that, and it is empty right now:
- * nothing is behind a flag, so there is no second build, no second pair of
- * projects and nothing to wait for. To put a feature behind one, add its flag
- * to that list and its journeys to `e2e/flagged/`; take both away when the
- * feature graduates. `docs/RELEASING.md` says the same from the release side.
+ * `IN_PROGRESS_FLAGS` below is what drives that. To put a feature behind one,
+ * add its flag to that list and its journeys to `e2e/flagged/`; take both away
+ * when the feature graduates. `docs/RELEASING.md` says the same from the
+ * release side.
  *
  * Screenshot baselines are Linux-only on purpose; see `e2e/visual.spec.ts`.
  * Each project keeps its own, so a flagged build photographs into directories
@@ -49,9 +48,12 @@ const BASE_URL = url(PORT)
 
 /**
  * The flags the second build is made with: whatever is in review right now.
- * Empty, so there is no second build — see the header.
+ *
+ * `export` is task 12 — the PNG and, in the two tasks after this one, the
+ * request dialog and the ways to send it. It comes off this list when the
+ * flag comes out of `src/lib/flags.ts`.
  */
-const IN_PROGRESS_FLAGS: string[] = []
+const IN_PROGRESS_FLAGS: string[] = ['export']
 
 /** Whether there is a flagged build to make, serve and run anything against. */
 const FLAGGED = IN_PROGRESS_FLAGS.length > 0

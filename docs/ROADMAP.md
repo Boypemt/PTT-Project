@@ -22,7 +22,10 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 09c | done | `chore/graduate-motifs` | refactor(editor): graduate motifs from the feature flag ([#24](https://github.com/Boypemt/PTT-Project/pull/24)) | — | 09b |
 | 10 | done | `feat/leaf-dye-colors` | feat(editor): recolour by leaf dye and base colour | `prompts/10-leaf-dye-colors.md` | 08c |
 | 11 | **todo** | `feat/history-persist` | feat(editor): undo/redo, autosave and share link | `prompts/11-history-persist.md` | 09b, 10 |
-| 12 | **todo** | `feat/export-request` | feat(export): PNG export and order request summary | `prompts/12-export-request.md` | 11 |
+| 12a | **in review** | `feat/export-png` | feat(export): PNG export behind the `export` flag | `prompts/12-export-request.md` | — |
+| 12b | **todo** | `feat/export-request` | feat(export): the order summary and the request dialog | `prompts/12-export-request.md` | 12a |
+| 12c | **todo** | `feat/export-share` | feat(export): share to LINE, email and Facebook | `prompts/12-export-request.md` | 12b |
+| 12d | **todo** | `chore/graduate-export` | refactor(export): graduate export from the feature flag | — | 12c |
 | 13 | done | `feat/landing-story` | feat(app): landing page with community story | `prompts/13-landing-story.md` | 05 |
 | 14 | partly | `test/e2e-polish` | test: Playwright happy path, a11y and mobile polish | `prompts/14-e2e-polish.md` | 12 |
 | 15 | partly | `docs/designer-handoff` | docs: how to add the real community patterns | `prompts/15-designer-handoff.md` | 12 |
@@ -34,6 +37,17 @@ Every PR gets a Vercel preview link once step 02 is done.
 | 21 | done | `feat/patterns-v2` | feat(catalog): the designer's v2 patterns, recolourable with leaf dyes ([#31](https://github.com/Boypemt/PTT-Project/pull/31)) | — (ad-hoc) | 20 |
 | 22 | done | `feat/import-period-crop` | feat(catalog): cut each pattern to its own repeat, so the tiles stop showing seams ([#32](https://github.com/Boypemt/PTT-Project/pull/32)) | — (ad-hoc) | 21 |
 | 23 | done | `test/stabilize-flaky-tests` | test: fix the two races behind the intermittent suite failures ([#33](https://github.com/Boypemt/PTT-Project/pull/33)) | — (ad-hoc) | 17 |
+
+**Where 12 stands.** Split into four, because the one prompt is about 2,000
+lines of source in this codebase's style and no single PR of that size is
+reviewable. 12a is the picture, 12b the summary and the dialog that shows it,
+12c the ways to send it, 12d the flag coming out. The whole of it goes in
+behind `export`, so `main` stays deployable throughout and the team can try
+each piece on a preview link.
+
+It no longer waits on 11. The dependency was the share link that the original
+prompt put in the mailto, and that part moves to 11 — everything else here is
+about the design the store already holds, not about saving or restoring one.
 
 **Where 14 stands.** 17 took most of it: the Playwright setup and CI job, the demo journey at
 both widths, the axe pass, and the editor route was already lazy-loaded in 08a. What is left for

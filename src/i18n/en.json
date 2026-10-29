@@ -139,6 +139,9 @@
       "back": "Choose a product"
     }
   },
+  "export": {
+    "done": "Done"
+  },
   "notFound": {
     "title": "Page not found",
     "body": "The link may be mistyped, or the page has moved.",
